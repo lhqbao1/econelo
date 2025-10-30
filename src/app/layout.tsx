@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "./provider";
 import { Toaster } from "@/components/ui/sonner"
 import Script from "next/script";
+import SiteHeader from "@/components/header/header";
 
 const figtree = Figtree({
   subsets: ["latin"],
@@ -42,7 +43,9 @@ export default function RootLayout({
             style={{ display: "none", visibility: "hidden" }}
           ></iframe>
         </noscript>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+        </Providers>
         <Toaster
           expand
           richColors

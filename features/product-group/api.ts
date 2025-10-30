@@ -31,11 +31,15 @@ export async function getProductGroup(){
     return data as ProductGroupResponse[]
 }
 
-export async function getAllProductsSelect(params?: string){
+export async function getAllProductsSelect(all_products?: boolean, search?: string, is_customer?: boolean){
     const {data} = await apiPublic.get(
         `/products/all/`,
         {
-        params: params ? { search: params } : {}, // backend xử lý param search
+        params: {
+          all_products: all_products,
+          search: search,
+          is_customer: is_customer,
+        },
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("admin_access_token")}`,

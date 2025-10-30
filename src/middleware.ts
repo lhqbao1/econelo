@@ -4,41 +4,45 @@ import { NextRequest, NextResponse } from "next/server";
 const intlMiddleware = createMiddleware({
   locales: ["de", "en"],
   defaultLocale: "de",
-  localePrefix: { mode: "always" },
+  localePrefix: "as-needed", // ✅ Ẩn /de cho default locale
   localeDetection: false,
 });
 
 export default function middleware(req: NextRequest) {
-  const res = intlMiddleware(req);
   const { pathname, searchParams } = req.nextUrl;
 
-  // ✅ Điều kiện nhận diện URL kiểu WooCommerce cũ
+  // 🚫 Redirect /de/... -> /... để tránh trùng lặp canonical
+  if (pathname.startsWith("/de/")) {
+    const cleanPath = pathname.replace(/^\/de/, "") || "/";
+    return NextResponse.redirect(new URL(cleanPath, req.url), 301);
+  }
+
+  // ✅ Nhận diện URL kiểu WooCommerce cũ
   const looksLikeOldWooProduct =
     pathname.startsWith("/product/") &&
-    // không phải ID UUID (Next.js mới)
     !/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/.test(pathname);
 
-    const hasWpParams = [
-      "add_to_wishlist",
-      "_wpnonce",
-      "remove_item",
-      "add-to-cart",
-      "wc-api",
-      "product-page",
-      "orderby",
-      "coupon_code",
-      "apply_coupon",
-      "order"
-    ].some((param) => searchParams.has(param));
+  const hasWpParams = [
+    "add_to_wishlist",
+    "_wpnonce",
+    "remove_item",
+    "add-to-cart",
+    "wc-api",
+    "product-page",
+    "orderby",
+    "coupon_code",
+    "apply_coupon",
+    "order"
+  ].some((param) => searchParams.has(param));
 
   const isOtherOldWpPaths =
-    pathname.startsWith("/shop/") 
-    pathname.startsWith("/product-category/") 
-    // pathname.startsWith("/cart") ||
-    // pathname.startsWith("/checkout") ||
-    // pathname.startsWith("/my-account");
+    pathname.startsWith("/shop/") ||
+    pathname.startsWith("/product-category/") ||
+    pathname.startsWith("/cart") ||
+    pathname.startsWith("/checkout") ||
+    pathname.startsWith("/my-account");
 
-  // ✅ Nếu URL là kiểu WooCommerce → trả về 410
+  // 🚫 Nếu là URL WooCommerce cũ → trả về 410 Gone
   if (looksLikeOldWooProduct || hasWpParams || isOtherOldWpPaths) {
     return new NextResponse("This page has been permanently removed.", {
       status: 410,
@@ -49,8 +53,8 @@ export default function middleware(req: NextRequest) {
     });
   }
 
-  // ✅ Cho phép các route hợp lệ tiếp tục
-  return res;
+  // ✅ Cho phép route Next.js hợp lệ tiếp tục
+  return intlMiddleware(req);
 }
 
 export const config = {
