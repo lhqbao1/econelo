@@ -1,5 +1,5 @@
 import HomeBanner from "@/components/layout/home/banner";
-import Mission from "@/components/layout/home/mission";
+import MissionSection from "@/components/layout/home/mission";
 
 export default function Home() {
   return (
@@ -7,7 +7,7 @@ export default function Home() {
       <div className="h-[100vh] w-full">
         <HomeBanner />
       </div>
-      <Mission />
+      <MissionSection />
 
     </div>
   );
