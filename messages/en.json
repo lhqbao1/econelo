@@ -284,5 +284,7 @@
   "QAsuccess": "Your question has been sent successfully!",
   "QAerror": "Something went wrong. Please try again.",
   "haveQuestion": "Have a question?",
-  "justAsk": "Just ask!"
+  "justAsk": "Just ask!",
+  "payLater": "Pay later",
+  "headerLogin": "Login / Sign up"
 }

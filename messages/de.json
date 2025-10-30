@@ -283,5 +283,7 @@
     "QAerror": "Etwas ist schief gelaufen. Bitte versuche es erneut.",
     "reply": "Antworten",
     "haveQuestion": "Haben Sie eine Frage?",
-  "justAsk": "Fragen Sie einfach!"
+  "justAsk": "Fragen Sie einfach!",
+  "payLater": "Ratenzahlung",
+  "headerLogin": "Anmelden / Registrieren"
 }

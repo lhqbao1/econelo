@@ -9,10 +9,10 @@ export function useGetProductGroup(){
     })
 }
 
-export function useGetProductsSelect(params?: string){
+export function useGetProductsSelect(all_products?: boolean, search?: string, is_customer?: boolean){
     return useQuery({
-       queryKey: ["products-select", params],
-       queryFn: () => getAllProductsSelect(params),
+       queryKey: ["products-select", all_products, search, is_customer],
+       queryFn: () => getAllProductsSelect(all_products, search, is_customer),
     })
 }
 
