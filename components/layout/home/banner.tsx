@@ -81,7 +81,7 @@ const HomeBanner = () => {
             className="relative min-h-[80vh] bg-primary bg-center z-10 md:px-20 px-4"
         >
             <Image
-                src={'/home-banner-circle.png'}
+                src={'/Artboard 1@2x.png'}
                 width={200}
                 height={200}
                 alt=""

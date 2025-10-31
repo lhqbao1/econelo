@@ -1,20 +1,14 @@
 import type { Metadata } from "next";
-import { Figtree, Libre_Caslon_Display } from "next/font/google";
+import { Figtree, Libre_Caslon_Display, Quicksand } from "next/font/google";
 import "./globals.css";
 import Providers from "./provider";
 import { Toaster } from "@/components/ui/sonner"
 import Script from "next/script";
 import SiteHeader from "@/components/header/header";
 
-const figtree = Figtree({
+const quickSand = Quicksand({
   subsets: ["latin"],
-  variable: "--font-figtree",
-});
-
-const libre = Libre_Caslon_Display({
-  subsets: ["latin"],
-  weight: '400',
-  variable: "--font-libre",
+  variable: "--font-quicksand",
 });
 
 export const metadata: Metadata = {
@@ -33,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="de">
-      <body className={`${figtree.variable} ${libre.variable} font-sans antialiased`}>
+      <body className={`${quickSand.variable} font-quicksand antialiased`}>
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe

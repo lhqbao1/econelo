@@ -1,5 +1,10 @@
+import AdvantagesSection from "@/components/layout/home/about";
 import HomeBanner from "@/components/layout/home/banner";
+import CategorySection from "@/components/layout/home/categories";
+import LogoLoopSection from "@/components/layout/home/logo-loop";
 import MissionSection from "@/components/layout/home/mission";
+import TestimonialsSection from "@/components/layout/home/testimonials";
+import VideoSection from "@/components/layout/home/video";
 
 export default function Home() {
   return (
@@ -8,7 +13,11 @@ export default function Home() {
         <HomeBanner />
       </div>
       <MissionSection />
-
+      <VideoSection />
+      <AdvantagesSection />
+      <CategorySection />
+      <TestimonialsSection />
+      <LogoLoopSection />
     </div>
   );
 }
