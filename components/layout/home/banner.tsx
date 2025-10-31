@@ -80,13 +80,13 @@ const HomeBanner = () => {
             ref={sectionRef}
             className="relative min-h-[80vh] bg-primary bg-center z-10 md:px-20 px-4"
         >
-            <Image
+            {/* <Image
                 src={'/Artboard 1@2x.png'}
                 width={200}
                 height={200}
                 alt=""
                 className="absolute top-0 right-0"
-            />
+            /> */}
 
             <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-1">
