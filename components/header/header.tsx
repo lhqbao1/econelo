@@ -1,8 +1,7 @@
 'use client'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
-import { Button } from '../ui/button'
-import { ChevronDown, PhoneCall } from 'lucide-react'
+import { PhoneCall } from 'lucide-react'
 import { NavBar } from './main-header/nav-bar'
 import ListIcons from './main-header/list-icons'
 import HoverButton from '../shared/hover-button'
@@ -10,33 +9,35 @@ import { usePathname } from '@/src/i18n/navigation'
 import { cn } from '@/lib/utils'
 
 const MainHeader = () => {
-    const [isSticky, setIsSticky] = useState(false);
-    const pathname = usePathname();
-    const isHome = pathname === "/" || pathname.match(/^\/[a-z]{2}$/); // hỗ trợ /de, /en...
+    const [isSticky, setIsSticky] = useState(false)
+    const pathname = usePathname()
+    const isHome = pathname === '/' || pathname.match(/^\/[a-z]{2}$/)
 
     useEffect(() => {
-        if (!isHome) return; // chỉ chạy khi ở trang chủ
-
         const handleScroll = () => {
-            const bannerHeight = window.innerHeight * 0.5; // 1/2 banner
-            setIsSticky(window.scrollY > bannerHeight);
-        };
+            const threshold = isHome ? window.innerHeight * 0.5 : 100
+            setIsSticky(window.scrollY > threshold)
+        }
 
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, [isHome]);
+        window.addEventListener('scroll', handleScroll)
+        return () => window.removeEventListener('scroll', handleScroll)
+    }, [isHome])
 
     return (
         <header
             className={cn(
-                "transition-all duration-500 w-full z-50",
+                'transition-all duration-500 w-full z-50 transform',
                 isHome
                     ? isSticky
-                        ? // Khi sticky: fixed + hiện ra
-                        "fixed top-0 left-0 bg-white text-black shadow-md opacity-100 translate-y-0 z-50"
-                        : // Khi chưa sticky: ẩn + không fixed
-                        "absolute top-10 bg-transparent text-white opacity-1000 -translate-y-10 z-50"
-                    : "fixed top-0 left-0 bg-white text-black shadow-md"
+                        ? // 🟢 Home sticky
+                        'fixed top-0 left-0 bg-white text-black shadow-md opacity-100 translate-y-0'
+                        : // ⚪ Home default
+                        'absolute top-10 bg-transparent text-white opacity-100 -translate-y-10'
+                    : isSticky
+                        ? // 🟢 Non-home sticky
+                        'fixed top-0 left-0 bg-white text-black shadow-md translate-y-0'
+                        : // ⚪ Non-home default (relative + slide lên nhẹ)
+                        'block top-0 left-0 bg-white text-black shadow-md -translate-y-0'
             )}
         >
             <div className='flex gap-32 md:px-20 px-4 min-h-[100px] items-center'>
@@ -55,14 +56,15 @@ const MainHeader = () => {
                     <div className='flex items-center gap-8'>
                         <div className='flex items-center gap-2'>
                             <PhoneCall className='text-black' />
-                            <div className='font-semibold text-xl text-black'>+49 1520 6576540</div>
+                            <div className='font-semibold text-xl text-black'>
+                                +49 1520 6576540
+                            </div>
                         </div>
                         <HoverButton text='Get a quote' redirect_url='' />
                     </div>
                 </div>
             </div>
         </header>
-
     )
 }
 
