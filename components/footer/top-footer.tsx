@@ -9,7 +9,7 @@ const TopFooter = () => {
                 <PhoneCall className="text-primary w-10 h-10" strokeWidth={1.5} />
                 <div>
                     <h4 className="font-bold text-lg text-black">Hot Line</h4>
-                    <p className="text-gray-700 text-base">+(01) 1234-57-890</p>
+                    <p className="text-gray-700 text-base">+49 1716 133971</p>
                 </div>
             </div>
 
