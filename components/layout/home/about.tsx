@@ -38,8 +38,9 @@ const AdvantagesSection = () => {
             const leftItems = gsap.utils.toArray<HTMLElement>(".feature-left")
             const rightItems = gsap.utils.toArray<HTMLElement>(".feature-right")
 
-            // ẩn ban đầu
-            gsap.set([...leftItems, ...rightItems], { opacity: 0, x: 30 })
+            // Khởi tạo: bên trái ra ngoài -60px, bên phải ra ngoài +60px
+            gsap.set(leftItems, { opacity: 0, x: -60 })
+            gsap.set(rightItems, { opacity: 0, x: 60 })
 
             const tl = gsap.timeline({
                 scrollTrigger: {
@@ -51,7 +52,7 @@ const AdvantagesSection = () => {
                 },
             })
 
-            // Lặp qua từng index, animate cặp (left[i], right[i]) cùng lúc
+            // Hiệu ứng cho từng hàng (cặp trái - phải vào cùng lúc)
             leftItems.forEach((leftEl, i) => {
                 const rightEl = rightItems[i]
 
@@ -60,25 +61,31 @@ const AdvantagesSection = () => {
                     {
                         opacity: 1,
                         x: 0,
-                        duration: 0.7,
-                        ease: "power3.out",
-                        stagger: 0, // 2 bên cùng lúc
+                        duration: 0.8,
+                        ease: "back.out(1.7)", // bounce nhẹ khi tới vị trí cuối
                     },
-                    i * 0.3 // delay giữa từng hàng
+                    i * 0.3 // delay giữa từng cặp
                 )
             })
 
-            // ảnh ở giữa xuất hiện sau khi các feature đã gần xong
+            // Ảnh trung tâm xuất hiện sau khi các feature gần hoàn tất
             tl.fromTo(
                 ".center-image",
-                { opacity: 0, scale: 0.9, y: 40 },
-                { opacity: 1, scale: 1, y: 0, duration: 1, ease: "power2.out" },
-                "-=0.5"
+                { opacity: 0, scale: 0.9, y: 50 },
+                {
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                    duration: 1,
+                    ease: "back.out(1.4)",
+                },
+                "-=0.3"
             )
         }, sectionRef)
 
         return () => ctx.revert()
     }, [])
+
 
     return (
         <section ref={sectionRef} className="w-full py-24 bg-white flex justify-center">
