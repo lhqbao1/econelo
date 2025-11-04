@@ -8,11 +8,11 @@ export interface GetCategoryParams {
   page_size?: number
 }
 
-export async function getCategories(){
-    const {data} = await apiPublic.get(
-        "/categories/",
-    )
-    return data as CategoryResponse[]
+export async function getCategories(params?: { is_econelo?: boolean }) {
+  const { data } = await apiPublic.get('/categories/', {
+    params,
+  });
+  return data as CategoryResponse[];
 }
 
 export async function serverGetCategories(): Promise<CategoryResponse[]> {

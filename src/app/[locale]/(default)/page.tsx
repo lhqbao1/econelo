@@ -3,6 +3,9 @@ import HomeBanner from "@/components/layout/home/banner";
 import CategorySection from "@/components/layout/home/categories";
 import LogoLoopSection from "@/components/layout/home/logo-loop";
 import MissionSection from "@/components/layout/home/mission";
+import NewArrivedSection from "@/components/layout/home/new-arrived";
+import ProductTabs from "@/components/layout/home/product-tabs";
+import ProductTabsServer from "@/components/layout/home/server/product-tabs-server";
 import TestimonialsSection from "@/components/layout/home/testimonials";
 import VideoSection from "@/components/layout/home/video";
 
@@ -13,7 +16,9 @@ export default function Home() {
         <HomeBanner />
       </div>
       <MissionSection />
+      <NewArrivedSection />
       <VideoSection />
+      <ProductTabsServer />
       <AdvantagesSection />
       <CategorySection />
       <TestimonialsSection />

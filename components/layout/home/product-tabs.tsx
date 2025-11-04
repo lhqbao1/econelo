@@ -1,0 +1,135 @@
+"use client";
+
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { ProductGridSkeleton } from "@/components/shared/product-grid-skeleton";
+import { Separator } from "@/components/ui/separator";
+import ProductsGridLayout from "@/components/shared/product-grid-layout";
+import { getCategoryBySlug } from "@/features/category/api";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import Head from "next/head";
+
+interface ProductTabsClientProps {
+  categoriesList: { id: string; name: string; slug: string }[];
+}
+
+export default function ProductTabsClient({
+  categoriesList,
+}: ProductTabsClientProps) {
+  const [active, setActive] = useState<string>(categoriesList?.[0]?.slug);
+
+  const { data: products, isLoading } = useQuery({
+    queryKey: ["categoryProducts", active],
+    queryFn: () => getCategoryBySlug(active ?? ""),
+    enabled: !!active,
+    staleTime: 1000 * 60 * 5, // cache 5 phút
+    placeholderData: keepPreviousData, // ✅ thay thế cho keepPreviousData
+  });
+
+  return (
+    <>
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "ItemList",
+              name: "New Arrived Products",
+              itemListElement:
+                products?.products?.map((p, i) => ({
+                  "@type": "Product",
+                  position: i + 1,
+                  name: p.name,
+                  image: p.static_files[0].url,
+                  url: `${process.env.NEXT_PUBLIC_BASE_URL}/produkt/${p.url_key}`,
+                  offers: {
+                    "@type": "Offer",
+                    priceCurrency: "EUR",
+                    price: p.final_price,
+                    availability: "https://schema.org/InStock",
+                  },
+                })) ?? [],
+            }),
+          }}
+        />
+      </Head>
+      <section
+        className="w-full py-24 bg-white flex justify-center"
+        aria-labelledby="new-arrived-title"
+        role="region"
+      >
+        <div
+          className="w-full flex flex-col justify-center items-center"
+          role="main"
+        >
+          <header className="text-center mb-6 max-w-xl mx-auto">
+            <div className="flex justify-center items-center gap-2 mb-3">
+              <span className="w-2 h-2 bg-primary rounded-full"></span>
+              <span className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+                What's next!
+              </span>
+            </div>
+            <h2
+              id="new-arrived-title"
+              className="text-3xl md:text-4xl font-extrabold leading-snug"
+            >
+              New Arrived Electric Mobility Products
+            </h2>
+            <p className="text-gray-600 mt-2 text-sm md:text-base">
+              Explore the newest electric scooters, bikes, and mobility
+              innovations from Econelo.
+            </p>
+          </header>
+
+          {/* List Products */}
+          {!categoriesList || isLoading ? (
+            <ProductGridSkeleton />
+          ) : (
+            <Tabs
+              value={active}
+              onValueChange={setActive}
+              defaultValue={categoriesList[1].slug}
+              className="w-full"
+            >
+              {/* Tabs Header */}
+              <TabsList className="flex justify-center gap-6 mb-8 bg-transparent">
+                {categoriesList.map((cat, index) => (
+                  <>
+                    <TabsTrigger
+                      key={cat.id}
+                      value={cat.slug}
+                      className={cn(
+                        "px-5 py-4 font-semibold text-sm uppercase transition-all rounded-full border-r",
+                        active === cat.slug
+                          ? "bg-primary text-white shadow-md"
+                          : "text-gray-600 hover:text-white hover:bg-primary cursor-pointer"
+                      )}
+                    >
+                      {cat.name}
+                    </TabsTrigger>
+                    {index + 1 === categoriesList.length ? (
+                      ""
+                    ) : (
+                      <Separator orientation="vertical" />
+                    )}
+                  </>
+                ))}
+              </TabsList>
+
+              {/* Tabs Content */}
+              <TabsContent value={active ?? ""}>
+                {isLoading ? (
+                  <ProductGridSkeleton />
+                ) : (
+                  <ProductsGridLayout data={products?.products ?? []} />
+                )}
+              </TabsContent>
+            </Tabs>
+          )}
+        </div>
+      </section>
+    </>
+  );
+}

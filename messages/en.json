@@ -286,5 +286,6 @@
   "haveQuestion": "Have a question?",
   "justAsk": "Just ask!",
   "payLater": "Pay later",
-  "headerLogin": "Login / Sign up"
+  "headerLogin": "Login / Sign up",
+  "noProductsFound": "No Products Found"
 }

@@ -1,16 +1,27 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AddOrRemoveProductToCategoryInput, CategoryInput, CategoryResponse } from "@/types/categories";
-import { addProductToCategory, createCategory, deleteCategory, editCategory, getCategories, getCategoryById, getCategoryByName, removeProductFromCategory } from "./api";
+import { addProductToCategory, createCategory, deleteCategory, editCategory, getCategories, getCategoryById, getCategoryByName, getCategoryBySlug, removeProductFromCategory } from "./api";
 
 
 // --- GET ALL CATEGORIES ---
-export function useGetCategories() {
+export function useGetCategories(params?: { is_econelo?: boolean }) {
   return useQuery({
-    queryKey: ["categories"],
-    queryFn: () => getCategories(),
+    queryKey: ["categories", params],
+    queryFn: () => getCategories(params),
     retry: false,
   });
 }
+
+export function useGetCategoryBySlug(slug: string) {
+  return useQuery({
+    queryKey: ["categoryProducts", slug],
+    queryFn: () => getCategoryBySlug(slug),
+    enabled: !!slug, // chỉ gọi khi slug có giá trị
+    retry: false,
+  });
+}
+
+
 
 // --- GET CATEGORY BY ID ---
 export function useGetCategoryById(id: string) {

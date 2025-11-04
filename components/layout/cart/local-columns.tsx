@@ -1,0 +1,200 @@
+"use client";
+
+import { ColumnDef } from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
+import { Trash } from "lucide-react";
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { CartTableItem } from "./cart-local-table";
+import { useCartLocal } from "@/hooks/cart";
+
+export const GetCartLocalColumns = (): ColumnDef<CartTableItem>[] => {
+  const t = useTranslations();
+  const isMobile = useIsMobile();
+  const { updateQuantity } = useCartLocal();
+  const { removeItem } = useCartLocal();
+  const onUpdateQuantity = (item: CartTableItem, newQuantity: number) => {
+    if (newQuantity < 1) return;
+    if (item.stock && newQuantity > item.stock) return;
+    updateQuantity({ product_id: item.product_id, quantity: newQuantity });
+  };
+
+  // =====================
+  // MOBILE (card layout)
+  // =====================
+  if (isMobile) {
+    return [
+      {
+        id: "mobile",
+        cell: ({ row }) => {
+          const item = row.original;
+          return (
+            <div className="flex flex-col gap-3.5 p-3 flex-wrap">
+              {/* Hàng 1 */}
+              <div className="flex items-center gap-3 justify-between w-fit text-wrap flex-wrap">
+                <div className="flex items-center gap-3 max-w-[300px] lg:max-w-full">
+                  <Image
+                    src={item.img_url || "/placeholder-product.webp"}
+                    alt={item.product_name}
+                    width={60}
+                    height={60}
+                    className="rounded shrink-0"
+                    unoptimized
+                  />
+                  <div>
+                    <p className="font-semibold text-wrap line-clamp-3">
+                      {item.product_name}
+                    </p>
+                    <p>#{item.id_provider}</p>
+                    <span>
+                      In {item.delivery_time} {t("business_days")}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Hàng 2 */}
+              <div className="flex justify-end items-center text-sm gap-6">
+                {/* <span>€{item.item_price.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span> */}
+                <span className="font-semibold">
+                  €
+                  {(item.item_price * item.quantity).toLocaleString("de-DE", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </span>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onUpdateQuantity(item, item.quantity - 1)}
+                  >
+                    -
+                  </Button>
+                  <span>{item.quantity}</span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onUpdateQuantity(item, item.quantity + 1)}
+                    disabled={item.quantity >= item.stock}
+                  >
+                    +
+                  </Button>
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <Trash
+                    className="text-red-500 cursor-pointer"
+                    onClick={() => removeItem(item.product_id)}
+                    size={20}
+                  />
+                </div>
+              </div>
+            </div>
+          );
+        },
+      },
+    ];
+  }
+
+  // =====================
+  // DESKTOP (table layout)
+  // =====================
+  const baseColumns: ColumnDef<CartTableItem>[] = [
+    {
+      accessorKey: "product_name",
+      header: () => <div className="">{t("product")}</div>,
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2 w-80 text-wrap">
+          {row.original.img_url && (
+            <Image
+              src={row.original.img_url}
+              alt={row.original.product_name}
+              width={70}
+              height={70}
+              className="w-12 h-12 object-cover rounded"
+            />
+          )}
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold line-clamp-3">
+              {row.original.product_name}
+            </p>
+            <p>#{row.original.id_provider}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "delivery_time",
+      header: () => <div className="">{t("estimated_delivery")}</div>,
+      cell: ({ row }) => (
+        <div className="text-center">
+          In {row.original.delivery_time} {t("business_days")}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "quantity",
+      header: () => <div className="text-center">{t("quantity")}</div>,
+      cell: ({ row }) => {
+        const item = row.original;
+        return (
+          <div className="flex justify-center items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => onUpdateQuantity(item, item.quantity - 1)}
+              disabled={item.quantity <= 1}
+            >
+              -
+            </Button>
+            <span className="px-2">{item.quantity}</span>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => onUpdateQuantity(item, item.quantity + 1)}
+              disabled={item.stock ? item.quantity >= item.stock : false}
+            >
+              +
+            </Button>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "final_price",
+      header: () => <div className="text-center">{t("price")}</div>,
+      cell: ({ row }) => (
+        <div className="text-right">
+          €
+          {(row.original.item_price * row.original.quantity).toLocaleString(
+            "de-DE",
+            { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+          )}
+        </div>
+      ),
+    },
+    {
+      id: "actions",
+      header: () => <div className="text-right">{t("actions")}</div>,
+      cell: ({ row }) => {
+        const item = row.original;
+        return (
+          <div className="flex justify-center">
+            <Trash
+              className="text-red-500 cursor-pointer"
+              onClick={() => removeItem(item.product_id ?? "")}
+              size={20}
+            />
+          </div>
+        );
+      },
+    },
+  ];
+
+  return baseColumns;
+};
