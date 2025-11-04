@@ -285,5 +285,6 @@
     "haveQuestion": "Haben Sie eine Frage?",
   "justAsk": "Fragen Sie einfach!",
   "payLater": "Ratenzahlung",
-  "headerLogin": "Anmelden / Registrieren"
+  "headerLogin": "Anmelden / Registrieren",
+  "noProductsFound": "Keine Produkte gefunden"
 }

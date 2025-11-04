@@ -1,31 +1,113 @@
-import { Search, ShoppingCart } from 'lucide-react'
-import React from 'react'
+"use client";
 
-const ListIcons = () => {
-    return (
-        <div className="flex items-center gap-4 px-4 py-2 text-primary">
-            {/* Search Icon */}
-            <button className="p-2 hover:scale-110 transition-transform duration-200">
-                <Search className="w-6 h-6 text-white cursor-pointer" strokeWidth={2} />
-            </button>
+import { Search, ShoppingCart } from "lucide-react";
+import React from "react";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useCartLocal } from "@/hooks/cart";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { getCartItems } from "@/features/cart/api";
+import type { CartResponse } from "@/types/cart";
 
-            {/* Divider line */}
-            <div className="h-6 w-[1px] bg-gray-400" />
-
-            {/* Cart Icon with badge */}
-            <button className="relative p-2 hover:scale-110 transition-transform duration-200">
-                <ShoppingCart className="w-6 h-6 text-white cursor-pointer" strokeWidth={2} />
-                <span className="
-          absolute -top-1 -right-1
-          flex items-center justify-center
-          w-5 h-5 text-xs font-semibold
-          bg-black text-white rounded-full cursor-pointer
-        ">
-                    0
-                </span>
-            </button>
-        </div>
-    )
+interface ListIconsProps {
+  isSticky: boolean;
 }
 
-export default ListIcons
+const ListIcons = ({ isSticky }: ListIconsProps) => {
+  const pathname = usePathname();
+  const isHome = pathname === "/" || pathname.match(/^\/[a-z]{2}$/);
+
+  // ✅ Lấy userId sau khi client mount để tránh hydration mismatch
+  const [userId, setUserId] = React.useState<string | null>(null);
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      setUserId(localStorage.getItem("userId"));
+    }
+  }, []);
+
+  // ✅ Local cart từ custom hook
+  const { cart: localCart } = useCartLocal();
+
+  // ✅ React Query – có cache sẵn → không refetch lại khi chuyển page
+  const { data: cart } = useQuery<CartResponse>({
+    queryKey: ["cart-items", userId],
+    queryFn: getCartItems,
+    enabled: !!userId,
+    retry: false,
+    staleTime: 1000 * 60 * 10, // cache 10 phút
+  });
+
+  // ✅ Tính tổng số lượng item trong cart
+  const cartCount = React.useMemo(() => {
+    if (userId && cart?.length) {
+      return cart.reduce(
+        (total, supplierCart) =>
+          total +
+          supplierCart.items.reduce(
+            (sum, item) => sum + (item.quantity || 0),
+            0
+          ),
+        0
+      );
+    }
+    if (localCart?.length) return localCart.length;
+    return 0;
+  }, [cart, localCart, userId]);
+
+  // ✅ Gom logic style: icon + divider + badge
+  const baseColor = !isHome ? "primary" : isSticky ? "primary" : "white";
+
+  const iconColor = `text-${baseColor}`;
+  const dividerColor =
+    baseColor === "white" ? "bg-gray-400" : `bg-${baseColor}/50`;
+  const badgeColor = "bg-primary text-white";
+
+  return (
+    <div className="flex items-center gap-4 px-4 py-2">
+      {/* 🔍 Search Icon */}
+      <button className="p-2 hover:scale-110 transition-transform duration-200">
+        <Search
+          className={cn(
+            "w-6 h-6 cursor-pointer transition-colors duration-200",
+            iconColor
+          )}
+          strokeWidth={2}
+        />
+      </button>
+
+      {/* Divider */}
+      <div
+        className={cn(
+          "h-6 w-[1px] transition-colors duration-200",
+          dividerColor
+        )}
+      />
+
+      {/* 🛒 Cart Icon */}
+      <Link href="/warenkorb">
+        <button className="relative p-2 hover:scale-110 transition-transform duration-200">
+          <ShoppingCart
+            className={cn(
+              "w-6 h-6 cursor-pointer transition-colors duration-200",
+              iconColor
+            )}
+            strokeWidth={2}
+          />
+          {cartCount > 0 && (
+            <span
+              className={cn(
+                "absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-semibold rounded-full cursor-pointer transition-colors duration-200",
+                badgeColor
+              )}
+            >
+              {cartCount > 99 ? "99+" : cartCount}
+            </span>
+          )}
+        </button>
+      </Link>
+    </div>
+  );
+};
+
+export default React.memo(ListIcons);
