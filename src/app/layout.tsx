@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { Figtree, Libre_Caslon_Display, Quicksand } from "next/font/google";
 import "./globals.css";
 import Providers from "./provider";
-import { Toaster } from "@/components/ui/sonner"
+import { Toaster } from "@/components/ui/sonner";
 import Script from "next/script";
 import SiteHeader from "@/components/header/header";
+import ImportantNotice from "@/components/shared/notice";
 
 const quickSand = Quicksand({
   subsets: ["latin"],
@@ -12,11 +13,11 @@ const quickSand = Quicksand({
 });
 
 export const metadata: Metadata = {
-  title: 'Prestige Home',
-  description: 'Prestige Home',
+  title: "Prestige Home",
+  description: "Prestige Home",
   icons: {
-    icon: '/favicon.ico',
-    apple: '/favicon.ico',
+    icon: "/favicon.ico",
+    apple: "/favicon.ico",
   },
 };
 
@@ -37,19 +38,20 @@ export default function RootLayout({
             style={{ display: "none", visibility: "hidden" }}
           ></iframe>
         </noscript>
-        <Providers>
-          {children}
-        </Providers>
+        <ImportantNotice />
+
+        <Providers>{children}</Providers>
         <Toaster
           expand
           richColors
           position="top-right"
           closeButton
           toastOptions={{
-            className: "bg-[rgba(81,190,140,0.2)] text-white z-100 top-10 translate-y-10",
+            className:
+              "bg-[rgba(81,190,140,0.2)] text-white z-100 top-10 translate-y-10",
           }}
         />
       </body>
-    </html >
+    </html>
   );
 }

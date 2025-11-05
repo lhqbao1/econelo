@@ -16,6 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BadgePercent } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { LoginDrawer } from "@/components/shared/login-drawer";
 
 export default function CartPage() {
   const [userId, setUserId] = React.useState<string | null>(
@@ -107,7 +108,7 @@ export default function CartPage() {
         toast.error(t("chooseAtLeastCart"));
       } else {
         // Navigate checkout
-        router.push("/check-out", { locale });
+        router.push("/kasse", { locale });
       }
     } else {
       if (displayedCart.length === 0) {
@@ -129,7 +130,7 @@ export default function CartPage() {
       {" "}
       <div className="w-full max-w-6xl bg-white p-8 rounded-lg shadow-sm">
         {" "}
-        <h1 className="text-3xl font-bold mb-8">Shopping cart</h1>
+        <h1 className="text-3xl font-bold mb-8">{t("shoppingCart")}</h1>
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-10">
           {/* Left: Cart Items */}
           <div>
@@ -203,6 +204,12 @@ export default function CartPage() {
           </aside>
         </div>
       </div>
+      <LoginDrawer
+        openLogin={isLoginOpen}
+        setOpenLogin={setIsLoginOpen}
+        isCheckOut
+        setUserId={setUserId}
+      />
     </section>
   );
 }

@@ -21,7 +21,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSyncLocalCart } from "@/features/cart/hook";
 import Image from "next/image";
 import LoginGoogleButton from "./login-google";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "../../ui/input-otp";
 
 interface LoginFormProps {
   isAdmin?: boolean;
@@ -175,7 +175,6 @@ export default function LoginFormTransparent({
             />
 
             {/* OTP Code */}
-            {/* OTP Code */}
             {seePassword && (
               <FormField
                 control={form.control}
@@ -217,7 +216,7 @@ export default function LoginFormTransparent({
             {/* Submit */}
             <Button
               type="submit"
-              className="w-full py-3 rounded-xl bg-indigo-900 text-white font-semibold hover:bg-indigo-800 transition"
+              className="w-full py-3 rounded-xl bg-primary/90 text-white font-semibold hover:bg-primary/30 transition"
               disabled={
                 sendOtpMutation.isPending ||
                 submitOtpMutation.isPending ||
@@ -250,10 +249,10 @@ export default function LoginFormTransparent({
         {/* Forgot password */}
         <div className="mt-6 text-center">
           <Link
-            href="/forgot-password"
+            href="/registrieren"
             className="text-sm text-gray-700 hover:underline"
           >
-            Forgot your password?
+            Not have an account yet?
           </Link>
         </div>
       </div>

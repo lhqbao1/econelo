@@ -9,7 +9,7 @@ Disallow: /wp-admin/
 Disallow: /wp-content/
 Disallow: /product-category/
 Disallow: /cart
-Disallow: /check-out
+Disallow: /kasse
 Disallow: /payment-result
 Disallow: /*add_to_cart
 Disallow: /*remove_item
@@ -20,8 +20,8 @@ Disallow: /admin/
 Disallow: /dsp/
 
 Allow: /
-Allow: /product/
+Allow: /produkt/
 Allow: /category/
 
 
-Sitemap: https://prestige-home.de/sitemap.xml
+Sitemap: https://econelo.de/sitemap.xml
