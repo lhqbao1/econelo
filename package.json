@@ -65,7 +65,7 @@
     "gsap": "^3.13.0",
     "input-otp": "^1.4.2",
     "isomorphic-dompurify": "^2.26.0",
-    "jotai": "^2.13.1",
+    "jotai": "^2.15.1",
     "jsdom": "^27.0.0",
     "lodash": "^4.17.21",
     "lucide-react": "^0.539.0",

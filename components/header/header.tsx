@@ -85,16 +85,15 @@ const MainHeader = () => {
               </div>
             </div>
 
-            {/* ✅ Hiển thị user hoặc Login */}
-            {userId && user ? (
-              <div className="flex items-center gap-2">
-                <span className="text-gray-700 font-medium">
-                  Hello, {user.first_name} {user.last_name}
-                </span>
-              </div>
-            ) : (
-              <HoverButton text="Login" redirect_url="/mein-konto" />
-            )}
+            <HoverButton
+              text={
+                userId && user
+                  ? `Hello, ${user.first_name} ${user.last_name}`
+                  : "Login"
+              }
+              redirect_url="/anmelden"
+              isLogin={!!userId && !!user}
+            />
           </div>
         </div>
       </div>

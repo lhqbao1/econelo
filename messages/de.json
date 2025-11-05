@@ -20,6 +20,10 @@
   "preOrder": "Vorbestellung",
   "startDelivery": "Lieferung beginnt vom 10. Sep bis 15. Sep",
   "recentViewed": "Kürzlich angesehen",
+  "already_have_account": "Haben Sie bereits ein Konto?",
+  "signupMessage": "Treten Sie uns bei und genießen Sie exklusive Vorteile",
+  "contactInfomation": "Kontaktinformationen",
+  "paymentMethod": "Zahlungsmethoden",
   "newCollections": "Neue Kollektionen",
   "awardWinning": "Ausgezeichnetes Design 2026",
   "taxCode": "USt IdNr",
@@ -286,5 +290,9 @@
   "justAsk": "Fragen Sie einfach!",
   "payLater": "Ratenzahlung",
   "headerLogin": "Anmelden / Registrieren",
-  "noProductsFound": "Keine Produkte gefunden"
+  "noProductsFound": "Keine Produkte gefunden",
+  "placeOrder": "Bestellung aufgeben",
+  "yourOrder": "Ihre Bestellung",
+      "cancellations": "Widderuf"
+
 }
