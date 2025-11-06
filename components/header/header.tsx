@@ -93,6 +93,7 @@ const MainHeader = () => {
               }
               redirect_url="/anmelden"
               isLogin={!!userId && !!user}
+              is_primary={isSticky}
             />
           </div>
         </div>

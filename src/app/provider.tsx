@@ -1,15 +1,15 @@
 // app/providers.tsx
-"use client"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { ReactNode, useEffect, useState } from "react"
-import { tokenStore } from "@/lib/token"
+"use client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactNode, useEffect, useState } from "react";
+import { tokenStore } from "@/lib/token";
 
 export default function Providers({ children }: { children: ReactNode }) {
-    const [client] = useState(() => new QueryClient())
+  const [client] = useState(() => new QueryClient());
 
-    useEffect(() => {
-        tokenStore.hydrateFromStorage()
-    }, [])
+  useEffect(() => {
+    tokenStore.hydrateFromStorage();
+  }, []);
 
-    return <QueryClientProvider client={client}>{children}</QueryClientProvider>
+  return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
 }

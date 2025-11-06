@@ -59,8 +59,7 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
   const baseColor = !isHome ? "primary" : isSticky ? "primary" : "white";
 
   const iconColor = `text-${baseColor}`;
-  const dividerColor =
-    baseColor === "white" ? "bg-gray-400" : `bg-${baseColor}/50`;
+  const dividerColor = baseColor === "white" ? "bg-white" : `bg-primary`;
   const badgeColor = "bg-primary text-white";
 
   return (

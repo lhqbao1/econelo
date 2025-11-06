@@ -9,6 +9,7 @@ export const addressSchema = z.object({
   phone_number: z.string().min(1, "Phone number is required"),
   recipient_name: z.string().min(1, "Recipient name is required"),
   address_line: z.string().min(1, "Address line is required"),
+  additional_address_line: z.string().optional(),
   is_default: z.boolean().optional(),
 })
 
