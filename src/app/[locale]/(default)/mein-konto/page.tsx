@@ -44,7 +44,7 @@ export default function MyAccountPage() {
   if (!user || isLoading) return <MyAccountSkeleton />;
 
   return (
-    <div className="flex justify-center bg-gray-50">
+    <div className="flex justify-center bg-gray-50 md:pt-[140px]">
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab}

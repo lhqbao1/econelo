@@ -126,10 +126,8 @@ export default function CartPage() {
   );
 
   return (
-    <section className="min-h-screen bg-gray-50 flex flex-col items-center py-10 px-4">
-      {" "}
+    <div className="min-h-screen  flex flex-col items-center py-10 px-4 relative md:pt-[140px]">
       <div className="w-full max-w-6xl bg-white p-8 rounded-lg shadow-sm">
-        {" "}
         <h1 className="text-3xl font-bold mb-8">{t("shoppingCart")}</h1>
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-10">
           {/* Left: Cart Items */}
@@ -210,6 +208,6 @@ export default function CartPage() {
         isCheckOut
         setUserId={setUserId}
       />
-    </section>
+    </div>
   );
 }

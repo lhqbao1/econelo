@@ -3,7 +3,7 @@ import "../../globals.css";
 import MainHeader from "@/components/header/header";
 import MainFooter from "@/components/footer/main-footer";
 
-export default function AuthLayout({
+export default function DefaultLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
