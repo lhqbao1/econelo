@@ -15,10 +15,11 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface HoverButtonProps {
-  text: string;
+  text?: string;
   redirect_url: string;
   is_primary?: boolean;
   isLogin?: boolean;
+  children?: React.ReactNode;
 }
 
 const HoverButton = ({
@@ -26,6 +27,7 @@ const HoverButton = ({
   redirect_url,
   is_primary = false,
   isLogin = false,
+  children,
 }: HoverButtonProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -64,7 +66,7 @@ const HoverButton = ({
             )}
           >
             <span className="text-white text-sm uppercase font-semibold group-hover:text-black transition-all duration-500">
-              {text}
+              {children ?? text}
             </span>
             <ArrowRight className="text-white group-hover:text-black transition-all duration-500" />
           </div>

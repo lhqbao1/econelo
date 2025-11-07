@@ -1,14 +1,15 @@
 "use client";
 
 import { Search, ShoppingCart } from "lucide-react";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCartLocal } from "@/hooks/cart";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getCartItems } from "@/features/cart/api";
 import type { CartResponse } from "@/types/cart";
+import gsap from "gsap";
 
 interface ListIconsProps {
   isSticky: boolean;
@@ -17,8 +18,8 @@ interface ListIconsProps {
 const ListIcons = ({ isSticky }: ListIconsProps) => {
   const pathname = usePathname();
   const isHome = pathname === "/" || pathname.match(/^\/[a-z]{2}$/);
+  const badgeRef = useRef<HTMLSpanElement>(null);
 
-  // ✅ Lấy userId sau khi client mount để tránh hydration mismatch
   const [userId, setUserId] = React.useState<string | null>(null);
   React.useEffect(() => {
     if (typeof window !== "undefined") {
@@ -26,19 +27,17 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
     }
   }, []);
 
-  // ✅ Local cart từ custom hook
   const { cart: localCart } = useCartLocal();
 
-  // ✅ React Query – có cache sẵn → không refetch lại khi chuyển page
-  const { data: cart } = useQuery<CartResponse>({
+  const { data: cart, isFetched } = useQuery<CartResponse>({
     queryKey: ["cart-items", userId],
     queryFn: getCartItems,
     enabled: !!userId,
     retry: false,
-    staleTime: 1000 * 60 * 10, // cache 10 phút
+    staleTime: 1000 * 60 * 10,
   });
 
-  // ✅ Tính tổng số lượng item trong cart
+  // ✅ Tính tổng số lượng item
   const cartCount = React.useMemo(() => {
     if (userId && cart?.length) {
       return cart.reduce(
@@ -55,12 +54,26 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
     return 0;
   }, [cart, localCart, userId]);
 
-  // ✅ Gom logic style: icon + divider + badge
-  const baseColor = !isHome ? "primary" : isSticky ? "primary" : "white";
+  // ✅ GSAP hiệu ứng scale-in bounce khi badge xuất hiện
+  useEffect(() => {
+    if (badgeRef.current && cartCount > 0 && isFetched) {
+      gsap.fromTo(
+        badgeRef.current,
+        { scale: 0, opacity: 0, transformOrigin: "center" },
+        {
+          scale: 1,
+          opacity: 1,
+          duration: 0.5,
+          ease: "back.out(1.7)", // bounce nhẹ
+        }
+      );
+    }
+  }, [cartCount, isFetched]);
 
+  // ✅ Gom logic style
+  const baseColor = !isHome ? "primary" : isSticky ? "primary" : "white";
   const iconColor = `text-${baseColor}`;
-  const dividerColor =
-    baseColor === "white" ? "bg-gray-400" : `bg-${baseColor}/50`;
+  const dividerColor = baseColor === "white" ? "bg-white" : `bg-primary`;
   const badgeColor = "bg-primary text-white";
 
   return (
@@ -96,8 +109,9 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
           />
           {cartCount > 0 && (
             <span
+              ref={badgeRef}
               className={cn(
-                "absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-semibold rounded-full cursor-pointer transition-colors duration-200",
+                "absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-semibold rounded-full",
                 badgeColor
               )}
             >

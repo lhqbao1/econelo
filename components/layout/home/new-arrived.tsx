@@ -1,15 +1,14 @@
 "use client";
+
 import ProductsGridLayout from "@/components/shared/product-grid-layout";
 import { ProductGridSkeleton } from "@/components/shared/product-grid-skeleton";
 import { useGetAllProducts } from "@/features/products/hook";
 
-const NewArrivedSection = () => {
-  const { data: products, isLoading, isError } = useGetAllProducts();
+export default function NewArrivedSection() {
+  const { data: products, isLoading, isError } = useGetAllProducts(); // ✅ bật suspense
+
   return (
-    <section
-      //   ref={sectionRef}
-      className="w-full py-24 bg-white flex justify-center"
-    >
+    <section className="w-full py-24 bg-white flex justify-center">
       <div className="w-full flex flex-col justify-center items-center">
         {/* Heading */}
         <div className="text-center mb-6">
@@ -24,15 +23,12 @@ const NewArrivedSection = () => {
           </h2>
         </div>
 
-        {/* List Products */}
-        {!products || isLoading ? (
+        {isLoading ? (
           <ProductGridSkeleton />
         ) : (
-          <ProductsGridLayout data={products.items} />
+          <ProductsGridLayout data={products?.items ?? []} />
         )}
       </div>
     </section>
   );
-};
-
-export default NewArrivedSection;
+}

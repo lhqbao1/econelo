@@ -3,22 +3,22 @@ import { CreateProduct, deleteProduct, editProduct, generateSEO, getAllProducts,
 import { ProductInput } from "@/lib/schema/product"
 
 interface UseGetAllProductsParams {
-  page?: number
-  page_size?: number
-  all_products?: boolean
-  search?: string
+  page?: number;
+  page_size?: number;
+  all_products?: boolean;
+  search?: string;
 }
-
 interface SEOInput {
   title: string
   description: string
 }
 
-export function useGetAllProducts({ page, page_size, all_products, search }: UseGetAllProductsParams = {}) {
+export function useGetAllProducts({ page, page_size, all_products, search,  }: UseGetAllProductsParams = {}) {
   return useQuery({
     queryKey: ["products", page, page_size, all_products, search], // queryKey thay đổi khi page/page_size thay đổi
     queryFn: () => getAllProducts({ page, page_size, all_products,search }),
     retry: false,
+     staleTime: 1000 * 60 * 5,
   })
 }
 
