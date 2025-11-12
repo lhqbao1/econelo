@@ -235,7 +235,7 @@ const ProductDetails = ({
 
   return (
     <>
-      <div className="py-3 lg:pt-3 space-y-4 w-8/12">
+      <div className="py-3 lg:pt-3 space-y-4 lg:w-8/12 w-full lg:px-0 px-4">
         <CustomBreadCrumb
           isProductPage
           currentPage={
@@ -260,44 +260,55 @@ const ProductDetails = ({
             >
               <div className="flex flex-col gap-8 items-start">
                 {/*Product images */}
-                <div className="w-2/3 lg:py-12 py-6 lg:space-y-6 space-y-4 flex flex-row-reverse gap-4 items-start">
+                <div className="w-full grid grid-cols-3 lg:py-12 py-6 lg:space-y-6 space-y-4 ">
                   {/*Product details images */}
-                  {/* Main image */}
-                  <div className="flex-1">
-                    <ProductImageDialog productDetails={productDetails}>
-                      <div
-                        className="flex justify-center overflow-hidden main-image"
-                        onMouseMove={handleZoomImage}
-                        onMouseEnter={() => setIsHover(true)}
-                        onMouseLeave={() => setIsHover(false)}
-                        {...handlers}
-                      >
-                        <Image
-                          src={
-                            productDetails.static_files.length > 0
-                              ? productDetails.static_files[mainImageIndex].url
-                              : "/placeholder-product.webp"
-                          }
-                          width={500}
-                          height={300}
-                          alt={`${productDetails.name}`}
-                          className="transition-transform duration-300 lg:h-[400px] h-[300px] w-auto object-cover cursor-pointer rounded-md"
-                          style={{
-                            transformOrigin: `${position.x}% ${position.y}%`,
-                            transform: isHover ? "scale(1.5)" : "scale(1)",
-                          }}
-                          priority
-                        />
-                      </div>
-                    </ProductImageDialog>
+                  <div className="flex flex-row-reverse gap-4 items-start lg:col-span-2 col-span-3">
+                    {/* Main image */}
+                    <div className="flex-1">
+                      <ProductImageDialog productDetails={productDetails}>
+                        <div
+                          className="flex justify-center overflow-hidden main-image"
+                          onMouseMove={handleZoomImage}
+                          onMouseEnter={() => setIsHover(true)}
+                          onMouseLeave={() => setIsHover(false)}
+                          {...handlers}
+                        >
+                          <Image
+                            src={
+                              productDetails.static_files.length > 0
+                                ? productDetails.static_files[mainImageIndex]
+                                    .url
+                                : "/placeholder-product.webp"
+                            }
+                            width={500}
+                            height={300}
+                            alt={`${productDetails.name}`}
+                            className="transition-transform duration-300 lg:h-[400px] h-[300px] w-auto object-cover cursor-pointer rounded-md"
+                            style={{
+                              transformOrigin: `${position.x}% ${position.y}%`,
+                              transform: isHover ? "scale(1.5)" : "scale(1)",
+                            }}
+                            priority
+                          />
+                        </div>
+                      </ProductImageDialog>
+                    </div>
+
+                    {/* Sub images */}
+                    <ProductImageCarousel
+                      productDetails={productDetails}
+                      mainImageIndex={mainImageIndex}
+                      setMainImageIndex={setMainImageIndex}
+                    />
                   </div>
 
-                  {/* Sub images */}
-                  <ProductImageCarousel
-                    productDetails={productDetails}
-                    mainImageIndex={mainImageIndex}
-                    setMainImageIndex={setMainImageIndex}
-                  />
+                  <div className="lg:col-span-1 col-span-3 shadow-lg px-6 py-3 rounded-md border h-fit">
+                    <p
+                      dangerouslySetInnerHTML={{
+                        __html: productDetails.meta_description,
+                      }}
+                    ></p>
+                  </div>
                 </div>
 
                 {/*Product details */}

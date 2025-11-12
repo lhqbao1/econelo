@@ -7,29 +7,31 @@ import { Contact2, CarFront } from "lucide-react";
 import Image from "next/image";
 import HoverButton from "@/components/shared/hover-button";
 import CountUp from "@/components/shared/count-up";
+import { useTranslations } from "next-intl";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const stats = [
-  {
-    value: 650,
-    label: "Check charge status remotely through Ether app",
-    unit: "m",
-  },
-  {
-    value: 564,
-    label: "Check charge status remotely through Ether app",
-    unit: "+",
-  },
-  {
-    value: 125,
-    label: "Check charge status remotely through Ether app",
-    unit: "k",
-  },
-];
-
 const MissionSection = () => {
   const sectionRef = useRef<HTMLDivElement | null>(null);
+  const t = useTranslations();
+
+  const stats = [
+    {
+      value: 1200,
+      label: t("statSatisfy"),
+      unit: "+",
+    },
+    {
+      value: 350,
+      label: t("statCharging"),
+      unit: "+",
+    },
+    {
+      value: 85,
+      label: t("statRange"),
+      unit: "km",
+    },
+  ];
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -102,13 +104,13 @@ const MissionSection = () => {
   return (
     <section
       ref={sectionRef}
-      className="w-full py-12 bg-white flex flex-col justify-center items-center md:gap-32 gap-24"
+      className="w-full lg:py-12 md:py-8 py-6 bg-white flex flex-col justify-center items-center md:gap-32 gap-24"
     >
       <div className="w-11/12 lg:w-8/12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {/* LEFT — IMAGES */}
-        <div className="relative flex items-center h-full left-images">
+        <div className="relative flex lg:flex-row flex-col items-center h-full left-images">
           {/* Image 1 */}
-          <div className="absolute left-0 top-0 w-[340px] h-[340px] rounded-tl-2xl overflow-hidden shadow-lg">
+          <div className="lg:absolute relative left-0 top-0 w-[340px] h-[340px] lg:rounded-tl-2xl rounded-2xl overflow-hidden shadow-lg">
             <Image
               src="/mission-image-1.jpg"
               alt="Charging scooter"
@@ -118,7 +120,7 @@ const MissionSection = () => {
           </div>
 
           {/* Image 2 */}
-          <div className="absolute -bottom-4 -right-2 w-[340px] h-[340px] rounded-2xl overflow-hidden">
+          <div className="lg:absolute relative -bottom-4 lg:-right-2 right-0 w-[340px] h-[340px] rounded-2xl overflow-hidden">
             <Image
               src="/mission-image-2.jpg"
               alt="Riding scooter"
@@ -128,32 +130,30 @@ const MissionSection = () => {
           </div>
 
           {/* Circle badge */}
-          <div className="absolute -top-0 right-0 -translate-x-1/3 bg-primary text-white w-[110px] h-[110px] rounded-full flex flex-col items-center justify-center font-semibold shadow-md border-4 border-white">
+          <div className="absolute -top-0 right-0 -translate-x-1/3 bg-primary text-white w-[110px] h-[110px] rounded-full lg:flex hidden flex-col items-center justify-center font-semibold shadow-md border-4 border-white">
             <span className="text-2xl font-bold">85%</span>
             <span className="text-sm">Clients</span>
           </div>
         </div>
 
         {/* RIGHT — TEXT CONTENT */}
-        <div className="space-y-8">
+        <div className="lg:space-y-8 space-y-4">
           {/* Subheading */}
           <div className="flex items-center gap-2 right-subheading">
             <span className="w-2 h-2 bg-primary rounded-full"></span>
             <span className="uppercase font-semibold tracking-wide text-sm text-gray-500">
-              What We Do!
+              {t("whyEconelo")}
             </span>
           </div>
 
           {/* Heading */}
           <h2 className="text-4xl font-bold leading-tight right-heading">
-            Our mission is to put an electric vehicle charge
+            {t("whySlogan")}
           </h2>
 
           {/* Description */}
           <p className="text-gray-500 leading-relaxed right-description">
-            Charge your electric vehicle at home using one of our smart home
-            charge solutions or gain access to over 3,000 public charging
-            stations.
+            {t("whyDes")}
           </p>
 
           {/* Feature Cards */}
@@ -161,20 +161,20 @@ const MissionSection = () => {
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 <Contact2 className="text-primary size-10" strokeWidth={1} />
-                <span className="font-semibold">Zero contact travel</span>
+                <span className="font-semibold">{t("rideConfidence")}</span>
               </div>
               <p className="text-gray-500 text-sm leading-snug">
-                We love our customers and we love the way they come.
+                {t("rideConfidenceDes")}
               </p>
             </div>
 
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 <CarFront className="text-primary size-10" strokeWidth={1} />
-                <span className="font-semibold">No Driving License</span>
+                <span className="font-semibold">{t("noLicense")}</span>
               </div>
               <p className="text-gray-500 text-sm leading-snug">
-                We love our customers and we love the way they come.
+                {t("noLicenseDes")}
               </p>
             </div>
           </div>
@@ -190,9 +190,7 @@ const MissionSection = () => {
                 className="object-contain"
               />
               <span>
-                <strong>
-                  Detachable battery, take home and charge in 3 hours.
-                </strong>
+                <strong>{t("removeBattery")}</strong>
               </span>
             </li>
             <li className="flex items-center gap-2 text-sm">
@@ -204,15 +202,13 @@ const MissionSection = () => {
                 className="object-contain"
               />
               <span>
-                <strong>
-                  Enjoy a hassle-free ride by charging just for 3 hours.
-                </strong>
+                <strong>{t("noEmissions")}</strong>
               </span>
             </li>
           </ul>
 
           <div className="mission-cta">
-            <HoverButton text="Read More" redirect_url="#" is_primary />
+            <HoverButton text={t("readMore")} redirect_url="#" is_primary />
           </div>
         </div>
       </div>

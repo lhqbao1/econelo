@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "../../globals.css";
 import MainHeader from "@/components/header/header";
 import MainFooter from "@/components/footer/main-footer";
+import Footer from "@/components/footer/footer";
 
 export default function DefaultLayout({
   children,
@@ -9,7 +10,7 @@ export default function DefaultLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <div className="overflow-hidden">
       <MainHeader />
       <main className="relative w-full">
         {/* <StickyIcon /> */}
@@ -17,7 +18,7 @@ export default function DefaultLayout({
           <div className="container-padding flex-1">{children}</div>
         </div>
       </main>
-      <MainFooter />
-    </>
+      <Footer />
+    </div>
   );
 }

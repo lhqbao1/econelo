@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Link } from "@/src/i18n/navigation";
 import { Home } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useParams, usePathname } from "next/navigation";
 import React from "react";
 
@@ -28,6 +29,7 @@ export default function CustomBreadCrumb({
 }: CustomBreadCrumbProps) {
   const params = useParams();
   const { slug } = params;
+  const t = useTranslations();
 
   // Normalize slug thành array
   const slugArray: string[] = slug ? (Array.isArray(slug) ? slug : [slug]) : [];
@@ -41,7 +43,7 @@ export default function CustomBreadCrumb({
             href="/"
             className="capitalize text-gray-500 font-medium text-base"
           >
-            Home
+            {t("home")}
           </BreadcrumbLink>
         </BreadcrumbItem>
 

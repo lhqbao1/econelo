@@ -193,7 +193,7 @@ export default async function Page({
     parentProduct = await getProductGroupDetail(product.parent_id);
   }
   return (
-    <div className="w-full flex justify-center">
+    <div className="w-full flex justify-center py-12 md:pt-[120px] pt-[50px]">
       <ProductDetails
         parentProductData={parentProduct}
         productDetailsData={product}

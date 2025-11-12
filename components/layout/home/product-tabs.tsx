@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import Head from "next/head";
 import ProductsGridLayout from "@/components/shared/product-grid-layout";
 import { ProductGridSkeleton } from "@/components/shared/product-grid-skeleton";
+import { useTranslations } from "next-intl";
 
 interface CategoryTab {
   id: string;
@@ -23,6 +24,7 @@ interface ProductTabsClientProps {
 export default function ProductTabsClient({
   categoriesList,
 }: ProductTabsClientProps) {
+  const t = useTranslations();
   const [active, setActive] = useState<string>(categoriesList?.[0]?.slug ?? "");
 
   const { data, isLoading } = useQuery({
@@ -63,7 +65,7 @@ export default function ProductTabsClient({
       </Head>
 
       <section
-        className="w-full py-24 bg-white flex justify-center"
+        className="w-full lg:py-12 md:py-8 py-6 bg-white flex justify-center"
         aria-labelledby="new-arrived-title"
       >
         <div className="w-full flex flex-col items-center">
@@ -71,17 +73,17 @@ export default function ProductTabsClient({
             <div className="flex justify-center items-center gap-2 mb-3">
               <span className="w-2 h-2 bg-primary rounded-full"></span>
               <span className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-                What’s next!
+                {t("whatNext")}
               </span>
             </div>
             <h2
               id="new-arrived-title"
               className="text-3xl md:text-4xl font-extrabold leading-snug"
             >
-              New Arrived Electric Mobility Products
+              {t("tabTitle")}
             </h2>
             <p className="text-gray-600 mt-2 text-sm md:text-base">
-              Explore the latest e-scooters, e-bikes and more from Econelo.
+              {t("tabDes")}
             </p>
           </header>
 
@@ -100,7 +102,7 @@ export default function ProductTabsClient({
                     <TabsTrigger
                       value={cat.slug}
                       className={cn(
-                        "px-5 py-3 font-medium text-sm uppercase transition-all rounded-full border border-gray-200",
+                        "lg:px-5 px-2 lg:py-3 py-1 font-medium text-sm uppercase transition-all rounded-full border border-gray-200",
                         active === cat.slug
                           ? "bg-primary text-white border-primary"
                           : "text-gray-600 hover:bg-primary hover:text-white"
@@ -108,14 +110,16 @@ export default function ProductTabsClient({
                     >
                       {cat.name}
                     </TabsTrigger>
-                    {i < categoriesList.length - 1 && (
-                      <Separator orientation="vertical" />
-                    )}
+                    <div className="hidden lg:block">
+                      {i < categoriesList.length - 1 && (
+                        <Separator orientation="vertical" />
+                      )}
+                    </div>
                   </Fragment>
                 ))}
               </TabsList>
 
-              <TabsContent value={active}>
+              <TabsContent className="w-full" value={active}>
                 {isLoading ? (
                   <ProductGridSkeleton />
                 ) : (

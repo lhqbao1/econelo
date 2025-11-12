@@ -14,16 +14,31 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { useTranslations } from "next-intl";
+import { useGetCategories } from "@/features/category/hook";
+import { flattenChildCategories } from "@/lib/flattern-categories";
 
 export function NavBar() {
   const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
+  const t = useTranslations();
+
+  const {
+    data: categories,
+    isLoading,
+    isError,
+  } = useGetCategories({ is_econelo: true });
+
+  const childCategories = React.useMemo(
+    () => flattenChildCategories(categories ?? []),
+    [categories]
+  );
 
   return (
     <NavigationMenu viewport={isMobile}>
       <NavigationMenuList className="flex-wrap">
         <NavigationMenuItem>
           <NavigationMenuTrigger className="uppercase font-semibold bg-transparent text-sm hover:bg-transparent cursor-pointer data-[state=open]:hover:bg-transparent data-[state=open]:focus:bg-transparent data-[state=open]:bg-transparent">
-            Pages
+            {t("pages")}
           </NavigationMenuTrigger>
           <NavigationMenuContent className="rounded-xs">
             <ul className="grid gap-2 md:w-[400px] lg:w-[300px]">
@@ -36,40 +51,20 @@ export function NavBar() {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuTrigger className="uppercase font-semibold bg-transparent text-sm hover:bg-transparent cursor-pointer data-[state=open]:hover:bg-transparent data-[state=open]:focus:bg-transparent data-[state=open]:bg-transparent">
-            Services
+            {t("categories")}
           </NavigationMenuTrigger>
           <NavigationMenuContent className="rounded-xs">
             <ul className="grid gap-2 md:w-[400px] lg:w-[300px]">
-              <ListItem href="/" title="ABOUT US"></ListItem>
-              <ListItem href="/" title="OUR HISTORY"></ListItem>
-              <ListItem href="/" title="FAQ"></ListItem>
-              <ListItem href="/" title="SHOP"></ListItem>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger className="uppercase font-semibold bg-transparent text-sm hover:bg-transparent cursor-pointer data-[state=open]:hover:bg-transparent data-[state=open]:focus:bg-transparent data-[state=open]:bg-transparent">
-            Gallery
-          </NavigationMenuTrigger>
-          <NavigationMenuContent className="rounded-xs">
-            <ul className="grid gap-2 md:w-[400px] lg:w-[300px]">
-              <ListItem href="/" title="ABOUT US"></ListItem>
-              <ListItem href="/" title="OUR HISTORY"></ListItem>
-              <ListItem href="/" title="FAQ"></ListItem>
-              <ListItem href="/" title="SHOP"></ListItem>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger className="uppercase font-semibold bg-transparent text-sm hover:bg-transparent cursor-pointer data-[state=open]:hover:bg-transparent data-[state=open]:focus:bg-transparent data-[state=open]:bg-transparent">
-            BLOG
-          </NavigationMenuTrigger>
-          <NavigationMenuContent className="rounded-xs">
-            <ul className="grid gap-2 md:w-[400px] lg:w-[300px]">
-              <ListItem href="/" title="ABOUT US"></ListItem>
-              <ListItem href="/" title="OUR HISTORY"></ListItem>
-              <ListItem href="/" title="FAQ"></ListItem>
-              <ListItem href="/" title="SHOP"></ListItem>
+              {childCategories?.map((item, index) => {
+                return (
+                  <ListItem
+                    key={item.id}
+                    href={`/kategorie/${item.slug}`}
+                    title={item.name}
+                    className="uppercase"
+                  ></ListItem>
+                );
+              })}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -79,7 +74,7 @@ export function NavBar() {
             hasIcon={false}
             className="uppercase bg-transparent font-semibold text-sm hover:bg-transparent cursor-pointer data-[state=open]:hover:bg-transparent data-[state=open]:focus:bg-transparent data-[state=open]:bg-transparent"
           >
-            Contact us
+            {t("contactUs")}
           </NavigationMenuTrigger>
         </NavigationMenuItem>
       </NavigationMenuList>

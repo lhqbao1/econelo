@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import "../globals.css";
 import { routing } from "@/src/i18n/routing";
 import type { Metadata } from "next";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/sidebar/app-sidebar";
 
 type Props = {
   children: React.ReactNode;
@@ -17,14 +19,14 @@ export async function generateStaticParams() {
 // ✅ Thêm metadata toàn cục (Organization + Website schema)
 export const metadata: Metadata = {
   title: {
-    default: "Prestige Home – Elektromobilität & Lifestyle",
-    template: "%s | Prestige Home",
+    default: "Econelo – Elektromobilität & Lifestyle",
+    template: "%s | Econelo",
   },
   description:
-    "Premium E-Scooter, E-Bikes und Elektrofahrzeuge von Prestige Home – Qualität, Design und Nachhaltigkeit vereint.",
+    "Premium E-Scooter, E-Bikes und Elektrofahrzeuge von Econelo – Qualität, Design und Nachhaltigkeit vereint.",
   metadataBase: new URL("https://www.econelo.de"),
   openGraph: {
-    title: "Prestige Home – Elektromobilität & Lifestyle",
+    title: "Econelo – Elektromobilität & Lifestyle",
     description:
       "Entdecken Sie innovative E-Fahrzeuge und nachhaltige Mobilitätslösungen.",
     url: "https://www.econelo.de",
@@ -33,7 +35,7 @@ export const metadata: Metadata = {
         url: "https://pxjiuyvomonmptmmkglv.supabase.co/storage/v1/object/public/erp/uploads/76021c36-bdea-4461-8451-1ebaf92e47c5_banner1.jpeg",
         width: 1200,
         height: 630,
-        alt: "Prestige Home",
+        alt: "Econelo",
       },
     ],
   },
@@ -50,7 +52,7 @@ export const metadata: Metadata = {
       {
         "@context": "https://schema.org",
         "@type": "Organization",
-        name: "Prestige Home",
+        name: "Econelo",
         url: "https://www.econelo.de",
         logo: "https://pxjiuyvomonmptmmkglv.supabase.co/storage/v1/object/public/erp/uploads/5c38c322-bafc-4e6f-8d14-0c1ba4b7b8de_invoice-logo.png",
         sameAs: [
@@ -71,7 +73,7 @@ export const metadata: Metadata = {
       {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        name: "Prestige Home",
+        name: "Econelo",
         url: "https://www.econelo.de",
         potentialAction: {
           "@type": "SearchAction",
@@ -91,6 +93,12 @@ export default async function LocaleLayout({ children, params }: Props) {
   }
 
   return (
-    <NextIntlClientProvider locale={locale}>{children}</NextIntlClientProvider>
+    <NextIntlClientProvider locale={locale}>
+      {" "}
+      <SidebarProvider>
+        <AppSidebar />
+        {children}
+      </SidebarProvider>
+    </NextIntlClientProvider>
   );
 }
