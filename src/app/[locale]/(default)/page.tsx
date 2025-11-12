@@ -16,6 +16,8 @@ import AdvantagesSection from "@/components/layout/home/about";
 import CategorySection from "@/components/layout/home/categories";
 import TestimonialsSection from "@/components/layout/home/testimonials";
 import LogoLoopSection from "@/components/layout/home/logo-loop";
+import { getCategories } from "@/features/category/api";
+import CategorySectionServer from "@/components/layout/home/server/product-category-server";
 
 export const revalidate = 300;
 
@@ -25,6 +27,11 @@ export default async function HomePage() {
   await queryClient.prefetchQuery({
     queryKey: ["products"],
     queryFn: () => getAllProducts(), // ✅ gọi trực tiếp, không truyền context
+  });
+
+  await queryClient.prefetchQuery({
+    queryKey: ["categories"],
+    queryFn: () => getCategories({ is_econelo: true }), // ✅ gọi trực tiếp, không truyền context
   });
 
   const dehydratedState: DehydratedState = dehydrate(queryClient);
@@ -43,7 +50,7 @@ export default async function HomePage() {
 function HomeContent() {
   return (
     <div className="flex flex-col items-center gap-12 w-full">
-      <div className="h-[100vh] w-full">
+      <div className="lg:h-[100vh] h-fit w-full">
         <HomeBanner />
       </div>
       <MissionSection />
@@ -54,7 +61,9 @@ function HomeContent() {
         <ProductTabsServer />
       </Suspense>
       <AdvantagesSection />
-      <CategorySection />
+      <Suspense fallback={<SectionSkeleton />}>
+        <CategorySectionServer />
+      </Suspense>
       <TestimonialsSection />
       <LogoLoopSection />
     </div>

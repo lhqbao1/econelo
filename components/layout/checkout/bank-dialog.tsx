@@ -20,7 +20,7 @@ const BankDialog = ({ open, onOpenChange }: BankDialogProps) => {
           <DialogTitle className="text-center">{t("bankInfor")}</DialogTitle>
         </DialogHeader>
         <div>DE57100101232316418882</div>
-        <div translate="no">Prestige Home GmbH</div>
+        <div translate="no">Econelo</div>
         <div>SWIFT/BIC QNTODEB2XXX</div>
         <div>Bankname: QUOTO</div>
       </DialogContent>

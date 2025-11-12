@@ -1,15 +1,25 @@
-// components/product-grid-skeleton.tsx
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 
 interface ProductGridSkeletonProps {
   length?: number;
+  col?: number; // số cột trên màn hình lớn (md+)
+  mobileCol?: number; // số cột trên mobile
+  width?: string;
 }
 
-export function ProductGridSkeleton({ length }: ProductGridSkeletonProps) {
+export function ProductGridSkeleton({
+  length = 4,
+  col = 4,
+  mobileCol = 2,
+  width = "3/4",
+}: ProductGridSkeletonProps) {
+  // Tạo class tailwind động cho grid-cols
+  const gridClass = `grid grid-cols-${mobileCol} sm:grid-cols-${col} gap-4 sm:mt-6 mt-4 w-${width}`;
+
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-4 sm:mt-6 mt-4 w-3/4">
-      {Array.from({ length: length ? length : 4 }).map((_, idx) => (
+    <div className={gridClass}>
+      {Array.from({ length }).map((_, idx) => (
         <Card
           key={idx}
           className="relative overflow-hidden border-0 rounded-none shadow-none"

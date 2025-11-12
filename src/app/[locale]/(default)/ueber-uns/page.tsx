@@ -9,7 +9,7 @@ import React from "react";
 const AboutUsPage = () => {
   return (
     <div className="min-h-screen  flex flex-col items-center relative md:pt-[100px]">
-      <div className="relative min-h-[300px] w-full">
+      <div className="relative min-h-[400px] w-full">
         <Image
           src={"/about-banner.jpg"}
           alt=""

@@ -4,14 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { ProductItem } from "@/types/products";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/src/i18n/navigation";
-import {
-  Heart,
-  ShoppingBasket,
-  Star,
-  ChevronLeft,
-  ChevronRight,
-  Eye,
-} from "lucide-react";
+import { Heart, ShoppingBasket, Star, Eye } from "lucide-react";
 import { Button } from "../ui/button";
 import { useAddToCart } from "@/features/cart/hook";
 import { useAddToWishList } from "@/features/wishlist/hook";
@@ -259,7 +252,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
   }
 
   return (
-    <div className="relative py-6">
+    <div className="relative py-6 w-full">
       <Carousel
         opts={{
           align: "start",
@@ -274,7 +267,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
             return (
               <CarouselItem
                 key={product.id}
-                className={`basis-1/4 flex-shrink-0 border-b border-r border-gray-200`}
+                className={`lg:basis-1/4 basis-full lg:flex-shrink-0 border-b border-r border-gray-200`}
               >
                 <div className="group px-2 py-4 flex flex-col h-full bg-white relative overflow-hidden">
                   <div className="relative  overflow-hidden mb-12">
@@ -300,13 +293,13 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
                           router.push(`/produkt/${product.url_key}`)
                         }
                       >
-                        LEARN MORE
+                        {t("learnMore")}
                       </Button>
                       <Button
                         className="bg-lime-400 text-black px-6 py-2 font-semibold rounded-full"
                         onClick={() => handleAddToCart(product)}
                       >
-                        ADD TO CART
+                        {t("addToCart")}
                       </Button>
                     </div>
                   </div>
@@ -346,6 +339,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
                           variant="outline"
                           size="icon"
                           className="rounded-full border-gray-300 text-primary cursor-pointer"
+                          onClick={() => handleAddToCart(product)}
                         >
                           <ShoppingBasket className="size-5" />
                         </Button>
@@ -363,6 +357,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
                           variant="outline"
                           size="icon"
                           className="rounded-full border-gray-300 hover:bg-black hover:text-white"
+                          onClick={() => handleAddToWishlist(product)}
                         >
                           <Heart className="size-5" />
                         </Button>

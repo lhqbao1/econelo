@@ -7,10 +7,12 @@ import { ClockFading, Gauge, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import HoverButton from "../../shared/hover-button";
+import { useTranslations } from "next-intl";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const HomeBanner = () => {
+  const t = useTranslations();
   const sectionRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -78,22 +80,14 @@ const HomeBanner = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[80vh] bg-primary bg-center z-10 md:px-20 px-4"
+      className="relative lg:min-h-[80vh] min-h-[450px] bg-primary bg-center z-10 md:px-20 px-4"
     >
-      {/* <Image
-                src={'/Artboard 1@2x.png'}
-                width={200}
-                height={200}
-                alt=""
-                className="absolute top-0 right-0"
-            /> */}
-
       <div className="grid grid-cols-2 gap-4">
         <div className="col-span-1">
-          <div className="absolute left-20 top-2/5 -translate-y-1/2 flex flex-col items-center gap-12 text-black z-40">
+          <div className="absolute left-20 top-2/5 -translate-y-1/2 lg:flex hidden flex-col items-center gap-12 text-black z-40">
             <div className="flex flex-col items-center gap-2 group">
               <span className="text-sm font-bold tracking-widest [writing-mode:vertical-rl] cursor-pointer rotate-180">
-                FOLLOW US
+                {t("followUs")}
               </span>
               <div className="relative h-24 w-px bg-black overflow-hidden group cursor-pointer">
                 <span className="absolute inset-x-0 -bottom-4 h-0 bg-primary transition-all duration-500 ease-in-out group-hover:h-full" />
@@ -113,22 +107,22 @@ const HomeBanner = () => {
             </ul>
           </div>
 
-          <div className="absolute left-1/5 top-2/5 -translate-y-1/2 space-y-8">
+          <div className="absolute lg:left-1/5 left-1/2 lg:top-2/5 top-1/2 -translate-y-1/2 lg:-translate-x-0 -translate-x-1/2 space-y-8 w-full flex flex-col items-center justify-center lg:block">
             {/* 1️⃣ Tiêu đề */}
             <h1
               ref={titleRef}
-              className="capitalize md:text-6xl text-4xl font-semibold max-w-lg pt-40 md:pt-0 text-white leading-18 opacity-0"
+              className="capitalize md:text-5xl text-2xl lg:font-semibold font-bold lg:max-w-xl max-w-xs lg:pt-40 pt-0 text-white lg:leading-18 leading-10 opacity-0 lg:text-left text-center"
             >
-              Book your new eco-friendly ride
+              {t("bannerSlogan")}
             </h1>
 
             {/* 2️⃣ Stats */}
-            <div ref={statsRef} className="flex gap-12">
+            <div ref={statsRef} className="lg:flex hidden gap-12">
               <div className="stat-item space-y-2 flex flex-col items-center opacity-0">
                 <Gauge className="text-white size-12" strokeWidth={1} />
                 <div>
                   <div className="text-md font-semibold text-center">
-                    Top speed
+                    {t("topSpeed")}
                   </div>
                   <div className="text-base font-bold text-center">80 km/h</div>
                 </div>
@@ -148,7 +142,7 @@ const HomeBanner = () => {
                 <ShieldCheck className="text-white size-12" strokeWidth={1} />
                 <div>
                   <div className="text-md font-semibold text-center">
-                    Certificated Range
+                    {t("range")}
                   </div>
                   <div className="text-base font-bold text-center">116 km</div>
                 </div>
@@ -157,17 +151,17 @@ const HomeBanner = () => {
 
             {/* 3️⃣ Button */}
             <div ref={buttonRef} className="opacity-0">
-              <HoverButton text="Book Now" redirect_url="/" />
+              <HoverButton text={t("bookNow")} redirect_url="/" />
             </div>
           </div>
 
           {/* 🖼️ 1️⃣ Image */}
           <div
             ref={imageRef}
-            className="absolute right-0 top-9/12 -translate-y-1/2 space-y-8 opacity-0 z-40"
+            className="absolute right-0 lg:top-9/12 top-10/12 -translate-y-1/2 space-y-8 opacity-0 z-40"
           >
             <Image
-              src={"/banner-product-trans.png"}
+              src={"/banner-image_2.png"}
               width={1200}
               height={800}
               alt=""

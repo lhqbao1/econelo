@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface HoverButtonProps {
-  text?: string;
+  text?: React.ReactNode; // 👈 Cho phép string hoặc t('...')
   redirect_url: string;
   is_primary?: boolean;
   isLogin?: boolean;

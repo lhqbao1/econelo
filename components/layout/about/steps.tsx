@@ -46,7 +46,7 @@ export default function StepsSection() {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top 50%", // xuất hiện muộn hơn chút để tránh giật
-          toggleActions: "play none none reverse", // hoặc "restart none none none"
+          toggleActions: "play none none none", // hoặc "restart none none none"
         },
       });
 

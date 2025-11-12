@@ -32,7 +32,7 @@ const stats = [
 
 export default function StatsSection() {
   return (
-    <section className="flex justify-center w-full py-12 bg-transparent">
+    <section className="flex justify-center w-full lg:py-12 md:py-8 py-6 bg-transparent">
       <div className="bg-black text-white rounded-b-[60px] rounded-t-3xl md:rounded-t-[40px] px-8 py-10 md:py-14 w-11/12 max-w-6xl shadow-xl flex flex-wrap justify-around gap-y-10">
         {stats.map((stat, index) => (
           <div

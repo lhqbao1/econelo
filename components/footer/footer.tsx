@@ -1,14 +1,14 @@
-import React from 'react'
-import TopFooter from './top-footer'
-import MainFooter from './main-footer'
+import React from "react";
+import TopFooter from "./top-footer";
+import MainFooter from "./main-footer";
 
 const Footer = () => {
-    return (
-        <div className='w-full border-t'>
-            <TopFooter />
-            <MainFooter />
-        </div>
-    )
-}
+  return (
+    <footer className="w-full border-t">
+      <TopFooter />
+      <MainFooter />
+    </footer>
+  );
+};
 
-export default Footer
+export default Footer;
