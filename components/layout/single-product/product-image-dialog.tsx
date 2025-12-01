@@ -76,22 +76,24 @@ export default function ProductImageDialog({
 
             {/* Next / Prev buttons */}
             <div
-              className="absolute right-2 top-1/2 rounded-full border border-secondary p-2 cursor-pointer hover:bg-secondary hover:text-white"
+              className="absolute right-2 top-1/2 rounded-full border border-primary p-2 cursor-pointer hover:bg-primary hover:text-white"
               onClick={(e) => {
                 e.stopPropagation();
                 setMainImageIndex((prev) =>
-                  prev < productDetails.static_files.length - 1 ? prev + 1 : 0
+                  prev < productDetails.static_files.length - 1 ? prev + 1 : 0,
                 );
               }}
             >
               <ChevronRight />
             </div>
             <div
-              className="absolute left-2 top-1/2 rounded-full border border-secondary p-2 cursor-pointer hover:bg-secondary hover:text-white"
+              className="absolute left-2 top-1/2 rounded-full border border-primary p-2 cursor-pointer hover:bg-primary hover:text-white"
               onClick={(e) => {
                 e.stopPropagation();
                 setMainImageIndex((prev) =>
-                  prev === 0 ? productDetails.static_files.length - 1 : prev - 1
+                  prev === 0
+                    ? productDetails.static_files.length - 1
+                    : prev - 1,
                 );
               }}
             >

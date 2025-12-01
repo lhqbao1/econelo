@@ -61,11 +61,11 @@ function HomeContent() {
         <ProductTabsServer />
       </Suspense>
       <AdvantagesSection />
-      <Suspense fallback={<SectionSkeleton />}>
+      {/* <Suspense fallback={<SectionSkeleton />}>
         <CategorySectionServer />
-      </Suspense>
+      </Suspense> */}
       <TestimonialsSection />
-      <LogoLoopSection />
+      {/* <LogoLoopSection /> */}
     </div>
   );
 }

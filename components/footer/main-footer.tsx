@@ -41,7 +41,7 @@ const MainFooter = () => {
   ];
   return (
     <section className="bg-black text-white pt-16 pb-6 rounded-tr-[50px] overflow-hidden md:w-[95%] w-full">
-      <div className="flex justify-start px-4 lg:px-20">
+      {/* <div className="flex justify-start px-4 lg:px-20">
         <div className="lg:w-1/2 w-full">
           <div className="bg-primary p-10 rounded-md w-full space-y-5">
             <Mail className="w-12 h-12 text-white" />
@@ -62,7 +62,7 @@ const MainFooter = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="grid lg:grid-cols-4 grid-cols-2 gap-10 px-4 lg:px-20 lg:mt-16 mt-8">
         {/* MIDDLE: About */}
@@ -71,7 +71,7 @@ const MainFooter = () => {
           <div className="w-10 h-[2px] bg-primary mb-2" />
           <p className="text-gray-400 leading-relaxed">{t("footerDes")}</p>
           <a
-            href="#"
+            href="/ueber-uns"
             className="text-primary font-semibold inline-flex items-center gap-2 hover:underline"
           >
             {t("contactUs")} <ArrowRight className="w-4 h-4" />
@@ -126,11 +126,23 @@ const MainFooter = () => {
         <div className="space-y-4">
           <h4 className="text-xl font-semibold">{t("quickContact")}</h4>
           <div className="w-10 h-[2px] bg-primary mb-2" />
-          <p className="text-gray-400 leading-relaxed max-w-xs">
-            Greifswalder Straße 226 10405 Berlin
-          </p>
-          <p className="text-gray-400">{t("feelFree")}</p>
-          <div className="text-primary font-bold text-lg">+49 1716 133971</div>
+          <div className="space-y-2">
+            <div className="text-primary font-bold text-lg">{t("B2B")}</div>
+            <p className="text-gray-400 leading-relaxed max-w-xs">
+              Herr Andreas Bachl
+            </p>
+            <div className="text-gray-400">+43 68110 327073</div>
+            <div className="text-gray-400">andreas.bachl@prestige-home.de</div>
+            {/* <p className="text-gray-400">{t("feelFree")}</p> */}
+          </div>
+          <div className="space-y-2">
+            <div className="text-primary font-bold text-lg">
+              {t("repairService")}
+            </div>
+            <p className="text-gray-400 leading-relaxed">Herr Frank Rafael</p>
+            <p className="text-gray-400">+49 1716 133971</p>
+            <p className="text-gray-400">frank@frawa-aktiv.de</p>
+          </div>
         </div>
       </div>
 
@@ -138,11 +150,17 @@ const MainFooter = () => {
       <div className="mt-16 border-t border-gray-800 pt-8 px-8 lg:px-20 flex flex-col lg:flex-row justify-between items-center gap-6">
         {/* LINKS */}
         <div className="flex flex-wrap justify-center gap-4 text-gray-400 text-sm">
-          <a href="/kontakt" className="hover:text-white">
+          <a
+            href="/kontakt"
+            className="hover:text-white"
+          >
             {t("whereToFind")}
           </a>
           <span className="text-gray-600">|</span>
-          <a href="#" className="hover:text-white">
+          <a
+            href="/ueber-uns"
+            className="hover:text-white"
+          >
             {t("paymentTerms")}
           </a>
           <span className="text-gray-600">|</span>
@@ -150,8 +168,9 @@ const MainFooter = () => {
 
         {/* COPYRIGHT */}
         <div className="text-gray-500 text-sm text-center">
-          Copyright © 2025 <span className="text-white">Econelo</span>. All
-          Rights Reserved.
+          Copyright © 2025{" "}
+          <span className="text-white">Prestige Home Gmbh.</span> All Rights
+          Reserved.
         </div>
 
         {/* SOCIALS */}

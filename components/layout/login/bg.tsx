@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { NeatGradient } from "@firecms/neat";
-import { config } from "@/lib/neat-config";
+import { neatConfig } from "@/lib/neat-config";
 
 export default function LoginBackground() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -13,7 +13,7 @@ export default function LoginBackground() {
     // Khởi tạo NeatGradient
     const neat = new NeatGradient({
       ref: canvasRef.current,
-      ...config,
+      ...neatConfig,
     });
 
     // Cleanup khi component bị unmount

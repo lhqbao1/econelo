@@ -32,7 +32,7 @@ const ShippingSection = ({ productDetails }: ShippingSectionProps) => {
                     ? "bg-red-500"
                     : productDetails.stock <= 20
                     ? "bg-primary"
-                    : "bg-secondary"
+                    : "bg-primary"
                 }`}
               />
 
@@ -44,7 +44,7 @@ const ShippingSection = ({ productDetails }: ShippingSectionProps) => {
                     ? "bg-gray-300"
                     : productDetails.stock <= 20
                     ? "bg-primary"
-                    : "bg-secondary"
+                    : "bg-primary"
                 }`}
               />
 
@@ -56,7 +56,7 @@ const ShippingSection = ({ productDetails }: ShippingSectionProps) => {
                     ? "bg-gray-300"
                     : productDetails.stock <= 20
                     ? "bg-gray-400"
-                    : "bg-secondary"
+                    : "bg-primary"
                 }`}
               />
             </div>

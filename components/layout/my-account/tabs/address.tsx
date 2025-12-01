@@ -35,10 +35,10 @@ interface AddressListProps {
 
 const MyAccountAddress = ({ userId }: AddressListProps) => {
   const [removeDialogId, setRemoveDialogId] = React.useState<string | null>(
-    null
+    null,
   );
   const [defaultDialogId, setDefaultDialogId] = React.useState<string | null>(
-    null
+    null,
   );
   const [editDialogId, setEditDialogId] = React.useState<string | null>(null);
 
@@ -88,8 +88,8 @@ const MyAccountAddress = ({ userId }: AddressListProps) => {
             className={cn(
               "col-span-2 lg:col-span-1",
               address.is_default
-                ? "border-secondary border-2"
-                : "border-gray-400 border"
+                ? "border-primary border-2"
+                : "border-gray-400 border",
             )}
           >
             <CardContent className="text-sm text-muted-foreground space-y-1">
@@ -112,7 +112,11 @@ const MyAccountAddress = ({ userId }: AddressListProps) => {
                   }
                 >
                   <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" type="button">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      type="button"
+                    >
                       {t("edit")}
                     </Button>
                   </DialogTrigger>
@@ -138,7 +142,11 @@ const MyAccountAddress = ({ userId }: AddressListProps) => {
                   }
                 >
                   <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" type="button">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      type="button"
+                    >
                       {t("asDefault")}
                     </Button>
                   </DialogTrigger>

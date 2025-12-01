@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function MyAccountSkeleton() {
   return (
-    <div className="flex justify-center bg-gray-50">
+    <div className="flex justify-center bg-gray-50 lg:pt-[100px] pt-[70px]">
       <div className="flex flex-row gap-6 items-start md:py-12 lg:py-18 py-8 min-h-screen lg:w-9/12 w-11/12">
         {/* Sidebar skeleton */}
         <div className="w-64 bg-white p-6 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.1)] space-y-4">

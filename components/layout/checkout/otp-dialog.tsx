@@ -84,7 +84,7 @@ export function OtpDialog({
         onError: () => {
           toast.error(t("otpError"));
         },
-      }
+      },
     );
   };
 
@@ -98,7 +98,10 @@ export function OtpDialog({
   }, [otpValues]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={onOpenChange}
+    >
       <DialogContent className="sm:max-w-[400px] gap-2">
         <DialogHeader>
           <DialogTitle className="text-center">OTP</DialogTitle>
@@ -127,7 +130,7 @@ export function OtpDialog({
         <p className="text-xs text-gray-500 mb-4">{t("useDifferentEmail")}</p>
 
         <Button
-          className="w-full bg-secondary/95 hover:bg-secondary"
+          className="w-full bg-primary/95 hover:bg-primary"
           onClick={handleSubmit}
           disabled={loginOtpMutation.isPending}
         >

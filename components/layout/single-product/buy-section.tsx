@@ -1,3 +1,6 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -5,15 +8,26 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import ListVariant from "./list-variant";
-import { VariantOptionsResponse } from "@/types/variant";
+import { VariantOptionResponse, VariantOptionsResponse } from "@/types/variant";
 import { ProductItem } from "@/types/products";
 import { ProductGroupDetailResponse } from "@/types/product-group";
 import { Button } from "@/components/ui/button";
-import { User } from "lucide-react";
+import { Loader2, User } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useForm, FormProvider } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
+import { cartFormSchema } from "@/lib/schema/cart";
+import { useAddToCart } from "@/features/cart/hook";
+import { useAddToWishList } from "@/features/wishlist/hook";
+import { toast } from "sonner";
+import { HandleApiError } from "@/lib/api-helper";
+import { useCartLocal } from "@/hooks/cart";
+import { CartItemLocal } from "@/lib/utils/cart";
+import { useRouter } from "@/src/i18n/navigation";
+import { useLocale } from "next-intl";
 
 interface BuySectionProps {
   variant?: VariantOptionsResponse[];
@@ -21,85 +35,217 @@ interface BuySectionProps {
   parentProduct?: ProductGroupDetailResponse | null;
 }
 
+type FormValues = z.infer<typeof cartFormSchema>;
+
 const BuySection = ({
   variant,
   currentProduct,
   parentProduct,
 }: BuySectionProps) => {
-  const extras = [
-    { label: "GPS Navigation System", price: "$25.00" },
-    { label: "Child Seat", price: "$32.00" },
-    { label: "Additional Driver", price: "$25.00" },
-    { label: "Insurance Coverage", price: "$52.00" },
-  ];
+  const t = useTranslations();
+  const router = useRouter();
+  const locale = useLocale();
+
+  // form
+  const methods = useForm<FormValues>({
+    resolver: zodResolver(cartFormSchema),
+    defaultValues: {
+      productId: "",
+      option_id: [],
+      quantity: 1,
+      is_active: false,
+    },
+  });
+
+  const { handleSubmit, setValue, watch } = methods;
+
+  // local cart hook & mutations
+  const { addToCartLocal, cart } = useCartLocal();
+  const createCartMutation = useAddToCart();
+  const addProductToWishlistMutation = useAddToWishList();
+
+  useEffect(() => {
+    if (currentProduct?.id) {
+      methods.setValue("productId", currentProduct.id);
+      methods.setValue(
+        "option_id",
+        currentProduct.options.map((o: VariantOptionResponse) => o.id), // auto select option mặc định
+      );
+    }
+  }, [currentProduct, methods]);
+
+  // handle wishlist (optional)
+  const handleAddProductToWishlist = () => {
+    addProductToWishlistMutation.mutate(
+      { productId: currentProduct?.id ?? "", quantity: 1 },
+      {
+        onSuccess: () => {
+          toast.success(t("addToWishlistSuccess"));
+        },
+        onError: (error) => {
+          const { status, message } = HandleApiError(error, t);
+          toast.error(message);
+        },
+      },
+    );
+  };
+
+  const onSubmit = (values: FormValues) => {
+    if (!currentProduct) return;
+    const userId =
+      typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+
+    if (!userId) {
+      const existingItem = cart.find(
+        (item: CartItemLocal) => item.product_id === currentProduct.id,
+      );
+      const totalQuantity = (existingItem?.quantity || 0) + values.quantity;
+
+      if (totalQuantity > currentProduct.stock) {
+        toast.error(t("notEnoughStock"));
+        return;
+      }
+
+      addToCartLocal(
+        {
+          item: {
+            product_id: currentProduct.id ?? "",
+            quantity: values.quantity,
+            is_active: true,
+            item_price: currentProduct.final_price,
+            final_price: currentProduct.final_price,
+            img_url:
+              currentProduct.static_files.length > 0
+                ? currentProduct.static_files[0].url
+                : "",
+            product_name: currentProduct.name,
+            stock: currentProduct.stock,
+            carrier: currentProduct.carrier ? currentProduct.carrier : "amm",
+            id_provider: currentProduct.id_provider
+              ? currentProduct.id_provider
+              : "",
+            delivery_time: currentProduct.delivery_time
+              ? currentProduct.delivery_time
+              : "",
+          },
+        },
+        {
+          onSuccess(data, variables, context) {
+            toast.success(t("addToCartSuccess"));
+          },
+          onError(error, variables, context) {
+            toast.error(t("addToCartFail"));
+          },
+        },
+      );
+    } else {
+      createCartMutation.mutate(
+        { productId: currentProduct?.id ?? "", quantity: values.quantity },
+        {
+          onSuccess(data, variables, context) {
+            toast.success(t("addToCartSuccess"));
+          },
+          onError(error, variables, context) {
+            const { status, message } = HandleApiError(error, t);
+            if (status === 400) {
+              toast.error(t("notEnoughStock"));
+              return;
+            }
+            toast.error(message);
+            if (status === 401) router.push("/login", { locale });
+          },
+        },
+      );
+    }
+  };
+
+  // optionally watch quantity to disable buy button if zero or > stock
+  const quantity = watch("quantity");
 
   return (
-    <Card className="shadow-lg">
-      <CardHeader>
-        <CardTitle className="text-xl font-bold">Buy This Vehicle</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ListVariant
-          variant={variant}
-          currentProduct={currentProduct}
-          parentProduct={parentProduct}
-        />
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle className="text-xl font-bold">{t("buyThis")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ListVariant
+              variant={variant}
+              currentProduct={currentProduct}
+              parentProduct={parentProduct}
+            />
 
-        <Separator className="my-4" />
+            <Separator className="my-4" />
 
-        <div className="space-y-2 text-sm text-black">
-          <p className="font-medium">Add Extra:</p>
-          {extras.map((item, idx) => (
-            <div
-              key={idx}
-              className="flex justify-between items-center text-gray-700"
-            >
-              <label className="flex items-center gap-2">
-                <Checkbox id={`extra-${idx}`} />
-                <span>{item.label}</span>
-              </label>
-              <span>{item.price}</span>
+            <div className="space-y-2 pb-4">
+              <div className="flex justify-between items-center">
+                <label>{t("subTotalInclude")}</label>
+                <span>
+                  {currentProduct.final_price.toLocaleString("de-DE", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                  €
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <label>{t("discount")}</label>
+                <span>0.00€</span>
+              </div>
+              <div className="flex justify-between items-center font-semibold text-black text-lg">
+                <label>{t("total")}</label>
+                <span>
+                  {currentProduct.final_price.toLocaleString("de-DE", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                  €
+                </span>
+              </div>
             </div>
-          ))}
-        </div>
 
-        <Separator className="my-4" />
+            <Button
+              type="submit"
+              className="bg-primary w-full rounded-md py-6"
+              disabled={
+                quantity <= 0 ||
+                quantity > currentProduct.stock ||
+                createCartMutation.isPending
+              }
+            >
+              {createCartMutation.isPending ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                t("buyNow")
+              )}
+            </Button>
 
-        <div className="space-y-2 pb-4">
-          <div className="flex justify-between items-center">
-            <label>Subtotal</label>
-            <span>
-              {currentProduct.price.toLocaleString("de-DE", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-              €
-            </span>
-          </div>
-          <div className="flex justify-between items-center">
-            <label>Sale discount</label>
-            <span>0.00€</span>
-          </div>
-          <div className="flex justify-between items-center font-semibold text-black text-lg">
-            <label>Total Payable</label>
-            <span>
-              {currentProduct.price.toLocaleString("de-DE", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-              €
-            </span>
-          </div>
-        </div>
+            {/* optional wishlist button */}
+            <div className="mt-3">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={handleAddProductToWishlist}
+                disabled={addProductToWishlistMutation.isPending}
+              >
+                {addProductToWishlistMutation.isPending ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  t("addToWishlist")
+                )}
+              </Button>
+            </div>
+          </CardContent>
 
-        <Button className="bg-primary w-full rounded-md py-6">Buy Now</Button>
-      </CardContent>
-
-      <CardFooter className="flex gap-1 items-center pb-0 pt-4 justify-center text-gray-400 font-semibold text-sm">
-        <User className="size-5" />
-        Need some help
-      </CardFooter>
-    </Card>
+          <CardFooter className="flex gap-1 items-center pb-0 pt-4 justify-center text-gray-400 font-semibold text-sm">
+            <User className="size-5" />
+            {t("needHelp")}
+          </CardFooter>
+        </Card>
+      </form>
+    </FormProvider>
   );
 };
 

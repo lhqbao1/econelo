@@ -17,17 +17,17 @@ const MissionSection = () => {
 
   const stats = [
     {
-      value: 1200,
+      value: 1600,
       label: t("statSatisfy"),
       unit: "+",
     },
     {
-      value: 350,
+      value: 180,
       label: t("statCharging"),
       unit: "+",
     },
     {
-      value: 85,
+      value: 40,
       label: t("statRange"),
       unit: "km",
     },
@@ -47,7 +47,7 @@ const MissionSection = () => {
         ],
         {
           opacity: 0,
-        }
+        },
       );
       gsap.set(".left-images", { x: 60 }); // left images slide in from right -> slightly
       gsap.set(".right-subheading", { x: -60 }); // right text slide in from left
@@ -76,17 +76,17 @@ const MissionSection = () => {
       tl.to(
         ".right-subheading",
         { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" },
-        "-=0.45" // overlap
+        "-=0.45", // overlap
       );
       tl.to(
         ".right-heading",
         { opacity: 1, x: 0, duration: 0.7, ease: "power3.out" },
-        "-=0.45"
+        "-=0.45",
       );
       tl.to(
         ".right-description",
         { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" },
-        "-=0.45"
+        "-=0.45",
       );
 
       // optional: small pop for CTA
@@ -94,7 +94,7 @@ const MissionSection = () => {
         ".mission-cta",
         { opacity: 0, x: 40 },
         { opacity: 1, x: 0, duration: 0.6, ease: "power2.out" },
-        "-=0.3"
+        "-=0.3",
       );
     }, sectionRef);
 
@@ -132,7 +132,7 @@ const MissionSection = () => {
           {/* Circle badge */}
           <div className="absolute -top-0 right-0 -translate-x-1/3 bg-primary text-white w-[110px] h-[110px] rounded-full lg:flex hidden flex-col items-center justify-center font-semibold shadow-md border-4 border-white">
             <span className="text-2xl font-bold">85%</span>
-            <span className="text-sm">Clients</span>
+            <span className="text-sm">{t("clients")}</span>
           </div>
         </div>
 
@@ -160,7 +160,10 @@ const MissionSection = () => {
           <div className="grid grid-cols-2 gap-6 mt-6">
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
-                <Contact2 className="text-primary size-10" strokeWidth={1} />
+                <Contact2
+                  className="text-primary size-10"
+                  strokeWidth={1}
+                />
                 <span className="font-semibold">{t("rideConfidence")}</span>
               </div>
               <p className="text-gray-500 text-sm leading-snug">
@@ -170,7 +173,10 @@ const MissionSection = () => {
 
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
-                <CarFront className="text-primary size-10" strokeWidth={1} />
+                <CarFront
+                  className="text-primary size-10"
+                  strokeWidth={1}
+                />
                 <span className="font-semibold">{t("noLicense")}</span>
               </div>
               <p className="text-gray-500 text-sm leading-snug">
@@ -208,7 +214,11 @@ const MissionSection = () => {
           </ul>
 
           <div className="mission-cta">
-            <HoverButton text={t("readMore")} redirect_url="#" is_primary />
+            <HoverButton
+              text={t("readMore")}
+              redirect_url="/ueber-uns"
+              is_primary
+            />
           </div>
         </div>
       </div>

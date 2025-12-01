@@ -52,7 +52,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
 
     if (!userId) {
       const existingItem = cart.find(
-        (item: CartItemLocal) => item.product_id === currentProduct.id
+        (item: CartItemLocal) => item.product_id === currentProduct.id,
       );
       const totalQuantity = (existingItem?.quantity || 0) + 1;
       if (totalQuantity > currentProduct.stock) {
@@ -85,7 +85,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
           onError() {
             toast.error(t("addToCartFail"));
           },
-        }
+        },
       );
     } else {
       addToCartMutation.mutate(
@@ -103,7 +103,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
             toast.error(message);
             if (status === 401) router.push("/login");
           },
-        }
+        },
       );
     }
   };
@@ -125,7 +125,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
           toast.error(message);
           if (status === 401) router.push("/login");
         },
-      }
+      },
     );
   };
 
@@ -138,7 +138,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
 
       const metaDesc = card.querySelector(".meta-desc");
       const bottomOverlay = card.querySelector(
-        ".meta-desc + div.absolute.inset-0"
+        ".meta-desc + div.absolute.inset-0",
       ); // layout mới (3 nút nhỏ)
 
       if (!imgOverlay || !buttons?.length || !metaDesc || !bottomOverlay)
@@ -176,7 +176,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
                 duration: 0.25,
                 stagger: 0.05,
                 ease: "back.out(1.7)",
-              }
+              },
             );
           },
         });
@@ -281,12 +281,15 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
                         alt={product.name}
                         width={300}
                         height={300}
-                        className="w-full h-64 p-4 lg:p-10 object-contain transition-all duration-500 group-hover:scale-110"
+                        className="w-full h-80 p-4 lg:p-10 object-contain transition-all duration-500 group-hover:scale-110"
                       />
                     </Link>
 
                     {/* Overlay ẩn (GSAP sẽ bật khi hover) */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/80 opacity-0">
+                    <div
+                      onClick={() => router.push(`/produkt/${product.url_key}`)}
+                      className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/80 opacity-0 cursor-pointer"
+                    >
                       <Button
                         className="bg-black text-white px-6 py-2 font-semibold rounded-full"
                         onClick={() =>
@@ -314,7 +317,11 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
                       </h3>
                       <div className="flex items-center gap-1">
                         {[1, 2, 3, 4, 5].map((i) => (
-                          <Star key={i} size={16} className="text-primary" />
+                          <Star
+                            key={i}
+                            size={16}
+                            className="text-primary"
+                          />
                         ))}
                         <span className="text-sm font-medium">(0)</span>
                       </div>
@@ -371,7 +378,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
                           "de-DE",
                           {
                             minimumFractionDigits: 2,
-                          }
+                          },
                         )}
                       </p>
                       {product.price > product.final_price && (

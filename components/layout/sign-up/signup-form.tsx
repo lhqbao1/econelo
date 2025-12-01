@@ -74,7 +74,7 @@ export default function SignUpFormTransparent() {
             onError: () => {
               toast.error(t("signUpFail"));
             },
-          }
+          },
         );
       },
       onError() {
@@ -120,7 +120,10 @@ export default function SignUpFormTransparent() {
                           id="male"
                           className="border-gray-400"
                         />
-                        <label htmlFor="male" className="text-gray-700">
+                        <label
+                          htmlFor="male"
+                          className="text-gray-700"
+                        >
                           {t("male")}
                         </label>
                       </div>
@@ -130,7 +133,10 @@ export default function SignUpFormTransparent() {
                           id="female"
                           className="border-gray-400"
                         />
-                        <label htmlFor="female" className="text-gray-700">
+                        <label
+                          htmlFor="female"
+                          className="text-gray-700"
+                        >
                           {t("female")}
                         </label>
                       </div>
@@ -140,7 +146,10 @@ export default function SignUpFormTransparent() {
                           id="other"
                           className="border-gray-400"
                         />
-                        <label htmlFor="other" className="text-gray-700">
+                        <label
+                          htmlFor="other"
+                          className="text-gray-700"
+                        >
                           {t("other")}
                         </label>
                       </div>
@@ -246,7 +255,7 @@ export default function SignUpFormTransparent() {
             <span>{t("already_have_account")}</span>
             <Link
               href="/anmelden"
-              className="text-sm text-secondary hover:underline"
+              className="text-sm text-primary hover:underline"
             >
               {t("login")}
             </Link>

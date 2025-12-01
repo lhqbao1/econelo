@@ -44,11 +44,11 @@ export default function MyAccountPage() {
   if (!user || isLoading) return <MyAccountSkeleton />;
 
   return (
-    <div className="flex justify-center bg-gray-50 md:pt-[140px]">
+    <div className="flex justify-center bg-gray-50 lg:pt-[140px] pt-[70px]">
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab}
-        className="flex flex-row gap-6 items-start md:py-12 lg:py-18 py-8 min-h-screen  lg:w-9/12 w-11/12"
+        className="flex flex-row gap-6 items-start min-h-screen lg:w-9/12 w-11/12"
       >
         {/* Sidebar */}
         <div className="w-64 bg-white p-6 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.1)]">

@@ -89,7 +89,7 @@ export default function HeaderLoginForm({ onSuccess }: HeaderLoginFormProps) {
           onError(error) {
             toast.error(t("invalidCredentials"));
           },
-        }
+        },
       );
     }
   };
@@ -119,14 +119,17 @@ export default function HeaderLoginForm({ onSuccess }: HeaderLoginFormProps) {
         onError(error) {
           toast.error(t("invalidCredentials"));
         },
-      }
+      },
     );
   };
 
   return (
     <div className="bg-white rounded-2xl w-full">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="space-y-4"
+        >
           {/* Email */}
           <FormField
             control={form.control}
@@ -176,7 +179,7 @@ export default function HeaderLoginForm({ onSuccess }: HeaderLoginFormProps) {
                             // tự động focus sang input kế
                             if (val && idx < 5) {
                               const next = document.getElementById(
-                                `otp-${idx + 1}`
+                                `otp-${idx + 1}`,
                               ) as HTMLInputElement;
                               next?.focus();
                             }
@@ -238,7 +241,6 @@ export default function HeaderLoginForm({ onSuccess }: HeaderLoginFormProps) {
             <Button
               type="submit"
               className="w-full text-lg rounded-none h-14"
-              variant={"secondary"}
               disabled={
                 submitOtpMutation.isPending || sendOtpMutation.isPending
               }

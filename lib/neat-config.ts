@@ -1,6 +1,7 @@
+// lib/neat-config.ts
 import { NeatConfig } from "@firecms/neat";
 
-export const config: NeatConfig = {
+export const neatConfig: NeatConfig = {
   colors: [
     { color: "#FFFFFF", enabled: true },
     { color: "#EFE2CE", enabled: true },
