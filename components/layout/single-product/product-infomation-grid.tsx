@@ -13,6 +13,7 @@ import FaqAccordion from "./faq";
 import IncludedInPriceCard from "./included-in-price";
 import BuySection from "./buy-section";
 import { ProductGroupDetailResponse } from "@/types/product-group";
+import QAInput from "./qa/qa-input";
 
 interface BentoGridLayoutSection {
   productDetails: ProductItem;
@@ -31,7 +32,7 @@ export default function BentoGridLayout({
         <TechnicalNumberSection productDetails={productDetails} />
 
         {/* Section 2 - Overview */}
-        <ProductShortDescription />
+        <ProductShortDescription description={productDetails.description} />
 
         {/* Section 3 - Included in the Price */}
         <IncludedInPriceCard />
@@ -43,13 +44,7 @@ export default function BentoGridLayout({
       <div className="md:col-span-4 space-y-6">
         {/* Get Started */}
         <ShippingSection productDetails={productDetails} />
-
-        {/* Rent This Vehicle */}
-        <BuySection
-          currentProduct={productDetails}
-          parentProduct={parentProduct}
-          variant={parentProduct?.variants}
-        />
+        <QAInput productId={productDetails.id} />
       </div>
     </div>
   );

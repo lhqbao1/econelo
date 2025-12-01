@@ -79,7 +79,7 @@ export default function LoginFormTransparent({
             const token = data.access_token;
             localStorage.setItem(
               isAdmin ? "admin_access_token" : "access_token",
-              token
+              token,
             );
             localStorage.setItem("userId", data.id);
             toast.success(t("loginSuccess"));
@@ -87,7 +87,7 @@ export default function LoginFormTransparent({
             router.push(isAdmin ? "/admin/orders/list" : "/", { locale });
           },
           onError: () => toast.error(t("invalidCredentials")),
-        }
+        },
       );
     }
   };
@@ -113,7 +113,7 @@ export default function LoginFormTransparent({
           onError() {
             toast.error(t("invalidCredentials"));
           },
-        }
+        },
       );
     } else {
       submitOtpMutation.mutate(
@@ -132,7 +132,7 @@ export default function LoginFormTransparent({
           onError(error) {
             toast.error(error.message);
           },
-        }
+        },
       );
     }
   };
@@ -142,12 +142,10 @@ export default function LoginFormTransparent({
       {/* Gradient blur background overlay */}
       <div className="relative z-10 w-full  bg-white/20 backdrop-blur-2xl rounded-3xl border border-white/40 shadow-xl p-8">
         <div className="flex flex-col items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-1">
-            Welcome Back
+          <h1 className="text-3xl font-bold text-gray-900 mb-1 capitalize">
+            {t("welcomeBack")}
           </h1>
-          <p className="text-gray-600 text-sm">
-            Sign in to your account to continue
-          </p>
+          <p className="text-gray-600 text-sm">{t("signIn")}</p>
         </div>
 
         <Form {...form}>
@@ -163,7 +161,7 @@ export default function LoginFormTransparent({
                 <FormItem>
                   <FormControl>
                     <Input
-                      placeholder="Enter your email"
+                      placeholder={t("emailPlaceholder")}
                       {...field}
                       disabled={seePassword}
                       className="w-full rounded-xl border border-white/30 bg-white/20 placeholder-gray-500 text-gray-900 focus:ring-2 focus:ring-indigo-400 backdrop-blur-md"
@@ -216,7 +214,7 @@ export default function LoginFormTransparent({
             {/* Submit */}
             <Button
               type="submit"
-              className="w-full py-3 rounded-xl bg-primary/90 text-white font-semibold hover:bg-primary/30 transition"
+              className="w-full py-3 rounded-xl bg-primary/90 text-white font-semibold hover:bg-primary/30 transition capitalize"
               disabled={
                 sendOtpMutation.isPending ||
                 submitOtpMutation.isPending ||
@@ -228,9 +226,9 @@ export default function LoginFormTransparent({
               submitOtpMutation.isPending ? (
                 <Loader2 className="animate-spin w-5 h-5" />
               ) : seePassword ? (
-                "Sign In"
+                t("signInButton")
               ) : (
-                "Get OTP"
+                t("getOtp")
               )}
             </Button>
           </form>
@@ -239,7 +237,9 @@ export default function LoginFormTransparent({
         {/* Social login */}
         {!isAdmin && (
           <div className="mt-6 text-center">
-            <p className="text-gray-500 text-sm mb-3">OR CONTINUE WITH</p>
+            <p className="text-gray-500 text-sm mb-3 uppercase">
+              {t("continueWith")}
+            </p>
             <div className="space-y-3">
               <LoginGoogleButton />
             </div>
@@ -252,7 +252,7 @@ export default function LoginFormTransparent({
             href="/registrieren"
             className="text-sm text-gray-700 hover:underline"
           >
-            Not have an account yet?
+            {t("noAccount")}
           </Link>
         </div>
       </div>

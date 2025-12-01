@@ -41,12 +41,12 @@ const MainHeader = () => {
       tl.fromTo(
         contactRef.current,
         { x: 50, opacity: 0 },
-        { x: 0, opacity: 1 }
+        { x: 0, opacity: 1 },
       ).fromTo(
         buttonRef.current,
         { x: 50, opacity: 0 },
         { x: 0, opacity: 1 },
-        "-=0.5" // overlap a little for smooth timing
+        "-=0.5", // overlap a little for smooth timing
       );
     }
   }, [isUserLoaded]);
@@ -71,7 +71,7 @@ const MainHeader = () => {
             : "absolute top-10 bg-transparent text-white opacity-100 -translate-y-10"
           : isSticky
           ? "fixed top-0 left-0 bg-white text-black shadow-md translate-y-0"
-          : "absolute top-0 left-0 bg-white text-black shadow-md -translate-y-0"
+          : "absolute top-0 left-0 bg-white text-black shadow-md -translate-y-0",
       )}
     >
       <div className="flex lg:gap-32 gap-4 md:px-20 px-4 lg:min-h-[100px] min-h-[60px] items-center">
@@ -105,16 +105,22 @@ const MainHeader = () => {
           {/* ✅ Right side: Contact + Login/User */}
           <div className="lg:flex hidden items-center gap-8">
             {/* Contact Info */}
-            <div ref={contactRef} className="flex items-center gap-2 opacity-0">
+            <div
+              ref={contactRef}
+              className="flex items-center gap-2 opacity-0"
+            >
               <PhoneCall className="text-black" />
-              <div className="font-semibold text-xl text-black">
-                +49 1520 6576540
-              </div>
+              <p className="font-semibold text-xl text-black">
+                +49 3222 1808038
+              </p>
             </div>
 
             {/* Button (only after user loaded) */}
             {isUserLoaded && (
-              <div ref={buttonRef} className="opacity-0">
+              <div
+                ref={buttonRef}
+                className="opacity-0"
+              >
                 <HoverButton
                   redirect_url="/anmelden"
                   isLogin={!!user}

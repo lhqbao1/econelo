@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ClockFading, Gauge, ShieldCheck } from "lucide-react";
+import { ClockFading, Gauge, ShieldCheck, Weight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import HoverButton from "../../shared/hover-button";
@@ -37,7 +37,7 @@ const HomeBanner = () => {
           opacity: 1,
           duration: 0.8,
           ease: "circ.out",
-        }
+        },
       );
 
       // 🟢 2️⃣ Tiêu đề — từ phải sang trái
@@ -45,7 +45,7 @@ const HomeBanner = () => {
         titleRef.current,
         { x: 100, opacity: 0 },
         { x: 0, opacity: 1, duration: 1, ease: "power3.out" },
-        "-=0.6" // xuất hiện gần đồng thời
+        "-=0.6", // xuất hiện gần đồng thời
       );
 
       // 2️⃣ Stats (3 icon) — từng cái từ dưới lên
@@ -61,7 +61,7 @@ const HomeBanner = () => {
             ease: "power2.out",
             stagger: 0.2, // từng cái cách nhau 0.2s
           },
-          "-=0.4" // overlap 1 chút cho mượt
+          "-=0.4", // overlap 1 chút cho mượt
         );
       }
 
@@ -70,7 +70,7 @@ const HomeBanner = () => {
         buttonRef.current,
         { x: 100, opacity: 0 },
         { x: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
-        "-=0.3"
+        "-=0.3",
       );
     }, sectionRef);
 
@@ -111,47 +111,74 @@ const HomeBanner = () => {
             {/* 1️⃣ Tiêu đề */}
             <h1
               ref={titleRef}
-              className="capitalize md:text-5xl text-2xl lg:font-semibold font-bold lg:max-w-xl max-w-xs lg:pt-40 pt-0 text-white lg:leading-18 leading-10 opacity-0 lg:text-left text-center"
+              className="
+                capitalize 
+                text-2xl md:text-5xl 
+                lg:font-semibold font-bold 
+                lg:max-w-xl max-w-xs 
+                lg:pt-40 pt-0 
+                text-white opacity-0 
+                lg:text-left text-center
+                leading-tight md:leading-snug lg:leading-normal
+              "
             >
               {t("bannerSlogan")}
             </h1>
 
             {/* 2️⃣ Stats */}
-            <div ref={statsRef} className="lg:flex hidden gap-12">
+            <div
+              ref={statsRef}
+              className="lg:flex hidden gap-12"
+            >
               <div className="stat-item space-y-2 flex flex-col items-center opacity-0">
-                <Gauge className="text-white size-12" strokeWidth={1} />
+                <Weight
+                  className="text-white size-12"
+                  strokeWidth={1}
+                />
                 <div>
                   <div className="text-md font-semibold text-center">
-                    {t("topSpeed")}
+                    {t("maxWeight")}
                   </div>
-                  <div className="text-base font-bold text-center">80 km/h</div>
+                  <div className="text-base font-bold text-center">190kg</div>
                 </div>
               </div>
 
-              <div className="stat-item space-y-2 flex flex-col items-center opacity-0">
-                <ClockFading className="text-white size-12" strokeWidth={1} />
+              {/* <div className="stat-item space-y-2 flex flex-col items-center opacity-0">
+                <ClockFading
+                  className="text-white size-12"
+                  strokeWidth={1}
+                />
                 <div>
                   <div className="text-md font-semibold text-center">
                     0-40 km/hr in
                   </div>
                   <div className="text-base font-bold text-center">3.3 sec</div>
                 </div>
-              </div>
+              </div> */}
 
               <div className="stat-item space-y-2 flex flex-col items-center opacity-0">
-                <ShieldCheck className="text-white size-12" strokeWidth={1} />
+                <ShieldCheck
+                  className="text-white size-12"
+                  strokeWidth={1}
+                />
                 <div>
                   <div className="text-md font-semibold text-center">
                     {t("range")}
                   </div>
-                  <div className="text-base font-bold text-center">116 km</div>
+                  <div className="text-base font-bold text-center">40 km</div>
                 </div>
               </div>
             </div>
 
             {/* 3️⃣ Button */}
-            <div ref={buttonRef} className="opacity-0">
-              <HoverButton text={t("bookNow")} redirect_url="/" />
+            <div
+              ref={buttonRef}
+              className="opacity-0"
+            >
+              <HoverButton
+                text={t("bookNow")}
+                redirect_url="/"
+              />
             </div>
           </div>
 
@@ -161,7 +188,7 @@ const HomeBanner = () => {
             className="absolute right-0 lg:top-9/12 top-10/12 -translate-y-1/2 space-y-8 opacity-0 z-40"
           >
             <Image
-              src={"/banner-image_2.png"}
+              src={"/J1000-banner.png"}
               width={1200}
               height={800}
               alt=""

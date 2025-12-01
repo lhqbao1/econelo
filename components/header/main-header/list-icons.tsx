@@ -45,9 +45,9 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
           total +
           supplierCart.items.reduce(
             (sum, item) => sum + (item.quantity || 0),
-            0
+            0,
           ),
-        0
+        0,
       );
     }
     if (localCart?.length) return localCart.length;
@@ -65,7 +65,7 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
           opacity: 1,
           duration: 0.5,
           ease: "back.out(1.7)", // bounce nhẹ
-        }
+        },
       );
     }
   }, [cartCount, isFetched]);
@@ -83,7 +83,7 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
         <Search
           className={cn(
             "w-6 h-6 cursor-pointer transition-colors duration-200",
-            iconColor
+            iconColor,
           )}
           strokeWidth={2}
         />
@@ -93,7 +93,7 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
       <div
         className={cn(
           "h-6 w-[1px] transition-colors duration-200",
-          dividerColor
+          dividerColor,
         )}
       />
 
@@ -103,7 +103,7 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
           <ShoppingCart
             className={cn(
               "w-6 h-6 cursor-pointer transition-colors duration-200",
-              iconColor
+              iconColor,
             )}
             strokeWidth={2}
           />
@@ -111,8 +111,8 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
             <span
               ref={badgeRef}
               className={cn(
-                "absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-semibold rounded-full",
-                badgeColor
+                "absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-semibold rounded-full bg-white",
+                badgeColor,
               )}
             >
               {cartCount > 99 ? "99+" : cartCount}

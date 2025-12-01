@@ -96,7 +96,7 @@ export default function CartLoginForm({
           onError(error) {
             toast.error(t("invalidCredentials"));
           },
-        }
+        },
       );
     }
   };
@@ -124,14 +124,17 @@ export default function CartLoginForm({
         onError(error) {
           toast.error(t("invalidCredentials"));
         },
-      }
+      },
     );
   };
 
   return (
     <div className="p-6 bg-white rounded-2xl w-full">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="space-y-6"
+        >
           {/* Email */}
           <FormField
             control={form.control}
@@ -182,7 +185,7 @@ export default function CartLoginForm({
                             // tự động focus sang input kế
                             if (val && idx < 5) {
                               const next = document.getElementById(
-                                `otp-${idx + 1}`
+                                `otp-${idx + 1}`,
                               ) as HTMLInputElement;
                               next?.focus();
                             }
@@ -238,7 +241,7 @@ export default function CartLoginForm({
           <div className="space-y-2">
             <Button
               type="submit"
-              className="w-full bg-secondary/95 hover:bg-secondary"
+              className="w-full bg-primary/95 hover:bg-primary"
               disabled={
                 submitOtpMutation.isPending || sendOtpMutation.isPending
               }
@@ -270,7 +273,7 @@ export default function CartLoginForm({
 
       {/* Forgot password */}
       {/* <div className="flex justify-end mt-2 lg:mt-4">
-                <Link href={`/forgot-password`} className="text-sm text-secondary hover:underline">
+                <Link href={`/forgot-password`} className="text-sm text-primary hover:underline">
 
                     {t("forgotPassword")}?
                 </Link>
@@ -281,7 +284,7 @@ export default function CartLoginForm({
         <span>{t("noAccount")}</span>
         <Link
           href={`/sign-up`}
-          className="font-medium text-secondary hover:underline"
+          className="font-medium text-primary hover:underline"
         >
           {t("createAccount")}
         </Link>

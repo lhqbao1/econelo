@@ -36,7 +36,7 @@ export const GetCartColumns = ({
 
   const handleAddToWishlist = (
     currentProduct: ProductItem,
-    deleteItem: CartItem
+    deleteItem: CartItem,
   ) => {
     if (!currentProduct) return;
     addToWishlistMutation.mutate(
@@ -50,7 +50,7 @@ export const GetCartColumns = ({
           const { message } = HandleApiError(error, t);
           toast.error(message);
         },
-      }
+      },
     );
   };
 
@@ -122,7 +122,7 @@ export const GetCartColumns = ({
                   />
                   {isCheckout && (
                     <Heart
-                      className="text-secondary cursor-pointer"
+                      className="text-primary cursor-pointer"
                       onClick={() => handleAddToWishlist(item.products, item)}
                       size={20}
                     />
@@ -238,7 +238,7 @@ export const GetCartColumns = ({
             />
             {isCheckout && (
               <Heart
-                className="text-secondary cursor-pointer"
+                className="text-primary cursor-pointer"
                 onClick={() => handleAddToWishlist(item.products, item)}
                 size={20}
               />

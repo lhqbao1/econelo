@@ -1,8 +1,10 @@
 import React from "react";
 import { Button } from "../../ui/button";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 const LoginGoogleButton = () => {
+  const t = useTranslations();
   const handleLoginGoogle = async () => {
     // Gọi thẳng đến backend bằng redirect, không dùng axios
     window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}google/login`;
@@ -15,7 +17,7 @@ const LoginGoogleButton = () => {
         onClick={() => handleLoginGoogle()}
       >
         <Image src={"/google.svg"} width={20} height={20} alt="" />
-        Continue with Google
+        {t("continueGoogle")}
       </Button>
     </div>
   );

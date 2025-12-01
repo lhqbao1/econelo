@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 
 export default function NewArrivedSection() {
   const t = useTranslations();
-  const { data: products, isLoading, isError } = useGetAllProducts(); // ✅ bật suspense
+  const { data: products, isLoading, isError } = useGetAllProducts({});
 
   return (
     <section className="w-full lg:py-12 md:py-8 py-6 bg-white flex justify-center">

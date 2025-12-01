@@ -30,25 +30,30 @@ export function NavBar() {
 
   const childCategories = React.useMemo(
     () => flattenChildCategories(categories ?? []),
-    [categories]
+    [categories],
   );
 
   return (
     <NavigationMenu viewport={isMobile}>
       <NavigationMenuList className="flex-wrap">
-        <NavigationMenuItem>
-          <NavigationMenuTrigger className="uppercase font-semibold bg-transparent text-sm hover:bg-transparent cursor-pointer data-[state=open]:hover:bg-transparent data-[state=open]:focus:bg-transparent data-[state=open]:bg-transparent">
-            {t("pages")}
+        <NavigationMenuItem className="">
+          <NavigationMenuTrigger
+            hasIcon={false}
+            className="uppercase bg-transparent font-semibold text-sm hover:bg-transparent cursor-pointer data-[state=open]:hover:bg-transparent data-[state=open]:focus:bg-transparent data-[state=open]:bg-transparent"
+          >
+            <Link href={"/ueber-uns"}>{t("aboutUs")}</Link>
           </NavigationMenuTrigger>
-          <NavigationMenuContent className="rounded-xs">
-            <ul className="grid gap-2 md:w-[400px] lg:w-[300px]">
-              <ListItem href="/ueber-uns" title="ABOUT US"></ListItem>
-              <ListItem href="/" title="OUR HISTORY"></ListItem>
-              <ListItem href="/" title="FAQ"></ListItem>
-              <ListItem href="/" title="SHOP"></ListItem>
-            </ul>
-          </NavigationMenuContent>
         </NavigationMenuItem>
+
+        <NavigationMenuItem className="">
+          <NavigationMenuTrigger
+            hasIcon={false}
+            className="uppercase bg-transparent font-semibold text-sm hover:bg-transparent cursor-pointer data-[state=open]:hover:bg-transparent data-[state=open]:focus:bg-transparent data-[state=open]:bg-transparent"
+          >
+            <Link href={"/alle-produkte"}>{t("shopAll")}</Link>
+          </NavigationMenuTrigger>
+        </NavigationMenuItem>
+
         <NavigationMenuItem>
           <NavigationMenuTrigger className="uppercase font-semibold bg-transparent text-sm hover:bg-transparent cursor-pointer data-[state=open]:hover:bg-transparent data-[state=open]:focus:bg-transparent data-[state=open]:bg-transparent">
             {t("categories")}
@@ -74,7 +79,7 @@ export function NavBar() {
             hasIcon={false}
             className="uppercase bg-transparent font-semibold text-sm hover:bg-transparent cursor-pointer data-[state=open]:hover:bg-transparent data-[state=open]:focus:bg-transparent data-[state=open]:bg-transparent"
           >
-            {t("contactUs")}
+            <Link href={"/kontakt"}>{t("contactUs")}</Link>
           </NavigationMenuTrigger>
         </NavigationMenuItem>
       </NavigationMenuList>
@@ -90,8 +95,14 @@ function ListItem({
 }: React.ComponentPropsWithoutRef<"li"> & { href: string }) {
   return (
     <li {...props}>
-      <NavigationMenuLink asChild className="group/item block">
-        <Link href={href} className="pl-8 py-5 transition-all duration-300">
+      <NavigationMenuLink
+        asChild
+        className="group/item block"
+      >
+        <Link
+          href={href}
+          className="pl-8 py-5 transition-all duration-300"
+        >
           <div className="text-black text-md leading-none font-semibold transition-all duration-400 group-hover/item:pl-2 group-hover/item:text-primary">
             {title}
           </div>
