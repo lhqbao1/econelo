@@ -126,7 +126,7 @@ const HomeBanner = () => {
             </h1>
 
             {/* 2️⃣ Stats */}
-            <div
+            {/* <div
               ref={statsRef}
               className="lg:flex hidden gap-12"
             >
@@ -143,7 +143,7 @@ const HomeBanner = () => {
                 </div>
               </div>
 
-              {/* <div className="stat-item space-y-2 flex flex-col items-center opacity-0">
+              <div className="stat-item space-y-2 flex flex-col items-center opacity-0">
                 <ClockFading
                   className="text-white size-12"
                   strokeWidth={1}
@@ -154,7 +154,7 @@ const HomeBanner = () => {
                   </div>
                   <div className="text-base font-bold text-center">3.3 sec</div>
                 </div>
-              </div> */}
+              </div>
 
               <div className="stat-item space-y-2 flex flex-col items-center opacity-0">
                 <ShieldCheck
@@ -168,7 +168,7 @@ const HomeBanner = () => {
                   <div className="text-base font-bold text-center">40 km</div>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* 3️⃣ Button */}
             <div

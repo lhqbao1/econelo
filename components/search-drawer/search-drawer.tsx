@@ -68,7 +68,7 @@ const SearchDrawer = ({ iconColor }: SearchDrawerProps) => {
           />
         </button>
       </DrawerTrigger>
-      <DrawerContent className="w-full h-full flex flex-col p-0 data-[vaul-drawer-direction=left]:w-full duration-500">
+      <DrawerContent className="w-full h-full flex flex-col p-0 data-[vaul-drawer-direction=left]:w-full duration-500 min-w-[500px]">
         <DrawerTitle className="border-b-2 p-4 flex justify-between">
           <div className="uppercase font-bold text-xl">
             {t("searchProduct")}
@@ -95,13 +95,13 @@ const SearchDrawer = ({ iconColor }: SearchDrawerProps) => {
               <CommandEmpty>{t("noResult")}</CommandEmpty>
             )}
             {results.length > 0 && (
-              <CommandGroup heading="Products">
+              <CommandGroup heading={t("searchProduct")}>
                 {results.map((product: ProductItem) => (
                   <CommandItem
                     key={product.id}
                     value={product.name}
                     onSelect={() => {
-                      router.push(`/product/${product.url_key}`, { locale });
+                      router.push(`/produkt/${product.url_key}`, { locale });
                       setQuery("");
                       setOpen(false);
                     }}

@@ -103,7 +103,10 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
               ref={badgeRef}
               className={cn(
                 "absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-semibold rounded-full",
-                isSticky ? "bg-primary text-white" : "bg-white text-primary",
+                // chỉ khi đang ở Home và chưa sticky → màu cũ
+                isHome && !isSticky
+                  ? "bg-white text-primary"
+                  : "bg-primary text-white",
               )}
             >
               {cartCount > 99 ? "99+" : cartCount}

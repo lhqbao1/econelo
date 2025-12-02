@@ -4,39 +4,41 @@ import { Bike, CreditCard, Truck, Wrench } from "lucide-react";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTranslations } from "next-intl";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const steps = [
-  {
-    id: "01",
-    title: "Choose Your Model",
-    desc: "Explore our wide range of electric scooters and bikes. Find the model that suits your lifestyle and daily needs.",
-    icon: <Bike className="w-14 h-14 text-lime-500" />,
-  },
-  {
-    id: "02",
-    title: "Easy Financing",
-    desc: "Flexible payment plans and financing options available. Drive home your dream electric vehicle with ease.",
-    icon: <CreditCard className="w-14 h-14 text-lime-500" />,
-  },
-  {
-    id: "03",
-    title: "Fast Delivery",
-    desc: "Once you place your order, we prepare and deliver your new e-vehicle quickly — ready to ride immediately.",
-    icon: <Truck className="w-14 h-14 text-lime-500" />,
-  },
-  {
-    id: "04",
-    title: "After-Sales Support",
-    desc: "Enjoy peace of mind with our full warranty and service support. We’re always here to keep your e-ride running smoothly.",
-    icon: <Wrench className="w-14 h-14 text-lime-500" />,
-  },
-];
 
 export default function StepsSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
+  const t = useTranslations();
+
+  const steps = [
+    {
+      id: "01",
+      title: t("chooseModel"),
+      desc: t("chooseModelDes"),
+      icon: <Bike className="w-14 h-14 text-lime-500" />,
+    },
+    {
+      id: "02",
+      title: t("easyPayment"),
+      desc: t("easyPaymentDes"),
+      icon: <CreditCard className="w-14 h-14 text-lime-500" />,
+    },
+    {
+      id: "03",
+      title: t("fastDelivery"),
+      desc: t("fastDeliveryDes"),
+      icon: <Truck className="w-14 h-14 text-lime-500" />,
+    },
+    {
+      id: "04",
+      title: t("afterSale"),
+      desc: t("afterSaleDes"),
+      icon: <Wrench className="w-14 h-14 text-lime-500" />,
+    },
+  ];
 
   useEffect(() => {
     if (!sectionRef.current || cardsRef.current.length === 0) return;
@@ -62,7 +64,7 @@ export default function StepsSection() {
           duration: 0.8,
           ease: "power3.out",
           stagger: 0.2, // stagger in from the left with a 0.1 second gap in between animations
-        }
+        },
       );
     }, sectionRef);
 
@@ -79,11 +81,11 @@ export default function StepsSection() {
         <div className="flex items-center justify-center gap-2">
           <span className="w-2 h-2 bg-lime-500 rounded-full"></span>
           <span className="uppercase text-sm font-semibold text-gray-600">
-            Shopping Process
+            {t("shoppingProcess")}
           </span>
         </div>
         <h2 className="text-4xl font-extrabold text-black">
-          4 simple steps to get your electric vehicle
+          {t("shoppingSteps")}
         </h2>
       </div>
 

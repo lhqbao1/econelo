@@ -72,7 +72,7 @@ const ContactForm = () => {
       Object.entries(values).filter(([key, value]) => {
         if (key === "email" || key === "subject") return true;
         return value !== null && value !== undefined && value !== "";
-      })
+      }),
     ) as unknown as ContactFormInput;
 
     uploadContactFormMutation.mutate(
@@ -87,10 +87,10 @@ const ContactForm = () => {
         },
         onError() {
           toast.error(
-            "Ihre Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut."
+            "Ihre Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
           );
         },
-      }
+      },
     );
   };
 
@@ -101,29 +101,33 @@ const ContactForm = () => {
           <div className="flex justify-start items-center gap-2">
             <span className="w-2 h-2 bg-white rounded-full"></span>
             <span className="uppercase text-sm font-semibold text-white">
-              Get in touch
+              {t("getInTouch")}
             </span>
           </div>
           <div>
             <h2 className="text-white lg:text-4xl text-3xl font-bold">
-              Send Message Us
+              {t("sendMessageUs")}
             </h2>
-            <p className="text-white">
-              Just send us your questions or concerns to starting a new project.
-            </p>
+            <p className="text-white">{t("sendMessageUsDes")}</p>
           </div>
           <div className="text-white">
-            <p>Monday – Friday 9.00 – 6.00</p>
-            <p>Sunday & Public Holidays (Closed)</p>
+            <p>{t("openTime")}</p>
+            <p>{t("closedTime")}</p>
           </div>
-          <HoverButton redirect_url="#" text="Request a callback" />
+          <HoverButton
+            redirect_url="#"
+            text={t("requestCallback")}
+          />
         </div>
       </div>
 
       <div className="bg-[#EEF3F5] flex justify-center items-center">
         <div className="w-3/4 bg-white rounded-xl md:px-6 lg:px-12 xl:px-16 md:py-4 lg:py-10 xl:py-12">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-6"
+            >
               {/* Email */}
               <FormField
                 control={form.control}
@@ -134,7 +138,10 @@ const ContactForm = () => {
                       {t("email")}
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder={t("emailPlaceholder")} {...field} />
+                      <Input
+                        placeholder={t("emailPlaceholder")}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -150,7 +157,10 @@ const ContactForm = () => {
                     <FormLabel className="lg:text-base font-semibold text-sm">
                       {t("subject")}
                     </FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger className="border w-full">
                           <SelectValue placeholder={t("subjectPlaceholder")} />
@@ -158,7 +168,10 @@ const ContactForm = () => {
                       </FormControl>
                       <SelectContent>
                         {SUBJECT_OPTIONS_DE.map((option) => (
-                          <SelectItem key={option} value={option}>
+                          <SelectItem
+                            key={option}
+                            value={option}
+                          >
                             {option}
                           </SelectItem>
                         ))}

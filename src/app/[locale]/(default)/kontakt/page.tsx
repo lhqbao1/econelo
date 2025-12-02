@@ -2,6 +2,7 @@ import StepsSection from "@/components/layout/about/steps";
 import ContactForm from "@/components/layout/contact/contact-form";
 import ContactInfo from "@/components/layout/contact/contact-info";
 import { ChevronsRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import Script from "next/script";
@@ -31,6 +32,7 @@ export const metadata = {
 };
 
 const ContactPage = () => {
+  const t = useTranslations();
   return (
     <div className="min-h-screen flex flex-col items-center relative lg:pt-[100px] pt-[70px]">
       {/* Banner */}
@@ -43,7 +45,7 @@ const ContactPage = () => {
           unoptimized
         />
         <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl flex gap-3 z-20 px-6 py-1.5 text-sm items-center">
-          <Link href={"/"}>Home</Link>
+          <Link href={"/"}>{t("home")}</Link>
           <ChevronsRight size={18} />
           <p>Kontakt</p>
         </div>

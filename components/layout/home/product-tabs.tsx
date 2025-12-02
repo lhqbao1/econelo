@@ -25,7 +25,7 @@ export default function ProductTabsClient({
   categoriesList,
 }: ProductTabsClientProps) {
   const t = useTranslations();
-  const [active, setActive] = useState<string>(categoriesList?.[0]?.slug ?? "");
+  const [active, setActive] = useState<string>(categoriesList?.[1]?.slug ?? "");
 
   const { data, isLoading } = useQuery({
     queryKey: ["categoryProducts", active],
