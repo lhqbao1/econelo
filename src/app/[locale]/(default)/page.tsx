@@ -56,7 +56,7 @@ function HomeContent() {
       <MissionSection />
       {/* chỉ bọc những cái thực sự async */}
       <NewArrivedSection /> {/* đã tự có Suspense bên trong */}
-      <VideoSection />
+      {/* <VideoSection /> */}
       <Suspense fallback={<SectionSkeleton />}>
         <ProductTabsServer />
       </Suspense>

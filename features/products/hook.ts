@@ -1,35 +1,45 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { CreateProduct, deleteProduct, editProduct, generateSEO, getAllProducts, getProductById, getProductByTag } from "./api"
-import { ProductInput } from "@/lib/schema/product"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  CreateProduct,
+  deleteProduct,
+  editProduct,
+  generateSEO,
+  getAllProducts,
+  GetAllProductsParams,
+  getProductById,
+  getProductByTag,
+} from "./api";
+import { ProductInput } from "@/lib/schema/product";
 
-interface UseGetAllProductsParams {
-  page?: number;
-  page_size?: number;
-  all_products?: boolean;
-  search?: string;
-}
 interface SEOInput {
-  title: string
-  description: string
+  title: string;
+  description: string;
 }
 
-export function useGetAllProducts({ page, page_size, all_products, search,  }: UseGetAllProductsParams = {}) {
+export function useGetAllProducts({
+  page,
+  page_size,
+  all_products,
+  search,
+  is_econelo,
+}: GetAllProductsParams = {}) {
   return useQuery({
-    queryKey: ["products", page, page_size, all_products, search], // queryKey thay đổi khi page/page_size thay đổi
-    queryFn: () => getAllProducts({ page, page_size, all_products,search }),
+    queryKey: ["products", page, page_size, all_products, search, is_econelo], // queryKey thay đổi khi page/page_size thay đổi
+    queryFn: () =>
+      getAllProducts({ page, page_size, all_products, search, is_econelo }),
     retry: false,
-     staleTime: 1000 * 60 * 5,
-  })
+    staleTime: 1000 * 60 * 5,
+  });
 }
 
-export function useDeleteProduct(){
-  const qc = useQueryClient()
+export function useDeleteProduct() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => deleteProduct(id),
     onSuccess: (res) => {
-      qc.invalidateQueries({ queryKey: ["products"] })
+      qc.invalidateQueries({ queryKey: ["products"] });
     },
-  })
+  });
 }
 
 export function useGetProductById(id: string) {
@@ -38,7 +48,7 @@ export function useGetProductById(id: string) {
     queryFn: () => getProductById(id),
     enabled: !!id,
     retry: false,
-  })
+  });
 }
 
 export function useGetProductByTag(tag: string) {
@@ -47,35 +57,36 @@ export function useGetProductByTag(tag: string) {
     queryFn: () => getProductByTag(tag),
     enabled: !!tag,
     retry: false,
-  })
+  });
 }
 
 export function useAddProduct() {
-    const qc = useQueryClient()
-    return useMutation({
-      mutationFn: (input: ProductInput) => CreateProduct(input),
-      onSuccess: (res) => {
-        qc.invalidateQueries({ queryKey: ["products"] })
-      },
-    })
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: ProductInput) => CreateProduct(input),
+    onSuccess: (res) => {
+      qc.invalidateQueries({ queryKey: ["products"] });
+    },
+  });
 }
 
 export function useEditProduct() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: ProductInput }) => editProduct(input, id),
+    mutationFn: ({ id, input }: { id: string; input: ProductInput }) =>
+      editProduct(input, id),
     onSuccess: (res) => {
-      qc.invalidateQueries({ queryKey: ["products"] })
+      qc.invalidateQueries({ queryKey: ["products"] });
     },
-  })
+  });
 }
 
 export function useGenerateSEO() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: SEOInput) => generateSEO(input),
     // onSuccess: (res) => {
     //   qc.invalidateQueries({ queryKey: ["products"] })
     // },
-  })
+  });
 }
