@@ -35,7 +35,7 @@ export default function ShopGridLyaout({ products }: ShopGridLayoutProps) {
 
     if (!userId) {
       const existingItem = cart.find(
-        (item: CartItemLocal) => item.product_id === currentProduct.id
+        (item: CartItemLocal) => item.product_id === currentProduct.id,
       );
       const totalQuantity = (existingItem?.quantity || 0) + 1;
       if (totalQuantity > currentProduct.stock) {
@@ -68,7 +68,7 @@ export default function ShopGridLyaout({ products }: ShopGridLayoutProps) {
           onError() {
             toast.error(t("addToCartFail"));
           },
-        }
+        },
       );
     } else {
       addToCartMutation.mutate(
@@ -86,7 +86,7 @@ export default function ShopGridLyaout({ products }: ShopGridLayoutProps) {
             toast.error(message);
             if (status === 401) router.push("/login");
           },
-        }
+        },
       );
     }
   };
@@ -108,7 +108,7 @@ export default function ShopGridLyaout({ products }: ShopGridLayoutProps) {
           toast.error(message);
           if (status === 401) router.push("/login");
         },
-      }
+      },
     );
   };
 
@@ -121,7 +121,7 @@ export default function ShopGridLyaout({ products }: ShopGridLayoutProps) {
 
       const metaDesc = card.querySelector(".meta-desc");
       const bottomOverlay = card.querySelector(
-        ".meta-desc + div.absolute.inset-0"
+        ".meta-desc + div.absolute.inset-0",
       ); // layout mới (3 nút nhỏ)
 
       if (!imgOverlay || !buttons?.length || !metaDesc || !bottomOverlay)
@@ -159,7 +159,7 @@ export default function ShopGridLyaout({ products }: ShopGridLayoutProps) {
                 duration: 0.25,
                 stagger: 0.05,
                 ease: "back.out(1.7)",
-              }
+              },
             );
           },
         });
@@ -250,7 +250,10 @@ export default function ShopGridLyaout({ products }: ShopGridLayoutProps) {
             </Link>
 
             {/* Overlay ẩn (GSAP sẽ bật khi hover) */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/80 opacity-0">
+            <div
+              onClick={() => router.push(`/produkt/${product.url_key}`)}
+              className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/80 opacity-0 cursor-pointer"
+            >
               <Button
                 className="bg-black text-white px-6 py-2 font-semibold rounded-full"
                 onClick={() => router.push(`/produkt/${product.url_key}`)}
@@ -266,7 +269,7 @@ export default function ShopGridLyaout({ products }: ShopGridLayoutProps) {
             </div>
           </div>
 
-          <div className="flex-1 flex flex-col justify-between gap-6">
+          <div className="flex-1 flex flex-col justify-between gap-6 px-4">
             <div className="space-y-1">
               <p className="text-primary uppercase text-sm font-semibold">
                 {product.categories[0].name}
@@ -276,7 +279,11 @@ export default function ShopGridLyaout({ products }: ShopGridLayoutProps) {
               </h3>
               <div className="flex items-center gap-1">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <Star key={i} size={16} className="text-primary" />
+                  <Star
+                    key={i}
+                    size={16}
+                    className="text-primary"
+                  />
                 ))}
                 <span className="text-sm font-medium">(0)</span>
               </div>
@@ -331,7 +338,7 @@ export default function ShopGridLyaout({ products }: ShopGridLayoutProps) {
                   "de-DE",
                   {
                     minimumFractionDigits: 2,
-                  }
+                  },
                 )}
               </p>
               {product.price > product.final_price && (

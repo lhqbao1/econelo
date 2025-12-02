@@ -63,10 +63,10 @@ const AdvantagesSection = () => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 80%",
+          start: "top 50%",
           end: "bottom 20%",
           toggleActions: "play none none reverse",
-          // markers: true,
+          markers: true,
         },
       });
 
@@ -79,10 +79,10 @@ const AdvantagesSection = () => {
           {
             opacity: 1,
             x: 0,
-            duration: 0.8,
+            duration: 0.4,
             ease: "back.out(1.7)", // bounce nhẹ khi tới vị trí cuối
           },
-          i * 0.3 // delay giữa từng cặp
+          i * 0.3, // delay giữa từng cặp
         );
       });
 
@@ -94,10 +94,10 @@ const AdvantagesSection = () => {
           opacity: 1,
           scale: 1,
           y: 0,
-          duration: 1,
+          duration: 0.5,
           ease: "back.out(1.4)",
         },
-        "-=0.3"
+        "-=0.3",
       );
     }, sectionRef);
 

@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getCartItems } from "@/features/cart/api";
 import type { CartResponse } from "@/types/cart";
 import gsap from "gsap";
+import SearchDrawer from "@/components/search-drawer/search-drawer";
 
 interface ListIconsProps {
   isSticky: boolean;
@@ -74,21 +75,11 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
   const baseColor = !isHome ? "primary" : isSticky ? "primary" : "white";
   const iconColor = `text-${baseColor}`;
   const dividerColor = baseColor === "white" ? "bg-white" : `bg-primary`;
-  const badgeColor = "bg-primary text-white";
 
   return (
     <div className="flex items-center gap-4 px-4 py-2">
       {/* 🔍 Search Icon */}
-      <button className="p-2 hover:scale-110 transition-transform duration-200">
-        <Search
-          className={cn(
-            "w-6 h-6 cursor-pointer transition-colors duration-200",
-            iconColor,
-          )}
-          strokeWidth={2}
-        />
-      </button>
-
+      <SearchDrawer iconColor={iconColor} />
       {/* Divider */}
       <div
         className={cn(
@@ -111,8 +102,11 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
             <span
               ref={badgeRef}
               className={cn(
-                "absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-semibold rounded-full bg-white",
-                badgeColor,
+                "absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-semibold rounded-full",
+                // chỉ khi đang ở Home và chưa sticky → màu cũ
+                isHome && !isSticky
+                  ? "bg-white text-primary"
+                  : "bg-primary text-white",
               )}
             >
               {cartCount > 99 ? "99+" : cartCount}

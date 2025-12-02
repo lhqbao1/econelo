@@ -131,7 +131,7 @@ const MainFooter = () => {
             <p className="text-gray-400 leading-relaxed max-w-xs">
               Herr Andreas Bachl
             </p>
-            <div className="text-gray-400">+43 68110 327073</div>
+            <div className="text-gray-400">+49 30 814 537 080</div>
             <div className="text-gray-400">andreas.bachl@prestige-home.de</div>
             {/* <p className="text-gray-400">{t("feelFree")}</p> */}
           </div>

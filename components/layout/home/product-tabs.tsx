@@ -25,7 +25,7 @@ export default function ProductTabsClient({
   categoriesList,
 }: ProductTabsClientProps) {
   const t = useTranslations();
-  const [active, setActive] = useState<string>(categoriesList?.[0]?.slug ?? "");
+  const [active, setActive] = useState<string>(categoriesList?.[1]?.slug ?? "");
 
   const { data, isLoading } = useQuery({
     queryKey: ["categoryProducts", active],
@@ -35,6 +35,12 @@ export default function ProductTabsClient({
   });
 
   const products = data?.products ?? [];
+
+  const reordered = [
+    categoriesList[1], // cat thứ 2
+    categoriesList[3], // cat thứ 4
+    ...categoriesList.filter((_, i) => i !== 1 && i !== 3),
+  ];
 
   return (
     <>
@@ -93,11 +99,11 @@ export default function ProductTabsClient({
             <Tabs
               value={active}
               onValueChange={setActive}
-              defaultValue={categoriesList[0]?.slug}
+              defaultValue={reordered[0]?.slug}
               className="w-full"
             >
               <TabsList className="flex flex-wrap justify-center gap-3 mb-8 bg-transparent">
-                {categoriesList.map((cat, i) => (
+                {reordered.map((cat, i) => (
                   <Fragment key={cat.id}>
                     <TabsTrigger
                       value={cat.slug}
@@ -105,7 +111,7 @@ export default function ProductTabsClient({
                         "lg:px-5 px-2 lg:py-3 py-1 font-medium text-sm uppercase transition-all rounded-full border border-gray-200",
                         active === cat.slug
                           ? "bg-primary text-white border-primary"
-                          : "text-gray-600 hover:bg-primary hover:text-white"
+                          : "text-gray-600 hover:bg-primary hover:text-white",
                       )}
                     >
                       {cat.name}
@@ -119,7 +125,10 @@ export default function ProductTabsClient({
                 ))}
               </TabsList>
 
-              <TabsContent className="w-full" value={active}>
+              <TabsContent
+                className="w-full"
+                value={active}
+              >
                 {isLoading ? (
                   <ProductGridSkeleton />
                 ) : (
