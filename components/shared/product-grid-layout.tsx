@@ -281,7 +281,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
                         alt={product.name}
                         width={300}
                         height={300}
-                        className="w-full h-80 p-4 lg:p-10 object-contain transition-all duration-500 group-hover:scale-110"
+                        className="w-full h-96 p-4 lg:p-10 object-contain transition-all duration-500 group-hover:scale-110"
                       />
                     </Link>
 

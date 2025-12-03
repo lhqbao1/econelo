@@ -14,7 +14,7 @@ const TopFooter = () => {
         />
         <div>
           <h4 className="font-bold text-lg text-black">{t("hotLine")}</h4>
-          <p className="text-gray-700 text-base">+49 3222 1808038</p>
+          <p className="text-gray-700 text-base">+49 30 814 537 080</p>
         </div>
       </div>
 
