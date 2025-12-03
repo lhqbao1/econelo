@@ -66,7 +66,7 @@ const AdvantagesSection = () => {
           start: "top 50%",
           end: "bottom 20%",
           toggleActions: "play none none reverse",
-          markers: true,
+          // markers: true,
         },
       });
 
@@ -150,7 +150,7 @@ const AdvantagesSection = () => {
           {/* Center Image */}
           <div className="flex justify-center center-image">
             <Image
-              src="/about-section-image.png"
+              src="/advantages-image.jpg"
               alt="Eco scooter"
               width={500}
               height={500}

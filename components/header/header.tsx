@@ -111,7 +111,7 @@ const MainHeader = () => {
             >
               <PhoneCall className="text-black" />
               <p className="font-semibold text-xl text-black">
-                +49 3222 1808038
+                +49 30 814 537 080
               </p>
             </div>
 

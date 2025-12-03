@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image";
 import React, { useEffect, useMemo, useState } from "react";
-import { Heart, Trash2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/src/i18n/navigation";
 import { useCartLocal } from "@/hooks/cart";
@@ -13,14 +11,12 @@ import { toast } from "sonner";
 import CartTable from "@/components/layout/cart/cart-table";
 import CartLocalTable from "@/components/layout/cart/cart-local-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BadgePercent } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { LoginDrawer } from "@/components/shared/login-drawer";
 
 export default function CartPage() {
   const [userId, setUserId] = React.useState<string | null>(
-    typeof window !== "undefined" ? localStorage.getItem("userId") : ""
+    typeof window !== "undefined" ? localStorage.getItem("userId") : "",
   );
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const t = useTranslations();
@@ -54,10 +50,10 @@ export default function CartPage() {
       // 🧩 Lấy thời gian mới nhất trong từng CartResponseItem (flatten tạm)
       const sorted = [...response].sort((a, b) => {
         const latestA = Math.max(
-          ...a.items.map((item) => new Date(item.created_at).getTime())
+          ...a.items.map((item) => new Date(item.created_at).getTime()),
         );
         const latestB = Math.max(
-          ...b.items.map((item) => new Date(item.created_at).getTime())
+          ...b.items.map((item) => new Date(item.created_at).getTime()),
         );
         return latestB - latestA;
       });
@@ -71,7 +67,7 @@ export default function CartPage() {
   // Nếu có user thì hiển thị cart trên server, không thì localCart
   const displayedCart = useMemo(
     () => (userId ? cart ?? [] : localCart),
-    [cart, localCart, userId]
+    [cart, localCart, userId],
   );
 
   const { updateStatus } = useCartLocal();
@@ -120,11 +116,6 @@ export default function CartPage() {
     }
   };
 
-  const flattenedItems = useMemo(
-    () => cart?.flatMap((cartItem) => cartItem.items),
-    [cart]
-  );
-
   return (
     <div className="min-h-screen  flex flex-col items-center py-10 px-4 relative md:pt-[140px]">
       <div className="w-full max-w-6xl bg-white p-8 rounded-lg shadow-sm">
@@ -148,7 +139,7 @@ export default function CartPage() {
                 }
                 onToggleAll={(is_active) => {
                   localCart.forEach((item) =>
-                    updateStatus({ product_id: item.product_id, is_active })
+                    updateStatus({ product_id: item.product_id, is_active }),
                   );
                 }}
               />
