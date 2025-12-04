@@ -22,6 +22,8 @@ import { useSyncLocalCart } from "@/features/cart/hook";
 import Image from "next/image";
 import LoginGoogleButton from "./login-google";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../../ui/input-otp";
+import { useAtom } from "jotai";
+import { userIdAtom } from "@/store/auth";
 
 interface LoginFormProps {
   isAdmin?: boolean;
@@ -34,7 +36,7 @@ export default function LoginFormTransparent({
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations();
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [userId, setUserId] = useAtom(userIdAtom);
 
   const formSchema = z.object({
     username: z.string().min(1, t("emailRequired")).email(t("invalidEmail")),
@@ -81,7 +83,7 @@ export default function LoginFormTransparent({
               isAdmin ? "admin_access_token" : "access_token",
               token,
             );
-            localStorage.setItem("userId", data.id);
+            setUserId(data.id);
             toast.success(t("loginSuccess"));
             if (!isAdmin) syncLocalCartMutation.mutate();
             router.push(isAdmin ? "/admin/orders/list" : "/", { locale });
@@ -105,7 +107,7 @@ export default function LoginFormTransparent({
           onSuccess: (data) => {
             const token = data.access_token;
             localStorage.setItem("access_token", token);
-            localStorage.setItem("userId", data.id);
+            setUserId(data.id);
             router.push("/", { locale });
             syncLocalCartMutation.mutate();
             toast.success(t("loginSuccess"));
@@ -125,7 +127,7 @@ export default function LoginFormTransparent({
           onSuccess: (data) => {
             const token = data.access_token;
             localStorage.setItem("admin_access_token", token);
-            localStorage.setItem("userId", data.id);
+            setUserId(data.id);
             router.push("/admin/orders/list", { locale });
             toast.success(t("loginSuccess"));
           },

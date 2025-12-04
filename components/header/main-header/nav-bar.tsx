@@ -79,6 +79,15 @@ export function NavBar() {
             hasIcon={false}
             className="uppercase bg-transparent font-semibold text-sm hover:bg-transparent cursor-pointer data-[state=open]:hover:bg-transparent data-[state=open]:focus:bg-transparent data-[state=open]:bg-transparent"
           >
+            <Link href={"/galerie"}>{t("gallery")}</Link>
+          </NavigationMenuTrigger>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem className="hidden md:block">
+          <NavigationMenuTrigger
+            hasIcon={false}
+            className="uppercase bg-transparent font-semibold text-sm hover:bg-transparent cursor-pointer data-[state=open]:hover:bg-transparent data-[state=open]:focus:bg-transparent data-[state=open]:bg-transparent"
+          >
             <Link href={"/kontakt"}>{t("contactUs")}</Link>
           </NavigationMenuTrigger>
         </NavigationMenuItem>

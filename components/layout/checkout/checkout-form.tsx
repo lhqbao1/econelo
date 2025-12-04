@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { FormProvider, UseFormReturn } from "react-hook-form";
 import { CreateOrderFormValues } from "@/lib/schema/checkout";
 import {
@@ -20,7 +20,10 @@ import ShippingSection from "../single-product/shipping-section";
 import { CheckoutAddressSection } from "./checkout-address";
 import Link from "next/link";
 import { toast } from "sonner";
-import StripeLayout from "../stripe/stripe";
+import CheckoutPaymentUI from "../stripe/payment-ui";
+import StripeProvider from "../stripe/stripe";
+import StripeLayout from "../stripe/stripe-layout";
+import { CartItem, CartResponse } from "@/types/cart";
 
 interface CheckoutFormSectionProps {
   form: UseFormReturn<CreateOrderFormValues>;
@@ -28,8 +31,8 @@ interface CheckoutFormSectionProps {
   setClientSecret: React.Dispatch<React.SetStateAction<string | null>>;
   total?: number;
   setTotal?: React.Dispatch<React.SetStateAction<number>>;
-  openDialog?: boolean;
-  setOpenDialog?: React.Dispatch<React.SetStateAction<boolean>>;
+  openDialog: boolean;
+  setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>;
   onSubmit: (values: CreateOrderFormValues) => void;
 }
 
@@ -44,6 +47,35 @@ export const CheckoutFormSection = ({
   onSubmit,
 }: CheckoutFormSectionProps) => {
   const t = useTranslations();
+  const couponAmount = form.watch("coupon_amount");
+  const voucherAmount = form.watch("voucher_amount");
+
+  // const totalEuro = useMemo(() => {
+  //   const productsTotal =
+  //     cartItems && cartItems.length > 0
+  //       ? cartItems
+  //           .flatMap((g) => g.items)
+  //           .filter((i) => i.is_active)
+  //           .reduce((sum, item) => sum + (item.final_price ?? 0), 0)
+  //       : (localCart ?? [])
+  //           .filter((i) => i.is_active)
+  //           .reduce(
+  //             (sum, item) =>
+  //               sum + (item.item_price ?? 0) * (item.quantity ?? 1),
+  //             0,
+  //           );
+
+  //   return (
+  //     productsTotal +
+  //     (shippingCost ?? 0) -
+  //     (couponAmount ?? 0) -
+  //     (voucherAmount ?? 0)
+  //   );
+  // }, [cartItems, localCart, shippingCost, couponAmount, voucherAmount]);
+  // // Chuyển sang cents cho Stripe
+  // const totalCents = useMemo(() => {
+  //   return Math.round(totalEuro * 100);
+  // }, [totalEuro]);
 
   return (
     <FormProvider {...form}>
@@ -163,17 +195,24 @@ export const CheckoutFormSection = ({
 
         {/* SECTION 4 — Payment Method */}
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold">{t("paymentMethod")}</h2>
-          <StripeLayout
-            clientSecret={clientSecret}
-            setClientSecret={setClientSecret}
-            total={total}
-            setTotal={setTotal}
-            openDialog={openDialog}
-            setOpenDialog={setOpenDialog}
-            form={form}
-            userEmail={form.watch("email")}
+          <CheckoutPaymentUI
+            control={form.control}
+            selectedMethod={form.watch("payment_method")}
+            onChange={(v) => form.setValue("payment_method", v)}
+            t={t}
           />
+          {clientSecret && (
+            <StripeProvider clientSecret={clientSecret}>
+              <StripeLayout
+                form={form}
+                clientSecret={clientSecret}
+                setClientSecret={setClientSecret}
+                openDialog={openDialog}
+                setOpenDialog={setOpenDialog}
+                total={100}
+              />
+            </StripeProvider>
+          )}
         </div>
 
         {/* SECTION 5 — Place Order */}

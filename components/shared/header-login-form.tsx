@@ -23,6 +23,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import LoginGoogleButton from "../layout/login/login-google";
 import { Switch } from "../ui/switch";
+import { useAtom } from "jotai";
+import { userIdAtom } from "@/store/auth";
 interface HeaderLoginFormProps {
   onSuccess?: () => void;
 }
@@ -34,6 +36,7 @@ export default function HeaderLoginForm({ onSuccess }: HeaderLoginFormProps) {
   const queryClient = useQueryClient();
   const locale = useLocale();
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [userId, setUserId] = useAtom(userIdAtom);
 
   const formSchema = z.object({
     username: z.string().min(1, t("emailRequired")).email(t("invalidEmail")),
@@ -73,7 +76,7 @@ export default function HeaderLoginForm({ onSuccess }: HeaderLoginFormProps) {
           onSuccess(data, variables, context) {
             const token = data.access_token;
             localStorage.setItem("access_token", token);
-            localStorage.setItem("userId", data.id);
+            setUserId(data.id);
             queryClient.refetchQueries({ queryKey: ["me"], exact: true });
             queryClient.refetchQueries({
               queryKey: ["cart-items"],
@@ -106,7 +109,7 @@ export default function HeaderLoginForm({ onSuccess }: HeaderLoginFormProps) {
         onSuccess(data, variables, context) {
           const token = data.access_token;
           localStorage.setItem("access_token", token);
-          localStorage.setItem("userId", data.id);
+          setUserId(data.id);
           queryClient.refetchQueries({ queryKey: ["me"], exact: true });
           queryClient.refetchQueries({ queryKey: ["cart-items"], exact: true });
           syncLocalCartMutation.mutate();

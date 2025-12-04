@@ -11,6 +11,8 @@ import { getCartItems } from "@/features/cart/api";
 import type { CartResponse } from "@/types/cart";
 import gsap from "gsap";
 import SearchDrawer from "@/components/search-drawer/search-drawer";
+import { useAtom } from "jotai";
+import { userIdAtom } from "@/store/auth";
 
 interface ListIconsProps {
   isSticky: boolean;
@@ -21,13 +23,7 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
   const isHome = pathname === "/" || pathname.match(/^\/[a-z]{2}$/);
   const badgeRef = useRef<HTMLSpanElement>(null);
 
-  const [userId, setUserId] = React.useState<string | null>(null);
-  React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      setUserId(localStorage.getItem("userId"));
-    }
-  }, []);
-
+  const [userId, setUserId] = useAtom(userIdAtom);
   const { cart: localCart } = useCartLocal();
 
   const { data: cart, isFetched } = useQuery<CartResponse>({

@@ -21,6 +21,8 @@ import { useSyncLocalCart } from "@/features/cart/hook";
 import { useCartLocal } from "@/hooks/cart";
 import { Link, useRouter } from "@/src/i18n/navigation";
 import LoginGoogleButton from "../layout/login/login-google";
+import { useAtom } from "jotai";
+import { userIdAtom } from "@/store/auth";
 
 interface CartLoginFormProps {
   onSuccess?: () => void;
@@ -36,7 +38,7 @@ export default function CartLoginForm({
   const locale = useLocale();
   const t = useTranslations();
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
+  const [userId, setUserId] = useAtom(userIdAtom);
   const { cart: localCart } = useCartLocal();
 
   const formSchema = z.object({
@@ -85,7 +87,7 @@ export default function CartLoginForm({
           onSuccess: (data) => {
             const token = data.access_token;
             localStorage.setItem("access_token", token);
-            localStorage.setItem("userId", data.id);
+            setUserId(data.id);
             syncLocalCartMutation.mutate();
 
             toast.success(t("loginSuccess"));
@@ -113,7 +115,7 @@ export default function CartLoginForm({
         onSuccess: (data) => {
           const token = data.access_token;
           localStorage.setItem("access_token", token);
-          localStorage.setItem("userId", data.id);
+          setUserId(data.id);
           syncLocalCartMutation.mutate();
 
           toast.success(t("loginSuccess"));

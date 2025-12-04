@@ -130,8 +130,8 @@ const MissionSection = () => {
           </div>
           {/* Circle badge */}
           <div className="absolute -top-0 right-0 -translate-x-1/3 bg-primary text-white w-[110px] h-[110px] rounded-full lg:flex hidden flex-col items-center justify-center font-semibold shadow-md border-4 border-white">
-            <span className="text-2xl font-bold">85%</span>
-            <span className="text-sm">{t("clients")}</span>
+            <span className="text-2xl font-bold">54.000</span>
+            <span className="text-sm">verkauft</span>
           </div>
         </div>
 
