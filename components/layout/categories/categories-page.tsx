@@ -32,7 +32,7 @@ const ProductCategory = ({
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(16);
   const [currentCategoryName, setCurrentCategoryName] = useAtom(
-    currentCategoryNameAtom
+    currentCategoryNameAtom,
   );
 
   const { data: categoryData, isFetching } = useQuery({
@@ -52,7 +52,7 @@ const ProductCategory = ({
         <div className="flex justify-between items-center lg:flex-row flex-col-reverse lg:gap-0 gap-4">
           <div className="flex gap-4">
             <div className="text-base text-primary font-semibold">
-              {category?.products.length} products found
+              {category?.products.length} {t("productsFound")}
             </div>
           </div>
 

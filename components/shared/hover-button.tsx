@@ -13,6 +13,8 @@ import {
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAtom } from "jotai";
+import { userIdAtom } from "@/store/auth";
 
 interface HoverButtonProps {
   text?: React.ReactNode; // 👈 Cho phép string hoặc t('...')
@@ -32,9 +34,7 @@ const HoverButton = ({
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const [userId, setUserId] = React.useState<string | null>(
-    typeof window !== "undefined" ? localStorage.getItem("userId") : ""
-  );
+  const [userId, setUserId] = useAtom(userIdAtom);
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");
@@ -62,7 +62,7 @@ const HoverButton = ({
           <div
             className={cn(
               "flex gap-2 w-fit items-center text-center bg-black px-10 group py-4 rounded-tl-3xl rounded-br-3xl cursor-pointer hover:rounded-tl-none hover:rounded-br-none hover:rounded-tr-3xl hover:bg-white transition-all duration-500",
-              is_primary ? "hover:bg-primary" : ""
+              is_primary ? "hover:bg-primary" : "",
             )}
           >
             <span className="text-white text-sm uppercase font-semibold group-hover:text-black transition-all duration-500">
@@ -106,11 +106,14 @@ const HoverButton = ({
 
   // 🔹 Default (không login)
   return (
-    <Link href={redirect_url} passHref>
+    <Link
+      href={redirect_url}
+      passHref
+    >
       <div
         className={cn(
           "flex gap-2 w-fit items-center text-center bg-black px-16 group py-4 rounded-tl-3xl rounded-br-3xl cursor-pointer hover:rounded-tl-none hover:rounded-br-none hover:rounded-tr-3xl hover:bg-white transition-all duration-500",
-          is_primary ? "hover:bg-primary" : ""
+          is_primary ? "hover:bg-primary" : "",
         )}
       >
         <span className="text-white text-sm uppercase font-semibold group-hover:text-black transition-all duration-500">

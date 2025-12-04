@@ -33,7 +33,7 @@ export default function ShopAllPage() {
         <div className="flex justify-between items-center lg:flex-row flex-col-reverse lg:gap-0 gap-4">
           <div className="flex gap-4">
             <div className="text-base text-primary font-semibold">
-              {products?.items.length} products found
+              {products?.items.length} {t("productsFound")}
             </div>
           </div>
 

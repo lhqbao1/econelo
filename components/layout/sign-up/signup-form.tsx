@@ -254,7 +254,7 @@ export default function SignUpFormTransparent() {
           <p className="text-sm text-center mt-6 space-x-1">
             <span>{t("already_have_account")}</span>
             <Link
-              href="/anmelden"
+              href="/einloggen"
               className="text-sm text-primary hover:underline"
             >
               {t("login")}

@@ -1,13 +1,12 @@
 import LoginFormTransparent from "@/components/layout/login/login-form";
-import SignUpFormTransparent from "@/components/layout/sign-up/signup-form";
 
-const SignUpPage = () => {
+const LoginPage = () => {
   return (
     <section className="relative flex items-center justify-center min-h-screen overflow-hidden login-form">
       {/* Login form */}
-      <SignUpFormTransparent />
+      <LoginFormTransparent />
     </section>
   );
 };
 
-export default SignUpPage;
+export default LoginPage;

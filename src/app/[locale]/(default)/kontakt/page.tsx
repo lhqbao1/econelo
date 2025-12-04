@@ -38,7 +38,7 @@ const ContactPage = () => {
       {/* Banner */}
       <div className="relative min-h-[400px] w-full">
         <Image
-          src={"/about-banner.jpg"}
+          src={"/econelo-banner1.webp"}
           alt="Prestige Home Kontakt Banner"
           fill
           className="absolute top-0 left-0 w-full h-full object-cover z-10"

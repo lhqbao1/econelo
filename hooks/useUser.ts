@@ -1,7 +1,7 @@
 "use client";
 
 import { useAtom, useSetAtom } from "jotai";
-import { userAtom, isUserLoadedAtom } from "@/store/auth";
+import { userAtom, isUserLoadedAtom, userIdAtom } from "@/store/auth";
 import { useEffect } from "react";
 import { getMe } from "@/features/auth/api";
 import type { User } from "@/types/user";
@@ -13,9 +13,9 @@ import type { User } from "@/types/user";
 export function useUser() {
   const [user, setUser] = useAtom(userAtom);
   const setIsLoaded = useSetAtom(isUserLoadedAtom);
+  const [userId, setUserId] = useAtom(userIdAtom);
 
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
     if (!userId) {
       setIsLoaded(true);
       return;

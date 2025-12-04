@@ -25,6 +25,7 @@ import {
 import { useGetProductsSelect } from "@/features/product-group/hook";
 import { ProductItem } from "@/types/products";
 import Image from "next/image";
+import { useGetAllProducts } from "@/features/products/hook";
 
 interface SearchDrawerProps {
   iconColor?: string;
@@ -46,10 +47,14 @@ const SearchDrawer = ({ iconColor }: SearchDrawerProps) => {
     return () => clearTimeout(timeout);
   }, [query]);
 
-  const { data: products, isLoading } = useGetProductsSelect({
+  const { data: products, isLoading } = useGetAllProducts({
     search: debouncedQuery,
+    page: 1,
+    page_size: 20,
+    all_products: false,
+    is_econelo: true,
   });
-  const results = products ?? [];
+  const results = products?.items ?? [];
 
   return (
     <Drawer
@@ -70,7 +75,7 @@ const SearchDrawer = ({ iconColor }: SearchDrawerProps) => {
       </DrawerTrigger>
       <DrawerContent className="w-full h-full flex flex-col p-0 data-[vaul-drawer-direction=left]:w-full duration-500 min-w-[500px]">
         <DrawerTitle className="border-b-2 p-4 flex justify-between">
-          <div className="uppercase font-bold text-xl">
+          <div className="uppercase font-bold text-xl text-primary">
             {t("searchProduct")}
           </div>
           <DrawerClose>
@@ -95,7 +100,7 @@ const SearchDrawer = ({ iconColor }: SearchDrawerProps) => {
               <CommandEmpty>{t("noResult")}</CommandEmpty>
             )}
             {results.length > 0 && (
-              <CommandGroup heading={t("searchProduct")}>
+              <CommandGroup>
                 {results.map((product: ProductItem) => (
                   <CommandItem
                     key={product.id}

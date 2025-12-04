@@ -11,18 +11,30 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import gsap from "gsap";
 import { useUser } from "@/hooks/useUser";
-import { useAtomValue } from "jotai";
-import { isUserLoadedAtom } from "@/store/auth";
+import { useAtom, useAtomValue } from "jotai";
+import { isUserLoadedAtom, userIdAtom } from "@/store/auth";
 import { useTranslations } from "next-intl";
 import { SidebarTrigger } from "../ui/sidebar";
+import { useQuery } from "@tanstack/react-query";
+import { getMe } from "@/features/auth/api";
 
 const MainHeader = () => {
   const [isSticky, setIsSticky] = useState(false);
   const pathname = usePathname();
   const isHome = pathname === "/" || pathname.match(/^\/[a-z]{2}$/);
-  const { user } = useUser();
-  const isUserLoaded = useAtomValue(isUserLoadedAtom);
+  const [userId, setUserId] = useAtom(userIdAtom);
+
   const t = useTranslations();
+
+  const {
+    data: user,
+    isLoading: isLoadingUser,
+    isError: isErrorUser,
+  } = useQuery({
+    queryKey: ["me", userId],
+    queryFn: () => getMe(),
+    enabled: !!userId,
+  });
 
   // refs for animation
   const contactRef = useRef<HTMLDivElement>(null);
@@ -30,26 +42,24 @@ const MainHeader = () => {
 
   // ✅ animate group when loaded
   useEffect(() => {
-    if (isUserLoaded) {
-      const tl = gsap.timeline({
-        defaults: {
-          duration: 0.6,
-          ease: "back.out(1.7)",
-        },
-      });
+    const tl = gsap.timeline({
+      defaults: {
+        duration: 0.6,
+        ease: "back.out(1.7)",
+      },
+    });
 
-      tl.fromTo(
-        contactRef.current,
-        { x: 50, opacity: 0 },
-        { x: 0, opacity: 1 },
-      ).fromTo(
-        buttonRef.current,
-        { x: 50, opacity: 0 },
-        { x: 0, opacity: 1 },
-        "-=0.5", // overlap a little for smooth timing
-      );
-    }
-  }, [isUserLoaded]);
+    tl.fromTo(
+      contactRef.current,
+      { x: 50, opacity: 0 },
+      { x: 0, opacity: 1 },
+    ).fromTo(
+      buttonRef.current,
+      { x: 50, opacity: 0 },
+      { x: 0, opacity: 1 },
+      "-=0.5", // overlap a little for smooth timing
+    );
+  }, []);
 
   // ✅ Sticky logic
   useEffect(() => {
@@ -116,23 +126,21 @@ const MainHeader = () => {
             </div>
 
             {/* Button (only after user loaded) */}
-            {isUserLoaded && (
-              <div
-                ref={buttonRef}
-                className="opacity-0"
-              >
-                <HoverButton
-                  redirect_url="/anmelden"
-                  isLogin={!!user}
-                  is_primary={isHome ? isSticky : true}
-                  text={
-                    user
-                      ? `${t("greeting")}, ${user.first_name} ${user.last_name}`
-                      : `${t("login")}`
-                  }
-                />
-              </div>
-            )}
+            <div
+              ref={buttonRef}
+              className="opacity-0"
+            >
+              <HoverButton
+                redirect_url="/einloggen"
+                isLogin={!!user}
+                is_primary={isHome ? isSticky : true}
+                text={
+                  user
+                    ? `${t("greeting")}, ${user.first_name} ${user.last_name}`
+                    : `${t("login")}`
+                }
+              />
+            </div>
           </div>
         </div>
       </div>
