@@ -110,16 +110,6 @@ const MissionSection = () => {
         {/* LEFT — IMAGES */}
         <div className="relative flex lg:flex-row flex-col items-center h-full left-images">
           {/* Image 1 */}
-          <div className="lg:absolute relative left-0 top-0 w-[340px] h-[340px] lg:rounded-tl-2xl rounded-2xl overflow-hidden shadow-lg">
-            <Image
-              src="/mission-image-1.jpg"
-              alt="Charging scooter"
-              fill
-              className="object-cover"
-            />
-          </div>
-
-          {/* Image 2 */}
           <div className="lg:absolute relative -bottom-4 lg:-right-2 right-0 w-[340px] h-[340px] rounded-2xl overflow-hidden">
             <Image
               src="/mission-image-2.jpg"
@@ -129,6 +119,15 @@ const MissionSection = () => {
             />
           </div>
 
+          {/* Image 2 */}
+          <div className="lg:absolute relative left-0 top-0 w-[340px] h-[340px] lg:rounded-tl-2xl rounded-2xl overflow-hidden shadow-lg">
+            <Image
+              src="/mission-image-1.jpg"
+              alt="Charging scooter"
+              fill
+              className="object-cover"
+            />
+          </div>
           {/* Circle badge */}
           <div className="absolute -top-0 right-0 -translate-x-1/3 bg-primary text-white w-[110px] h-[110px] rounded-full lg:flex hidden flex-col items-center justify-center font-semibold shadow-md border-4 border-white">
             <span className="text-2xl font-bold">85%</span>

@@ -30,6 +30,8 @@ import { getReviewByProduct } from "@/features/review/api";
 import ProductRating from "./rating";
 import BentoGridLayout from "./product-infomation-grid";
 import BuySection from "./buy-section";
+import { useProductDetails } from "@/hooks/single-product/useProductDetails";
+import ProductDetailHeader from "./product-detail-header";
 
 interface ProductDetailsProps {
   productDetailsData: ProductItem;
@@ -48,47 +50,12 @@ const ProductDetails = ({
   const router = useRouter();
   const locale = useLocale();
 
-  const { data: productDetails, isLoading: isLoadingProduct } = useQuery({
-    queryKey: ["product", productId],
-    queryFn: () => getProductById(productId),
-    initialData: productDetailsData,
-  });
-
-  const { data: productReviews, isLoading: isLoadingProductReviews } = useQuery(
-    {
-      queryKey: ["reviews", "product", productId],
-      queryFn: () => getReviewByProduct(productId),
-      enabled: !!productId,
-      retry: false,
-    },
-  );
-
-  const { data: parentProduct, isLoading: isLoadingParent } = useQuery({
-    queryKey: ["product-group-detail", productDetailsData.parent_id],
-    queryFn: () => getProductGroupDetail(productDetailsData.parent_id ?? ""),
-    enabled: !!productDetailsData.parent_id,
-    initialData: parentProductData,
-  });
-
-  // Add to cart mutation
-  const createCartMutation = useAddToCart();
-  //Add to wishlist mutation
-  const addProductToWishlistMutation = useAddToWishList();
-
-  const handleAddProductToWishlist = () => {
-    addProductToWishlistMutation.mutate(
-      { productId: productDetails?.id ?? "", quantity: 1 },
-      {
-        onSuccess: () => {
-          toast.success(t("addToWishlistSuccess"));
-        },
-        onError: (error) => {
-          const { status, message } = HandleApiError(error, t);
-          toast.error(message);
-        },
-      },
-    );
-  };
+  const {
+    product: productDetails,
+    reviews: productReviews,
+    parent: parentProduct,
+    isLoadingProduct,
+  } = useProductDetails(productId, productDetailsData, parentProductData);
 
   // Image zoom
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -215,33 +182,7 @@ const ProductDetails = ({
                       {productDetails.name}
                     </h1>
 
-                    <div className="flex justify-between items-center">
-                      <div>
-                        Artikelnummer:{" "}
-                        <span className="underline font-semibold">
-                          {productDetails.id_provider}
-                        </span>
-                      </div>
-                      <div className="flex gap-4 items-center">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="rounded-full flex items-center gap-2 hover:text-primary cursor-pointer"
-                        >
-                          <Share2 className="w-4 h-4" />
-                          <span className="hover:text-primary">Share</span>
-                        </Button>
-
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="rounded-full flex items-center gap-2 hover:text-primary cursor-pointer"
-                        >
-                          <Heart className="w-4 h-4" />
-                          Wishlist
-                        </Button>
-                      </div>
-                    </div>
+                    <ProductDetailHeader productDetails={productDetails} />
                   </div>
 
                   <BentoGridLayout

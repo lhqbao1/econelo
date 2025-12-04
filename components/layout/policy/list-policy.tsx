@@ -99,7 +99,7 @@ const ListPolicy = ({
     <div className="min-h-screen  flex flex-col items-center relative md:pt-[100px]">
       <div className="relative min-h-[400px] w-full">
         <Image
-          src={"/about-banner.jpg"}
+          src={"/econelo-banner1.webp"}
           alt=""
           fill
           className="absolute top-0 left-0 w-full h-full object-cover z-10"
@@ -124,7 +124,10 @@ const ListPolicy = ({
               onValueChange={(val) => setOpenAccordion(val)}
             >
               {filteredPolicies.map((item) => (
-                <AccordionItem value={item.id} key={item.id}>
+                <AccordionItem
+                  value={item.id}
+                  key={item.id}
+                >
                   <AccordionTrigger
                     onClick={(e) => {
                       e.preventDefault();
@@ -189,7 +192,7 @@ const ListPolicy = ({
                               currentPolicy?.id === item.id &&
                                 currentPolicyItem === policyItemIndex
                                 ? "bg-primary/20 hover:bg-primary-20 px-2 py-1 font-semibold"
-                                : ""
+                                : "",
                             )}
                             onClick={() => {
                               setCurrentPolicyItem(policyItemIndex);
@@ -206,11 +209,11 @@ const ListPolicy = ({
                                 currentPolicy?.id === item.id &&
                                   currentPolicyItem === policyItemIndex
                                   ? "block"
-                                  : "hidden"
+                                  : "hidden",
                               )}
                             />
                           </div>
-                        )
+                        ),
                       )}
                     </AccordionContent>
                   )}

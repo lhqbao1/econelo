@@ -246,10 +246,10 @@ export default function LoginFormTransparent({
           </div>
         )}
 
-        {/* Forgot password */}
+        {/* Sign Up Link */}
         <div className="mt-6 text-center">
           <Link
-            href="/registrieren"
+            href="/anmelden"
             className="text-sm text-gray-700 hover:underline"
           >
             {t("noAccount")}

@@ -28,6 +28,8 @@ import { useCartLocal } from "@/hooks/cart";
 import { CartItemLocal } from "@/lib/utils/cart";
 import { useRouter } from "@/src/i18n/navigation";
 import { useLocale } from "next-intl";
+import { useAtom } from "jotai";
+import { userIdAtom } from "@/store/auth";
 
 interface BuySectionProps {
   variant?: VariantOptionsResponse[];
@@ -45,6 +47,7 @@ const BuySection = ({
   const t = useTranslations();
   const router = useRouter();
   const locale = useLocale();
+  const [userId, setUserId] = useAtom(userIdAtom);
 
   // form
   const methods = useForm<FormValues>({
@@ -92,8 +95,6 @@ const BuySection = ({
 
   const onSubmit = (values: FormValues) => {
     if (!currentProduct) return;
-    const userId =
-      typeof window !== "undefined" ? localStorage.getItem("userId") : null;
 
     if (!userId) {
       const existingItem = cart.find(
@@ -238,11 +239,6 @@ const BuySection = ({
               </Button>
             </div>
           </CardContent>
-
-          <CardFooter className="flex gap-1 items-center pb-0 pt-4 justify-center text-gray-400 font-semibold text-sm">
-            <User className="size-5" />
-            {t("needHelp")}
-          </CardFooter>
         </Card>
       </form>
     </FormProvider>

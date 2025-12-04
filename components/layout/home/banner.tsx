@@ -176,8 +176,8 @@ const HomeBanner = () => {
               className="opacity-0"
             >
               <HoverButton
-                text={t("bookNow")}
-                redirect_url="/"
+                text={t("forThem")}
+                redirect_url="/produkt/econelo-j1000-seniorenmobil-nicht-strassenzulaessig-25-km-h-1000w-rot-1000014"
               />
             </div>
           </div>

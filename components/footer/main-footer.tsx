@@ -70,12 +70,6 @@ const MainFooter = () => {
           <h4 className="text-xl font-semibold">Econelo</h4>
           <div className="w-10 h-[2px] bg-primary mb-2" />
           <p className="text-gray-400 leading-relaxed">{t("footerDes")}</p>
-          <a
-            href="/ueber-uns"
-            className="text-primary font-semibold inline-flex items-center gap-2 hover:underline"
-          >
-            {t("contactUs")} <ArrowRight className="w-4 h-4" />
-          </a>
         </div>
 
         {/* COMPANY INFO */}
@@ -87,7 +81,7 @@ const MainFooter = () => {
               » <Link href="/ueber-uns">{t("aboutUs")}</Link>
             </li>
             <li className="hover:pl-2 transition-all duration-500 hover:text-white">
-              » <Link href="#">{t("ourProducts")}</Link>
+              » <Link href="/alle-produkte">{t("ourProducts")}</Link>
             </li>
             <li className="hover:pl-2 transition-all duration-500 hover:text-white">
               » <Link href="/kontakt">{t("contactUs")}</Link>
@@ -148,24 +142,6 @@ const MainFooter = () => {
 
       {/* BOTTOM FOOTER */}
       <div className="mt-16 border-t border-gray-800 pt-8 px-8 lg:px-20 flex flex-col lg:flex-row justify-between items-center gap-6">
-        {/* LINKS */}
-        <div className="flex flex-wrap justify-center gap-4 text-gray-400 text-sm">
-          <a
-            href="/kontakt"
-            className="hover:text-white"
-          >
-            {t("whereToFind")}
-          </a>
-          <span className="text-gray-600">|</span>
-          <a
-            href="/ueber-uns"
-            className="hover:text-white"
-          >
-            {t("paymentTerms")}
-          </a>
-          <span className="text-gray-600">|</span>
-        </div>
-
         {/* COPYRIGHT */}
         <div className="text-gray-500 text-sm text-center">
           Copyright © 2025{" "}

@@ -1,14 +1,15 @@
 // features/auth/state.ts
 "use client";
-import { atomWithStorage } from "jotai/utils"
+import { atomWithStorage } from "jotai/utils";
 import { atom } from "jotai";
 import { getMe } from "@/features/auth/api";
 import { User } from "@/types/user";
 
-
-export const userIdAtom = atomWithStorage<string | null>("id", null)
-export const accessTokenAtom = atomWithStorage<string | null>("access_token", null)
-
+export const userIdAtom = atomWithStorage<string | null>("user_id", null);
+export const accessTokenAtom = atomWithStorage<string | null>(
+  "access_token",
+  null,
+);
 
 // 🧩 Atom lưu thông tin user (null nếu chưa đăng nhập)
 export const userAtom = atom<User | null>(null);

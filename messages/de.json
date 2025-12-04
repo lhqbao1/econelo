@@ -49,7 +49,7 @@
   "items": "artikel",
   "english": "Englisch",
   "german": "Deutsch",
-  "login": "Anmelden",
+  "login": "Einloggen",
   "createAccount": "Konto anlegen",
   "accountInformation": "Kontoinformationen",
   "logout": "Abmelden",
@@ -422,5 +422,8 @@
   "fastDelivery": "Schnelle Lieferung",
   "fastDeliveryDes": "Nach Ihrer Bestellung bereiten wir Ihr neues E-Fahrzeug sofort vor und liefern es schnell – fahrbereit ab dem ersten Moment.",
   "afterSale": "After-Sales-Service",
-  "afterSaleDes": "Genießen Sie volle Sicherheit mit unserer Garantie und unserem umfassenden Service. Wir sind immer da, um Ihr E-Fahrzeug in Top-Zustand zu halten."
+  "afterSaleDes": "Genießen Sie volle Sicherheit mit unserer Garantie und unserem umfassenden Service. Wir sind immer da, um Ihr E-Fahrzeug in Top-Zustand zu halten.",
+  "forThem": "für sie",
+  "share": "Aktie",
+  "productsFound": "Produkte gefunden"
 }

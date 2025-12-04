@@ -38,26 +38,13 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
     staleTime: 1000 * 60 * 10,
   });
 
-  // ✅ Tính tổng số lượng item
-  const cartCount = React.useMemo(() => {
-    if (userId && cart?.length) {
-      return cart.reduce(
-        (total, supplierCart) =>
-          total +
-          supplierCart.items.reduce(
-            (sum, item) => sum + (item.quantity || 0),
-            0,
-          ),
-        0,
-      );
-    }
-    if (localCart?.length) return localCart.length;
-    return 0;
-  }, [cart, localCart, userId]);
+  const displayedCart = userId
+    ? cart?.reduce((count, group) => count + group.items.length, 0) ?? 0
+    : localCart.length;
 
   // ✅ GSAP hiệu ứng scale-in bounce khi badge xuất hiện
   useEffect(() => {
-    if (badgeRef.current && cartCount > 0 && isFetched) {
+    if (badgeRef.current && displayedCart > 0 && isFetched) {
       gsap.fromTo(
         badgeRef.current,
         { scale: 0, opacity: 0, transformOrigin: "center" },
@@ -69,7 +56,7 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
         },
       );
     }
-  }, [cartCount, isFetched]);
+  }, [displayedCart, isFetched]);
 
   // ✅ Gom logic style
   const baseColor = !isHome ? "primary" : isSticky ? "primary" : "white";
@@ -98,7 +85,7 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
             )}
             strokeWidth={2}
           />
-          {cartCount > 0 && (
+          {displayedCart > 0 && (
             <span
               ref={badgeRef}
               className={cn(
@@ -109,7 +96,7 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
                   : "bg-primary text-white",
               )}
             >
-              {cartCount > 99 ? "99+" : cartCount}
+              {displayedCart > 99 ? "99+" : displayedCart}
             </span>
           )}
         </button>

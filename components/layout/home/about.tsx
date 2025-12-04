@@ -154,7 +154,7 @@ const AdvantagesSection = () => {
               alt="Eco scooter"
               width={500}
               height={500}
-              className="object-contain"
+              className="object-cover lg:h-72"
             />
           </div>
 
