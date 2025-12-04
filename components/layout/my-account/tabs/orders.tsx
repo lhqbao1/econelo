@@ -5,15 +5,17 @@ import { Card } from "@/components/ui/card";
 import { getCheckOutByUserId } from "@/features/checkout/api";
 import MyAccountOrdersSkeleton from "../order-skeleton";
 import { useTranslations } from "next-intl";
+import { useAtom } from "jotai";
+import { userIdAtom } from "@/store/auth";
 
 export default function MyAccountOrders() {
-  const user_id = localStorage.getItem("userId");
+  const [userId, setUserId] = useAtom(userIdAtom);
   const t = useTranslations();
 
   const { data: orders, isLoading } = useQuery({
-    queryKey: ["checkout-user-id", user_id],
-    queryFn: () => getCheckOutByUserId(user_id ?? ""),
-    enabled: !!user_id,
+    queryKey: ["checkout-user-id", userId],
+    queryFn: () => getCheckOutByUserId(userId ?? ""),
+    enabled: !!userId,
     retry: false,
   });
 

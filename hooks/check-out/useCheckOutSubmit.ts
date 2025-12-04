@@ -108,6 +108,8 @@ export function useCheckoutSubmit({
             last_name: data.last_name,
             email: data.email,
             phone_number: data.phone_number,
+            company_name: data.company_name ?? null,
+            tax_id: data.tax_id ?? null,
           });
 
           finalUserId = newUser.id;
@@ -195,10 +197,14 @@ export function useCheckoutSubmit({
             shippingCostCurrent > 0 ? shippingCostCurrent : shippingCost,
         });
 
-        toast.success(t("orderSuccess"));
+        // toast.success(t("orderSuccess"));
         setCheckoutId(checkout.id);
 
         // Payment flow
+
+        // ===========================
+        // PAYMENT FLOW (Stripe + PayPal + Bank)
+        // ===========================
         if (data.payment_method !== "bank") {
           const payment = await createPayment.mutateAsync({
             checkout_id: checkout.id,
@@ -206,14 +212,30 @@ export function useCheckoutSubmit({
           });
 
           setPaymentId(payment.payment_order_id);
-
-          if (data.payment_method === "paypal") {
-            router.push(payment.approve_url, { locale });
-          } else if (data.payment_method === "card") {
-            setOpenCardDialog(true);
-          }
           setTotal(payment.amount);
           setClientSecret(payment.clientSecret);
+
+          const method = data.payment_method;
+
+          if (method === "paypal") {
+            router.push(payment.approve_url, { locale });
+            return;
+          }
+
+          if (method === "card") {
+            setOpenCardDialog(true);
+            return;
+          }
+
+          // Klarna → auto confirm trong StripeLayout
+          if (method === "klarna") {
+            return;
+          }
+
+          // Apple Pay / Google Pay → auto render PaymentRequestButton
+          if (method === "applepay" || method === "googlepay") {
+            return;
+          }
         } else {
           setOpenBankDialog(true);
         }
@@ -225,7 +247,9 @@ export function useCheckoutSubmit({
         form.reset();
         cleanupNeeded = true;
       } finally {
-        if (cleanupNeeded && localStorage.getItem("userIdGuest")) {
+        const guestId = localStorage.getItem("userIdGuest");
+
+        if (cleanupNeeded && guestId !== null) {
           localStorage.removeItem("userIdGuest");
           localStorage.removeItem("access_token");
         }

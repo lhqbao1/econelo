@@ -14,8 +14,8 @@ const quickSand = Quicksand({
 });
 
 export const metadata: Metadata = {
-  title: "Prestige Home",
-  description: "Prestige Home",
+  title: "Econelo",
+  description: "Econelo",
   icons: {
     icon: "/favicon.ico",
     apple: "/favicon.ico",

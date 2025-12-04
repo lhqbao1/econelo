@@ -14,6 +14,8 @@ import { useLoginOtp } from "@/features/auth/hook";
 import { useSyncLocalCart } from "@/features/cart/hook";
 import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
+import { useAtom } from "jotai";
+import { userIdAtom } from "@/store/auth";
 
 interface OtpDialogProps {
   open: boolean;
@@ -39,6 +41,7 @@ export function OtpDialog({
   const loginOtpMutation = useLoginOtp();
   const syncLocalCartMutation = useSyncLocalCart();
   const t = useTranslations();
+  const [userId, setUserId] = useAtom(userIdAtom);
 
   const handleChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return; // chỉ cho nhập số
@@ -74,7 +77,7 @@ export function OtpDialog({
       {
         onSuccess: (data) => {
           localStorage.setItem("access_token", data.access_token);
-          localStorage.setItem("userId", data.id);
+          setUserId(data.id);
 
           toast.success(t("otpDone"));
           onSuccess(data.id);

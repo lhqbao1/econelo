@@ -13,11 +13,11 @@ import CartLocalTable from "@/components/layout/cart/cart-local-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LoginDrawer } from "@/components/shared/login-drawer";
+import { useAtom } from "jotai";
+import { userIdAtom } from "@/store/auth";
 
 export default function CartPage() {
-  const [userId, setUserId] = React.useState<string | null>(
-    typeof window !== "undefined" ? localStorage.getItem("userId") : "",
-  );
+  const [userId, setUserId] = useAtom(userIdAtom);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const t = useTranslations();
   const router = useRouter();
@@ -25,16 +25,6 @@ export default function CartPage() {
   const [localQuantities, setLocalQuantities] = useState<
     Record<string, number>
   >({});
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const newUserId = localStorage.getItem("userId");
-      setUserId(newUserId);
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
 
   const { cart: localCart } = useCartLocal();
 
@@ -197,7 +187,6 @@ export default function CartPage() {
         openLogin={isLoginOpen}
         setOpenLogin={setIsLoginOpen}
         isCheckOut
-        setUserId={setUserId}
       />
     </div>
   );

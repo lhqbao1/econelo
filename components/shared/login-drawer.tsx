@@ -13,11 +13,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@/src/i18n/navigation";
 import HeaderLoginForm from "./header-login-form";
 import CartLoginForm from "./cart-login-form";
+import { useAtom } from "jotai";
+import { userIdAtom } from "@/store/auth";
 
 export interface LoginDrawerProps {
   openLogin: boolean;
   setOpenLogin: (open: boolean) => void;
-  setUserId: (id: string | null) => void;
   isCheckOut?: boolean;
 }
 
@@ -25,14 +26,18 @@ export function LoginDrawer({
   openLogin,
   setOpenLogin,
   isCheckOut = false,
-  setUserId,
 }: LoginDrawerProps) {
   const t = useTranslations();
   const queryClient = useQueryClient();
   const router = useRouter();
   const locale = useLocale();
+  const [userId, setUserId] = useAtom(userIdAtom);
   return (
-    <Drawer open={openLogin} onOpenChange={setOpenLogin} direction="left">
+    <Drawer
+      open={openLogin}
+      onOpenChange={setOpenLogin}
+      direction="left"
+    >
       {isCheckOut ? (
         ""
       ) : (
@@ -66,8 +71,7 @@ export function LoginDrawer({
             <CartLoginForm
               onSuccess={() => {
                 setOpenLogin(false);
-                const uid = localStorage.getItem("userId");
-                setUserId(uid); // cập nhật state
+                setUserId(userId); // cập nhật state
                 queryClient.refetchQueries({ queryKey: ["me"] });
                 queryClient.refetchQueries({ queryKey: ["cart-items"] });
                 router.push("/kasse", { locale });

@@ -12,10 +12,11 @@ import MyAccountAddress from "@/components/layout/my-account/tabs/address";
 import MyAccountSkeleton from "@/components/layout/my-account/skeleton";
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
+import { useAtom } from "jotai";
+import { userIdAtom } from "@/store/auth";
 
 export default function MyAccountPage() {
-  const userId =
-    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+  const [userId, setUserId] = useAtom(userIdAtom);
 
   const {
     data: user,
@@ -36,7 +37,7 @@ export default function MyAccountPage() {
       gsap.fromTo(
         contentRef.current.children,
         { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", stagger: 0.05 }
+        { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", stagger: 0.05 },
       );
     }
   }, [activeTab]);
@@ -58,7 +59,10 @@ export default function MyAccountPage() {
         </div>
 
         {/* Main content */}
-        <main className="flex-1" ref={contentRef}>
+        <main
+          className="flex-1"
+          ref={contentRef}
+        >
           <Card className="p-6 shadow-[0_0_10px_rgba(0,0,0,0.1)]">
             <TabsContent value="orders">
               <MyAccountOrders />
