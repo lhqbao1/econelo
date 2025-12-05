@@ -49,13 +49,13 @@ export default async function HomePage() {
 /** ✅ Component tách riêng để Suspense hoạt động tốt hơn */
 function HomeContent() {
   return (
-    <div className="flex flex-col items-center gap-12 w-full">
+    <div className="flex flex-col items-center lg:gap-12 md:gap-8 gap-6 w-full">
       <div className="lg:h-[100vh] h-fit w-full">
         <HomeBanner />
       </div>
       <MissionSection />
       {/* chỉ bọc những cái thực sự async */}
-      <NewArrivedSection /> {/* đã tự có Suspense bên trong */}
+      {/* <NewArrivedSection /> */}
       {/* <VideoSection /> */}
       <Suspense fallback={<SectionSkeleton />}>
         <ProductTabsServer />

@@ -60,6 +60,9 @@ export default function CheckoutPageNew() {
       defaults.first_name = user.first_name ?? "";
       defaults.last_name = user.last_name ?? "";
       defaults.email = user.email ?? "";
+      defaults.gender = user.gender;
+      defaults.company_name = user.company_name ?? "";
+      defaults.tax_id = user.tax_id ?? "";
     }
 
     if (invoiceAddress) {
@@ -131,6 +134,7 @@ export default function CheckoutPageNew() {
             openDialog={openCardDialog}
             setOpenDialog={setOpenCardDialog}
             onSubmit={handleSubmit}
+            submitting={submitting}
           />
         </div>
       </div>

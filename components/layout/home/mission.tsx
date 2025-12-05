@@ -108,7 +108,7 @@ const MissionSection = () => {
     >
       <div className="w-11/12 lg:w-8/12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {/* LEFT — IMAGES */}
-        <div className="relative flex lg:flex-row flex-col items-center h-full left-images">
+        <div className="relative flex lg:flex-row gap-8 lg:gap-0 flex-col items-center h-full left-images">
           {/* Image 1 */}
           <div className="lg:absolute relative -bottom-4 lg:-right-2 right-0 w-[340px] h-[340px] rounded-2xl overflow-hidden">
             <Image
@@ -224,7 +224,41 @@ const MissionSection = () => {
 
       {/* STATS */}
       <div className="w-11/12 lg:w-7/12 grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-        {stats.map((item, index) => (
+        <div className="space-y-3 flex flex-col items-center justify-center">
+          <Image
+            src={"/growth.png"}
+            width={60}
+            height={60}
+            alt=""
+          />
+          <p className="text-primary leading-snug max-w-[240px] text-lg font-semibold">
+            Eines der am schnellsten wachsenden Unternehmen
+          </p>
+        </div>
+        <div className="space-y-3 flex flex-col items-center justify-center">
+          <Image
+            src={"/service.png"}
+            width={60}
+            height={60}
+            alt=""
+          />
+          <p className="text-primary leading-snug max-w-[240px] text-lg font-semibold">
+            Freundlicher After-Sales-Service
+          </p>
+        </div>
+        <div className="space-y-3 flex flex-col items-center justify-center">
+          <Image
+            src={"/durability.png"}
+            width={60}
+            height={60}
+            alt=""
+          />
+          <p className="text-primary leading-snug max-w-[240px] text-lg font-semibold">
+            Für langfristige Langlebigkeit entwickelt
+          </p>
+        </div>
+
+        {/* {stats.map((item, index) => (
           <div
             key={index}
             className="flex flex-col items-center justify-center space-y-3"
@@ -248,7 +282,7 @@ const MissionSection = () => {
               {item.label}
             </p>
           </div>
-        ))}
+        ))} */}
       </div>
     </section>
   );

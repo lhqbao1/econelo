@@ -27,7 +27,7 @@ export async function generateStaticParams() {
     locales.map((locale) => ({
       locale,
       slug: p.url_key, // ✅ string, không bọc trong []
-    }))
+    })),
   );
 }
 
@@ -82,7 +82,7 @@ export async function generateMetadata({
 
       offers: {
         "@type": "Offer",
-        url: `https://www.prestige-home.de/${locale}/produkt/${product.url_key}`,
+        url: `https://www.econelo.de/${locale}/produkt/${product.url_key}`,
         priceCurrency: "EUR",
         price: product.final_price ?? product.price,
         priceValidUntil: "2026-12-31",
@@ -144,17 +144,17 @@ export async function generateMetadata({
         title: product.meta_title || product.name,
         description:
           product.meta_description || product.description?.slice(0, 150),
-        url: `https://www.prestige-home.de/${locale}/produkt/${product.url_key}`,
+        url: `https://www.econelo.de/${locale}/produkt/${product.url_key}`,
         images:
           product.static_files?.map((img: StaticFile) => ({ url: img.url })) ??
           [],
       },
       alternates: {
-        canonical: `https://www.prestige-home.de/${locale}/produkt/${product.url_key}`,
+        canonical: `https://www.econelo.de/${locale}/produkt/${product.url_key}`,
         languages: {
-          de: `https://www.prestige-home.de/de/produkt/${product.url_key}`,
-          en: `https://www.prestige-home.de/en/produkt/${product.url_key}`,
-          "x-default": `https://www.prestige-home.de/de/produkt/${product.url_key}`,
+          de: `https://www.econelo.de/de/produkt/${product.url_key}`,
+          en: `https://www.econelo.de/en/produkt/${product.url_key}`,
+          "x-default": `https://www.econelo.de/produkt/${product.url_key}`,
         },
       },
       other: {

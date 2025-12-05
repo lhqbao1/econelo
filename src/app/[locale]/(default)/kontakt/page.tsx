@@ -13,12 +13,12 @@ export const metadata = {
   title: "Kontakt | Prestige Home – Kontaktieren Sie uns",
   description:
     "Kontaktieren Sie Prestige Home für Fragen zu Produkten, Bestellungen, Versand oder Support. Wir helfen Ihnen gerne weiter.",
-  alternates: { canonical: "https://www.prestige-home.de/de/contact" },
+  alternates: { canonical: "https://www.econelo.de/de/contact" },
   openGraph: {
     title: "Kontakt | Prestige Home",
     description:
       "Kontaktieren Sie Prestige Home für Fragen zu Produkten, Bestellungen, Versand oder Support.",
-    url: "https://www.prestige-home.de/de/contact",
+    url: "https://www.econelo.de/de/contact",
     siteName: "Prestige Home",
     type: "website",
     locale: "de_DE",
@@ -73,13 +73,13 @@ const ContactPage = () => {
             "@context": "https://schema.org",
             "@type": "ContactPage",
             name: "Kontakt Prestige Home",
-            url: "https://www.prestige-home.de/de/contact",
+            url: "https://www.econelo.de/de/contact",
             contactType: "customer support",
             areaServed: "DE",
             publisher: {
               "@type": "Organization",
               name: "Prestige Home",
-              url: "https://www.prestige-home.de",
+              url: "https://www.econelo.de",
             },
           }),
         }}

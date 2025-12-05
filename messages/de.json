@@ -427,5 +427,9 @@
   "share": "Aktie",
   "productsFound": "Produkte gefunden",
   "topChoice": "Beste Wahl",
-  "gallery": "Galerie"
+  "gallery": "Galerie",
+  "userManual": "Aufbau & Details",
+  "companyName": "Firmenname",
+  "vatId": "USt-IdNr",
+  "imageGallery": "Bildergalerie"
 }
