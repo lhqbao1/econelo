@@ -24,6 +24,7 @@ import CheckoutPaymentUI from "../stripe/payment-ui";
 import StripeProvider from "../stripe/stripe";
 import StripeLayout from "../stripe/stripe-layout";
 import { CartItem, CartResponse } from "@/types/cart";
+import { Loader2 } from "lucide-react";
 
 interface CheckoutFormSectionProps {
   form: UseFormReturn<CreateOrderFormValues>;
@@ -34,6 +35,7 @@ interface CheckoutFormSectionProps {
   openDialog: boolean;
   setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>;
   onSubmit: (values: CreateOrderFormValues) => void;
+  submitting: boolean;
 }
 
 export const CheckoutFormSection = ({
@@ -45,37 +47,9 @@ export const CheckoutFormSection = ({
   openDialog,
   setOpenDialog,
   onSubmit,
+  submitting,
 }: CheckoutFormSectionProps) => {
   const t = useTranslations();
-  const couponAmount = form.watch("coupon_amount");
-  const voucherAmount = form.watch("voucher_amount");
-
-  // const totalEuro = useMemo(() => {
-  //   const productsTotal =
-  //     cartItems && cartItems.length > 0
-  //       ? cartItems
-  //           .flatMap((g) => g.items)
-  //           .filter((i) => i.is_active)
-  //           .reduce((sum, item) => sum + (item.final_price ?? 0), 0)
-  //       : (localCart ?? [])
-  //           .filter((i) => i.is_active)
-  //           .reduce(
-  //             (sum, item) =>
-  //               sum + (item.item_price ?? 0) * (item.quantity ?? 1),
-  //             0,
-  //           );
-
-  //   return (
-  //     productsTotal +
-  //     (shippingCost ?? 0) -
-  //     (couponAmount ?? 0) -
-  //     (voucherAmount ?? 0)
-  //   );
-  // }, [cartItems, localCart, shippingCost, couponAmount, voucherAmount]);
-  // // Chuyển sang cents cho Stripe
-  // const totalCents = useMemo(() => {
-  //   return Math.round(totalEuro * 100);
-  // }, [totalEuro]);
 
   return (
     <FormProvider {...form}>
@@ -140,7 +114,7 @@ export const CheckoutFormSection = ({
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="you@example.com"
+                    placeholder=""
                     type="email"
                     className="w-full rounded-md border-gray-300"
                   />
@@ -159,7 +133,7 @@ export const CheckoutFormSection = ({
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="John"
+                      placeholder=""
                     />
                   </FormControl>
                   <FormMessage />
@@ -175,7 +149,43 @@ export const CheckoutFormSection = ({
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="Doe"
+                      placeholder=""
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="company_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("companyName")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      value={field.value ?? ""}
+                      placeholder=""
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="tax_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("vatId")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      value={field.value ?? ""}
+                      placeholder=""
                     />
                   </FormControl>
                   <FormMessage />
@@ -248,17 +258,21 @@ export const CheckoutFormSection = ({
             type="submit"
             className="w-full bg-black text-white py-6 text-base font-semibold hover:bg-gray-800 transition"
           >
-            {t("placeOrder")}
+            {submitting ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              t("placeOrder")
+            )}
           </Button>
 
           {/* Footer links (Refund, Privacy, etc.) */}
           <div className="border-t mt-8 pt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-600">
             {[
               { href: "/refund-policy", label: t("termCondition") },
-              { href: "/privacy-policy", label: t("privacyPolicy") },
-              { href: "/agb", label: t("imprint") },
-              { href: "/cancellations", label: t("cancellations") },
-              { href: "/contact", label: t("contact") },
+              { href: "/datenschutzerklaerung", label: t("privacyPolicy") },
+              { href: "/impressum", label: t("imprint") },
+              { href: "/widerrufsbelehrung", label: t("cancellations") },
+              { href: "/kontakt", label: t("contact") },
             ].map((link) => (
               <Link
                 key={link.href}

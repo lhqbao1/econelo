@@ -185,7 +185,7 @@ const HomeBanner = () => {
           {/* 🖼️ 1️⃣ Image */}
           <div
             ref={imageRef}
-            className="absolute right-0 lg:top-9/12 top-10/12 -translate-y-1/2 space-y-8 opacity-0 z-40"
+            className="absolute right-0 lg:top-9/12 top-10/12 -translate-y-1/2 space-y-8 opacity-0 z-40 hidden lg:block"
           >
             <Image
               src={"/J1000-banner.png"}

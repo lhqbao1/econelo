@@ -17,6 +17,7 @@ import { userIdAtom } from "@/store/auth";
 import { useCreateQA, useGetQAByProduct } from "@/features/qa/hook";
 import QASkeleton from "./qa-skeleton";
 import { QAFormValues } from "@/lib/qa";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface QAInputProps {
   productId: string;
@@ -150,244 +151,223 @@ const QAInput = ({ productId }: QAInputProps) => {
   };
 
   return (
-    <div className="space-y-14">
-      <div>
-        <div className="flex gap-1.5 text-xl font-semibold mb-2">
-          <div className="text-primary">{t("haveQuestion")}</div>
-        </div>
-        {user && (
-          <div className="text-lg font-bold mb-2">{user.first_name}</div>
-        )}
-        <div className="relative flex">
-          <Textarea
-            className="rounded-lg h-30"
-            value={qaInputs["root"] || ""}
-            onChange={(e) => handleInputChange("root", e.target.value)}
-          />
+    <Card className="shadow-lg">
+      <CardHeader>
+        <CardTitle className="text-xl font-bold">{t("haveQuestion")}</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3">
+        <div className="">
+          <div>
+            {user && (
+              <div className="text-lg font-bold mb-2">{user.first_name}</div>
+            )}
+            <div className="relative flex">
+              <Textarea
+                className="rounded-lg h-30"
+                value={qaInputs["root"] || ""}
+                onChange={(e) => handleInputChange("root", e.target.value)}
+              />
 
-          <div className="absolute right-0 bottom-0 flex gap-3">
-            <Button
-              onClick={() => handleSendQa()}
-              type="button"
-              variant="ghost"
-              className="cursor-pointer text-primary size-12"
-            >
-              <SendHorizonal className="size-6" />
-            </Button>
-            {/* <label className="cursor-pointer text-secondary size-12 flex items-center justify-center">
-                            <ImagePlus className="size-6" />
-                            <input
-                                type="file"
-                                accept="image/*"
-                                multiple
-                                className="hidden"
-                                onChange={(e) => handleImageChange("root", e.target.files)}
-                            />
-                        </label> */}
-          </div>
-        </div>
-        {renderImagePreview("root")}
-      </div>
-
-      {/* Danh sách câu hỏi và trả lời */}
-      <div>
-        {isLoading ? (
-          <QASkeleton />
-        ) : listQA && listQA.length > 0 ? (
-          listQA.map((item) => (
-            <div
-              key={item.id}
-              className="mb-8"
-            >
-              {/* 🟢 Câu hỏi cha */}
-              <div className="px-4 py-2 border rounded-lg">
-                <div className="flex gap-6 items-center">
-                  <div className="flex gap-2 items-center">
-                    <span className="font-bold">
-                      {item.user.first_name} {item.user.last_name}
-                    </span>
-                    {item.user.is_admin ? (
-                      <Image
-                        src="/new-logo.svg"
-                        width={20}
-                        height={20}
-                        alt=""
-                      />
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {formatDateTime(item.created_at)}
-                  </div>
-                </div>
-                <div>{item.comment}</div>
-                <div className="flex gap-2 mt-2">
-                  {item.static_files.map(
-                    (image: string, imageIndex: number) => {
-                      return (
-                        <div key={imageIndex}>
-                          <Image
-                            src={image}
-                            height={100}
-                            width={100}
-                            alt=""
-                            className="rounded-md w-20 h-20 object-cover"
-                          />
-                        </div>
-                      );
-                    },
-                  )}
-                </div>
+              <div className="absolute right-0 bottom-0 flex gap-3">
+                <Button
+                  onClick={() => handleSendQa()}
+                  type="button"
+                  variant="ghost"
+                  className="cursor-pointer text-primary size-12"
+                >
+                  <SendHorizonal className="size-6" />
+                </Button>
               </div>
+            </div>
+            {renderImagePreview("root")}
+          </div>
 
-              {/* Nút Reply ở cha nếu chưa có reply */}
-              {!item.replies?.length && (
-                <div className="flex justify-end">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    className="text-sm !text-blue-500 mt-1 hover:bg-blue-50"
-                    onClick={() => toggleReply(item.id)}
-                  >
-                    {showReply[item.id] ? t("cancel") : t("reply")}
-                  </Button>
-                </div>
-              )}
-
-              {/* 🟡 Ô nhập reply nếu show */}
-              {showReply[item.id] && (
-                <div className="relative flex mt-2 ml-10">
-                  <Textarea
-                    placeholder={t("qaSearch")}
-                    className="rounded-lg h-30"
-                    value={qaInputs[item.id] || ""}
-                    onChange={(e) => handleInputChange(item.id, e.target.value)}
-                  />
-                  <div className="absolute right-0 bottom-0 flex gap-3">
-                    <Button
-                      onClick={() => handleSendQa(item.id)}
-                      type="button"
-                      variant="ghost"
-                      className="cursor-pointer text-primary size-12"
-                    >
-                      <SendHorizonal className="size-6" />
-                    </Button>
-                    {/* <label className="cursor-pointer text-secondary size-12 flex items-center justify-center">
-                                            <ImagePlus className="size-6" />
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                multiple
-                                                className="hidden"
-                                                onChange={(e) => handleImageChange(item.id, e.target.files)}
-                                            />
-                                        </label> */}
-                  </div>
-                </div>
-              )}
-
-              {item.replies && item.replies.length > 0 && (
-                <div className="mt-3 ml-6 relative">
-                  {/* Line dọc nằm bên trái các reply con */}
-                  <div className="absolute left-3 top-0 bottom-0 w-px bg-gray-300"></div>
-
-                  <div className="space-y-4">
-                    {item.replies.map((reply) => (
-                      <div
-                        key={reply.id}
-                        className="relative pl-8 before:content-[''] before:absolute before:top-6 before:left-3 before:w-5 before:h-px before:bg-gray-300"
-                      >
-                        {/* Box comment con */}
-                        <div className="px-4 py-2 border-2 rounded-lg">
-                          <div className="flex gap-6 items-center">
-                            <div className="flex gap-2 items-center">
-                              <span className="font-bold">
-                                {reply.user.first_name} {reply.user.last_name}
-                              </span>
-                              {reply.user.is_admin ? (
-                                <Image
-                                  src="/new-logo.svg"
-                                  width={20}
-                                  height={20}
-                                  alt=""
-                                />
-                              ) : (
-                                ""
-                              )}
-                            </div>
-                            <div className="text-sm text-gray-600">
-                              {formatDateTime(reply.created_at)}
-                            </div>
-                          </div>
-                          <div>{reply.comment}</div>
-                          {reply.static_files.map((image, imageIndex) => {
-                            return (
-                              <div key={imageIndex}>
-                                <Image
-                                  src={image}
-                                  height={60}
-                                  width={60}
-                                  alt=""
-                                />
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        {/* Nút Reply riêng cho từng reply con */}
-                        <div className="flex justify-end">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            className="text-sm !text-blue-500 mt-1 hover:bg-blue-50"
-                            onClick={() => toggleReply(reply.id)}
-                          >
-                            {showReply[reply.id] ? t("cancel") : t("reply")}
-                          </Button>
-                        </div>
-
-                        {/* Ô nhập reply cho reply con */}
-                        {showReply[reply.id] && (
-                          <div className="relative flex mt-2 ml-8">
-                            <Textarea
-                              placeholder={t("qaSearch")}
-                              className="rounded-lg h-30"
-                              value={qaInputs[reply.id] || ""}
-                              onChange={(e) =>
-                                handleInputChange(reply.id, e.target.value)
-                              }
-                            />
-                            <div className="absolute right-0 bottom-0 flex gap-3">
-                              <Button
-                                onClick={() => handleSendQa(item.id)}
-                                type="button"
-                                variant="ghost"
-                                className="cursor-pointer text-primary size-12"
-                              >
-                                <SendHorizonal className="size-6" />
-                              </Button>
-                              {/* <Button
-                                                                onClick={() => handleSendQa(item.id)}
-                                                                type="button"
-                                                                variant="ghost"
-                                                                className="cursor-pointer text-secondary size-12"
-                                                            >
-                                                                <ImagePlus className="size-6" />
-                                                            </Button> */}
-                            </div>
-                          </div>
+          {/* Danh sách câu hỏi và trả lời */}
+          <div>
+            {isLoading ? (
+              <QASkeleton />
+            ) : listQA && listQA.length > 0 ? (
+              listQA.map((item) => (
+                <div
+                  key={item.id}
+                  className="mb-8"
+                >
+                  {/* 🟢 Câu hỏi cha */}
+                  <div className="px-4 py-2 border rounded-lg">
+                    <div className="flex gap-6 items-center">
+                      <div className="flex gap-2 items-center">
+                        <span className="font-bold">
+                          {item.user.first_name} {item.user.last_name}
+                        </span>
+                        {item.user.is_admin ? (
+                          <Image
+                            src="/new-logo.svg"
+                            width={20}
+                            height={20}
+                            alt=""
+                          />
+                        ) : (
+                          ""
                         )}
                       </div>
-                    ))}
+                      <div className="text-sm text-gray-600">
+                        {formatDateTime(item.created_at)}
+                      </div>
+                    </div>
+                    <div>{item.comment}</div>
+                    <div className="flex gap-2 mt-2">
+                      {item.static_files.map(
+                        (image: string, imageIndex: number) => {
+                          return (
+                            <div key={imageIndex}>
+                              <Image
+                                src={image}
+                                height={100}
+                                width={100}
+                                alt=""
+                                className="rounded-md w-20 h-20 object-cover"
+                              />
+                            </div>
+                          );
+                        },
+                      )}
+                    </div>
                   </div>
+
+                  {/* Nút Reply ở cha nếu chưa có reply */}
+                  {!item.replies?.length && (
+                    <div className="flex justify-end">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        className="text-sm !text-blue-500 mt-1 hover:bg-blue-50"
+                        onClick={() => toggleReply(item.id)}
+                      >
+                        {showReply[item.id] ? t("cancel") : t("reply")}
+                      </Button>
+                    </div>
+                  )}
+
+                  {/* 🟡 Ô nhập reply nếu show */}
+                  {showReply[item.id] && (
+                    <div className="relative flex mt-2 ml-10">
+                      <Textarea
+                        placeholder={t("qaSearch")}
+                        className="rounded-lg h-30"
+                        value={qaInputs[item.id] || ""}
+                        onChange={(e) =>
+                          handleInputChange(item.id, e.target.value)
+                        }
+                      />
+                      <div className="absolute right-0 bottom-0 flex gap-3">
+                        <Button
+                          onClick={() => handleSendQa(item.id)}
+                          type="button"
+                          variant="ghost"
+                          className="cursor-pointer text-primary size-12"
+                        >
+                          <SendHorizonal className="size-6" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {item.replies && item.replies.length > 0 && (
+                    <div className="mt-3 ml-6 relative">
+                      {/* Line dọc nằm bên trái các reply con */}
+                      <div className="absolute left-3 top-0 bottom-0 w-px bg-gray-300"></div>
+
+                      <div className="space-y-4">
+                        {item.replies.map((reply) => (
+                          <div
+                            key={reply.id}
+                            className="relative pl-8 before:content-[''] before:absolute before:top-6 before:left-3 before:w-5 before:h-px before:bg-gray-300"
+                          >
+                            {/* Box comment con */}
+                            <div className="px-4 py-2 border-2 rounded-lg">
+                              <div className="flex gap-6 items-center">
+                                <div className="flex gap-2 items-center">
+                                  <span className="font-bold">
+                                    {reply.user.first_name}{" "}
+                                    {reply.user.last_name}
+                                  </span>
+                                  {reply.user.is_admin ? (
+                                    <Image
+                                      src="/new-logo.svg"
+                                      width={20}
+                                      height={20}
+                                      alt=""
+                                    />
+                                  ) : (
+                                    ""
+                                  )}
+                                </div>
+                                <div className="text-sm text-gray-600">
+                                  {formatDateTime(reply.created_at)}
+                                </div>
+                              </div>
+                              <div>{reply.comment}</div>
+                              {reply.static_files.map((image, imageIndex) => {
+                                return (
+                                  <div key={imageIndex}>
+                                    <Image
+                                      src={image}
+                                      height={60}
+                                      width={60}
+                                      alt=""
+                                    />
+                                  </div>
+                                );
+                              })}
+                            </div>
+
+                            {/* Nút Reply riêng cho từng reply con */}
+                            <div className="flex justify-end">
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                className="text-sm !text-blue-500 mt-1 hover:bg-blue-50"
+                                onClick={() => toggleReply(reply.id)}
+                              >
+                                {showReply[reply.id] ? t("cancel") : t("reply")}
+                              </Button>
+                            </div>
+
+                            {/* Ô nhập reply cho reply con */}
+                            {showReply[reply.id] && (
+                              <div className="relative flex mt-2 ml-8">
+                                <Textarea
+                                  placeholder={t("qaSearch")}
+                                  className="rounded-lg h-30"
+                                  value={qaInputs[reply.id] || ""}
+                                  onChange={(e) =>
+                                    handleInputChange(reply.id, e.target.value)
+                                  }
+                                />
+                                <div className="absolute right-0 bottom-0 flex gap-3">
+                                  <Button
+                                    onClick={() => handleSendQa(item.id)}
+                                    type="button"
+                                    variant="ghost"
+                                    className="cursor-pointer text-primary size-12"
+                                  >
+                                    <SendHorizonal className="size-6" />
+                                  </Button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          ))
-        ) : null}
-      </div>
-    </div>
+              ))
+            ) : null}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

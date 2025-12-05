@@ -430,5 +430,9 @@
   "share": "Share",
   "productsFound": "products found",
   "topChoice": "Top choice",
-  "gallery": "Gallery"
+  "gallery": "Gallery",
+  "userManual": "User Manual",
+  "companyName": "Company Name",
+  "vatId": "VAT ID",
+  "imageGallery": "Image Gallery"
 }

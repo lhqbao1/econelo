@@ -136,7 +136,7 @@ export function useCheckoutSubmit({
             postal_code: data.invoice_postal_code,
             phone_number: data.phone_number,
             address_line: data.invoice_address_line,
-            additional_address_line: data.invoice_address_additional,
+            additional_address_line: data.invoice_address_additional ?? "",
             city: data.invoice_city,
             country: data.invoice_country,
             state: data.invoice_city,
@@ -159,7 +159,7 @@ export function useCheckoutSubmit({
               postal_code: data.invoice_postal_code,
               phone_number: data.phone_number,
               address_line: data.invoice_address_line,
-              additional_address_line: data.invoice_address_additional,
+              additional_address_line: data.invoice_address_additional ?? "",
               city: data.invoice_city,
               country: data.invoice_country,
               state: data.invoice_city,
@@ -178,7 +178,7 @@ export function useCheckoutSubmit({
             postal_code: data.shipping_postal_code,
             phone_number: data.shipping_phone_number ?? "",
             address_line: data.shipping_address_line,
-            additional_address_line: data.shipping_address_additional,
+            additional_address_line: data.shipping_address_additional ?? "",
             city: data.shipping_country,
             country: data.shipping_city,
             is_default: true,
@@ -218,7 +218,7 @@ export function useCheckoutSubmit({
           const method = data.payment_method;
 
           if (method === "paypal") {
-            router.push(payment.approve_url, { locale });
+            router.push(payment.approve_url);
             return;
           }
 
@@ -244,7 +244,7 @@ export function useCheckoutSubmit({
       } catch (err) {
         console.error(err);
         toast.error(t("orderFail"));
-        form.reset();
+        // form.reset();
         cleanupNeeded = true;
       } finally {
         const guestId = localStorage.getItem("userIdGuest");

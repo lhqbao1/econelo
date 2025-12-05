@@ -59,7 +59,7 @@ const ProductDetailHeader = ({ productDetails }: ProductDetailHeaderProps) => {
           <span className="hover:text-primary">{t("share")}</span>
         </Button>
 
-        <Button
+        {/* <Button
           type="button"
           variant="outline"
           className="rounded-full flex items-center gap-2 hover:text-primary cursor-pointer"
@@ -67,7 +67,7 @@ const ProductDetailHeader = ({ productDetails }: ProductDetailHeaderProps) => {
         >
           <Heart className="w-4 h-4" />
           {t("wishlist")}
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

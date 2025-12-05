@@ -52,7 +52,7 @@ function CheckOutInvoiceAddress({
       <div className="grid grid-cols-2 gap-4">
         <FormField
           control={form.control}
-          name="invoice_phone_number"
+          name="phone_number"
           render={({ field }) => (
             <FormItem className="col-span-2">
               <FormLabel className="text-black text-sm">
@@ -63,6 +63,7 @@ function CheckOutInvoiceAddress({
                   type="number"
                   placeholder=""
                   {...field}
+                  value={field.value ?? ""}
                 />
               </FormControl>
               <FormMessage />

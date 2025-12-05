@@ -141,7 +141,7 @@ const MainFooter = () => {
       </div>
 
       {/* BOTTOM FOOTER */}
-      <div className="mt-16 border-t border-gray-800 pt-8 px-8 lg:px-20 flex flex-col lg:flex-row justify-between items-center gap-6">
+      <div className="mt-16 border-t border-gray-800 pt-8 px-8 lg:px-20 flex flex-col-reverse lg:flex-row justify-between items-center gap-6">
         {/* COPYRIGHT */}
         <div className="text-gray-500 text-sm text-center">
           Copyright © 2025{" "}
@@ -157,7 +157,7 @@ const MainFooter = () => {
           >
             <Facebook className="w-4 h-4 group-hover:scale-125 duration-600" />
           </a>
-          <a
+          {/* <a
             href="#"
             className="w-10 h-10 flex items-center justify-center border border-gray-700 hover:bg-primary hover:text-white group transition-all duration-300 rounded-sm"
           >
@@ -174,7 +174,7 @@ const MainFooter = () => {
             className="w-10 h-10 flex items-center justify-center border border-gray-700 hover:bg-primary hover:text-white group transition-all duration-300 rounded-sm"
           >
             <Linkedin className="w-4 h-4 group-hover:scale-125 duration-600" />
-          </a>
+          </a> */}
         </div>
       </div>
     </section>
