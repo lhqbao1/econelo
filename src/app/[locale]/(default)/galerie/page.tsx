@@ -3,18 +3,18 @@ import VideoGallery from "@/components/gallery/gallery-video-layout";
 import Script from "next/script";
 
 export const metadata = {
-  title: "Bilder- & Videogalerie | Econelo Deutschland",
+  title: "Galerie | Prestige Home Deutschland",
   description:
-    "Entdecken Sie unsere Bilder- und Videogalerie von Econelo Elektrofahrzeugen. Hochwertige Fotos und Videos unserer modernen E-Mobilität – gemacht für Komfort, Sicherheit und nachhaltiges Fahren.",
+    "Entdecken Sie die Prestige Home Galerie mit hochwertigen Bildern und Videos moderner Wohnräume, Einrichtungsideen und exklusiver Interior-Inspirationen.",
   alternates: {
-    canonical: "https://www.econelo.de/galerie",
+    canonical: "https://www.prestige-home.de/gallery",
   },
   openGraph: {
-    title: "Econelo Galerie – Bilder & Videos unserer Elektrofahrzeuge",
+    title: "Prestige Home Galerie – Bilder & Videos exklusiver Wohnideen",
     description:
-      "Durchstöbern Sie unsere Galerie mit hochwertigen Fotos und Videos der Econelo Elektromobilität. Entdecken Sie Design, Komfort und Innovation.",
-    url: "https://www.econelo.de/galerie",
-    siteName: "Econelo",
+      "Durchstöbern Sie unsere Galerie mit hochwertigen Fotos und Videos. Inspirationen für modernes Wohnen, stilvolle Einrichtung und exklusive Interior-Konzepte.",
+    url: "https://www.prestige-home.de/gallery",
+    siteName: "Prestige Home",
     type: "website",
     locale: "de_DE",
   },
