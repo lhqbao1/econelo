@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/carousel";
 import { cn } from "@/lib/utils";
 import useEmblaCarousel from "embla-carousel-react";
+import { useAtom } from "jotai";
+import { userIdAtom } from "@/store/auth";
 
 interface ProductsGridLayoutProps {
   hasBadge?: boolean;
@@ -35,6 +37,7 @@ interface ProductsGridLayoutProps {
 const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
   const t = useTranslations();
   const router = useRouter();
+  const [userId, setUserId] = useAtom(userIdAtom);
   const [emblaRef, emblaApi] = useEmblaCarousel({
     slidesToScroll: 1,
     containScroll: "trimSnaps",
@@ -48,7 +51,6 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
 
   const handleAddToCart = (currentProduct: ProductItem) => {
     if (!currentProduct) return;
-    const userId = localStorage.getItem("userId");
 
     if (!userId) {
       const existingItem = cart.find(

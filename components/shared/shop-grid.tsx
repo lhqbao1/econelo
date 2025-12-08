@@ -15,6 +15,8 @@ import { HandleApiError } from "@/lib/api-helper";
 import { Eye, Heart, ShoppingBasket, Star } from "lucide-react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useAtom } from "jotai";
+import { userIdAtom } from "@/store/auth";
 
 interface ShopGridLayoutProps {
   products: ProductItem[];
@@ -24,6 +26,7 @@ export default function ShopGridLyaout({ products }: ShopGridLayoutProps) {
   const router = useRouter();
   const descRefs = useRef<(HTMLDivElement | null)[]>([]);
   const t = useTranslations();
+  const [userId, setUserId] = useAtom(userIdAtom);
 
   const addToCartMutation = useAddToCart();
   const addToWishlistMutation = useAddToWishList();
@@ -31,7 +34,6 @@ export default function ShopGridLyaout({ products }: ShopGridLayoutProps) {
 
   const handleAddToCart = (currentProduct: ProductItem) => {
     if (!currentProduct) return;
-    const userId = localStorage.getItem("userId");
 
     if (!userId) {
       const existingItem = cart.find(

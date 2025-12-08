@@ -36,7 +36,7 @@ export default function ImportantNotice() {
           y: 0,
           duration: 0.9,
           ease: "bounce.out",
-        }
+        },
       );
     }
   }, [open]);
@@ -44,7 +44,10 @@ export default function ImportantNotice() {
   if (!open) return null;
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={setOpen}
+    >
       <DialogContent
         ref={popupRef}
         className="
