@@ -84,7 +84,7 @@ const MainHeader = () => {
           : "absolute top-0 left-0 bg-white text-black shadow-md -translate-y-0",
       )}
     >
-      <div className="flex lg:gap-32 gap-4 md:px-20 px-4 lg:min-h-[100px] min-h-[60px] items-center">
+      <div className="flex xl:gap-32 gap-4 xl:px-20 md:px-6 px-4 lg:min-h-[100px] min-h-[60px] items-center">
         {/* Logo */}
         <Link href={"/"}>
           <Image
@@ -102,9 +102,9 @@ const MainHeader = () => {
           />
         </Link>
 
-        <div className="flex flex-1 lg:justify-between justify-end gap-4 items-center">
+        <div className="flex flex-1 xl:justify-between justify-end gap-4 items-center">
           {/* Left side: Nav + Icons */}
-          <div className="items-center gap-8 hidden lg:flex">
+          <div className="items-center gap-8 hidden xl:flex">
             <NavBar />
             <ListIcons isSticky={isSticky} />
           </div>
@@ -143,6 +143,10 @@ const MainHeader = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div className="items-center gap-8 lg:flex hidden justify-center xl:hidden">
+        <NavBar />
+        <ListIcons isSticky={isSticky} />
       </div>
     </header>
   );

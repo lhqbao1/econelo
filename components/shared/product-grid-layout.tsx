@@ -269,7 +269,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
             return (
               <CarouselItem
                 key={product.id}
-                className={`lg:basis-1/4 basis-full lg:flex-shrink-0 border-b border-r border-gray-200`}
+                className={`xl:basis-1/4 lg:basis-1/3 basis-full lg:flex-shrink-0 border-b border-r border-gray-200`}
               >
                 <div className="group px-2 py-4 flex flex-col h-full bg-white relative overflow-hidden">
                   <div className="relative  overflow-hidden mb-12">

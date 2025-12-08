@@ -106,11 +106,11 @@ const MissionSection = () => {
       ref={sectionRef}
       className="w-full lg:py-12 md:py-8 py-6 bg-white flex flex-col justify-center items-center md:gap-32 gap-24"
     >
-      <div className="w-11/12 lg:w-8/12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="w-11/12 xl:w-8/12 lg:w-10/12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {/* LEFT — IMAGES */}
-        <div className="relative flex lg:flex-row gap-8 lg:gap-0 flex-col items-center h-full left-images">
+        <div className="relative flex xl:flex-row gap-8 xl:gap-0 flex-col items-center h-full left-images">
           {/* Image 1 */}
-          <div className="lg:absolute relative -bottom-4 lg:-right-2 right-0 w-[340px] h-[340px] rounded-2xl overflow-hidden">
+          <div className="xl:absolute relative -bottom-4 xl:-right-2 right-0 w-[340px] h-[340px] rounded-2xl overflow-hidden">
             <Image
               src="/mission-image-2.jpg"
               alt="Riding scooter"
@@ -120,7 +120,7 @@ const MissionSection = () => {
           </div>
 
           {/* Image 2 */}
-          <div className="lg:absolute relative left-0 top-0 w-[340px] h-[340px] lg:rounded-tl-2xl rounded-2xl overflow-hidden shadow-lg">
+          <div className="xl:absolute relative left-0 top-0 w-[340px] h-[340px] lg:rounded-tl-2xl rounded-2xl overflow-hidden shadow-lg">
             <Image
               src="/mission-image-1.jpg"
               alt="Charging scooter"

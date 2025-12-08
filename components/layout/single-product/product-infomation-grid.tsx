@@ -26,9 +26,17 @@ export default function BentoGridLayout({
   parentProduct,
 }: BentoGridLayoutSection) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-6 py-6">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 py-6">
+      {/* RIGHT COLUMN */}
+      <div className="order-1 lg:order-2 lg:col-span-4 space-y-6">
+        {/* Get Started */}
+        <ShippingSection productDetails={productDetails} />
+        <ProductDetailsUserManual files={productDetails.pdf_files} />
+        <QAInput productId={productDetails.id} />
+      </div>
+
       {/* LEFT COLUMN */}
-      <div className="md:col-span-8 space-y-6">
+      <div className="order-2 lg:order-1 lg:col-span-8 space-y-6">
         {/* Section 1 - Car Features */}
         <IncludedInPriceCard id={productDetails.id_provider} />
 
@@ -40,14 +48,6 @@ export default function BentoGridLayout({
         {/* Section 3 - Included in the Price */}
 
         {/* <FaqAccordion /> */}
-      </div>
-
-      {/* RIGHT COLUMN */}
-      <div className="md:col-span-4 space-y-6">
-        {/* Get Started */}
-        <ShippingSection productDetails={productDetails} />
-        <ProductDetailsUserManual files={productDetails.pdf_files} />
-        <QAInput productId={productDetails.id} />
       </div>
     </div>
   );

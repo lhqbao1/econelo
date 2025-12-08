@@ -113,10 +113,11 @@ const HomeBanner = () => {
               ref={titleRef}
               className="
                 capitalize 
-                text-2xl md:text-5xl 
-                lg:font-semibold font-bold 
-                lg:max-w-xl max-w-xs 
-                lg:pt-40 pt-0 
+                text-2xl xl:text-5xl 
+                xl:font-semibold font-bold 
+                xl:max-w-xl max-w-xs 
+                xl:pt-40 pt-0 
+                md:text-4xl md:max-w-lg
                 text-white opacity-0 
                 lg:text-left text-center
                 leading-tight md:leading-snug lg:leading-normal
