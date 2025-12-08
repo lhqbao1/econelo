@@ -36,18 +36,18 @@ const testimonials = [
 const TestimonialsSection = () => {
   const t = useTranslations();
   return (
-    <section className="w-full flex justify-center">
-      <div className="w-11/12 lg:w-8/12 py-24 relative">
-        {/* Background map (decorative) */}
-        <div className="absolute inset-0 pointer-events-none z-50">
-          <Image
-            src="/testimonials.png"
-            alt="World Map Background"
-            fill
-            className="object-cover z-50"
-          />
-        </div>
+    <section className="w-full xl:w-8/12 py-24 relative flex flex-col items-center justify-center">
+      {/* Background map (decorative) */}
+      <div className="absolute inset-0 pointer-events-none z-50">
+        <Image
+          src="/testimonials.png"
+          alt="World Map Background"
+          fill
+          className="object-cover z-50"
+        />
+      </div>
 
+      <div className="w-11/12 lg:w-10/12 flex flex-col items-center">
         {/* Header */}
         <div className="relative z-10 text-center space-y-3 mb-10">
           <div className="flex justify-center items-center gap-2">
@@ -65,7 +65,10 @@ const TestimonialsSection = () => {
         <Carousel className="relative w-full">
           <CarouselContent>
             {testimonials.map((t) => (
-              <CarouselItem key={t.id} className="text-center px-8 py-12">
+              <CarouselItem
+                key={t.id}
+                className="text-center px-8 py-12"
+              >
                 <p className="text-lg md:text-xl text-gray-600 font-semibold leading-relaxed relative z-10 max-w-4xl mx-auto">
                   <span className="absolute left-[45%] -top-10 text-7xl text-primary/15 font-serif select-none">
                     “

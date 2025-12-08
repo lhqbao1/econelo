@@ -83,7 +83,7 @@ const ProductDetails = ({
 
   return (
     <>
-      <div className="py-3 lg:pt-3 space-y-4 lg:w-8/12 w-full lg:px-0 px-4">
+      <div className="py-3 lg:pt-3 space-y-4 xl:w-8/12 lg:w-10/12 w-full lg:px-0 px-4">
         <CustomBreadCrumb
           isProductPage
           currentPage={
@@ -102,7 +102,7 @@ const ProductDetails = ({
             <div className="space-y-8">
               <div className="flex flex-col gap-8 items-start">
                 {/* Product images & carousel */}
-                <div className="w-full grid grid-cols-3 lg:py-12 py-6 lg:space-y-6 space-y-4 ">
+                <div className="w-full grid lg:grid-cols-3 grid-cols-1 lg:py-12 py-6 lg:space-y-6 space-y-4 ">
                   <div className="flex flex-row-reverse gap-4 items-start lg:col-span-2 col-span-3">
                     <div className="flex-1">
                       <ProductImageDialog productDetails={productDetails}>

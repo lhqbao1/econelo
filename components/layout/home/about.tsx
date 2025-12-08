@@ -109,7 +109,7 @@ const AdvantagesSection = () => {
       ref={sectionRef}
       className="w-full py-12 bg-white flex justify-center"
     >
-      <div className="w-11/12 lg:w-8/12 flex flex-col justify-center items-center">
+      <div className="w-11/12 xl:w-8/12 lg:w-10/12 flex flex-col justify-center items-center">
         {/* Heading */}
         <div className="text-center mb-16">
           <div className="flex justify-center items-center gap-2 mb-3">
@@ -124,7 +124,7 @@ const AdvantagesSection = () => {
         </div>
 
         {/* Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 w-11/12 lg:w-10/12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 w-12/12 xl:w-10/12 items-center">
           {/* Left Features */}
           <div className="space-y-10">
             {featuresLeft.map((feature, index) => (
@@ -154,7 +154,7 @@ const AdvantagesSection = () => {
               alt="Eco scooter"
               width={500}
               height={500}
-              className="object-cover lg:h-72"
+              className="object-cover xl:h-72 lg:h-60"
             />
           </div>
 

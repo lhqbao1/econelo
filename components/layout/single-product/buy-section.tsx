@@ -223,7 +223,7 @@ const BuySection = ({
             </Button>
 
             {/* optional wishlist button */}
-            <div className="mt-3">
+            {/* <div className="mt-3">
               <Button
                 type="button"
                 variant="outline"
@@ -237,7 +237,7 @@ const BuySection = ({
                   t("addToWishlist")
                 )}
               </Button>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
       </form>
