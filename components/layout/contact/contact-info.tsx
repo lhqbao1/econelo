@@ -59,9 +59,7 @@ const ContactInfo = () => {
               <h3 className="font-bold text-xl text-black group-hover:text-white">
                 {t("email")}
               </h3>
-              <p className="text-gray-400 font-semibold">
-                info@prestige-home.de
-              </p>
+              <p className="text-gray-400 font-semibold">info@econelo.de</p>
             </div>
           </div>
         </div>

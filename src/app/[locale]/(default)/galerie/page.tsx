@@ -7,13 +7,13 @@ export const metadata = {
   description:
     "Entdecken Sie die Prestige Home Galerie mit hochwertigen Bildern und Videos moderner Wohnräume, Einrichtungsideen und exklusiver Interior-Inspirationen.",
   alternates: {
-    canonical: "https://www.prestige-home.de/gallery",
+    canonical: "https://www.econelo.de/galerie",
   },
   openGraph: {
     title: "Prestige Home Galerie – Bilder & Videos exklusiver Wohnideen",
     description:
       "Durchstöbern Sie unsere Galerie mit hochwertigen Fotos und Videos. Inspirationen für modernes Wohnen, stilvolle Einrichtung und exklusive Interior-Konzepte.",
-    url: "https://www.prestige-home.de/gallery",
+    url: "https://www.econelo.de/galerie",
     siteName: "Prestige Home",
     type: "website",
     locale: "de_DE",
