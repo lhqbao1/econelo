@@ -30,7 +30,7 @@ export default function CheckoutStripeHandler({
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `https://prestige-home.de/de/thank-you?payment_intent=${clientSecret}`,
+        return_url: `https://econelo.de/danke?payment_intent=${clientSecret}`,
       },
     });
 

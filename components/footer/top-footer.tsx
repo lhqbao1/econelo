@@ -42,10 +42,10 @@ const TopFooter = () => {
           <h4 className="font-bold text-lg text-black">E-mail</h4>
 
           <a
-            href="mailto:info@prestige-home.de"
+            href="mailto:info@econelo.de"
             className="relative text-gray-700 text-base group inline-block cursor-pointer"
           >
-            <span className="inline-block">info@prestige-home.de</span>
+            <span className="inline-block">info@econelo.de</span>
 
             {/* underline animation */}
             <span className="absolute left-0 -bottom-0.5 h-[2px] w-0 bg-primary transition-all duration-500 group-hover:w-full"></span>

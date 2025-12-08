@@ -50,7 +50,7 @@ export default function StripeLayout({
             address: { country: "DE" },
           },
         },
-        return_url: `https://prestige-home.de/${locale}/thank-you`,
+        return_url: `https://econelo.de/${locale}/danke`,
       });
 
       if (error) toast.error(error.message + "heheh");
@@ -60,9 +60,7 @@ export default function StripeLayout({
   }, [stripe, clientSecret, selectedMethod]);
 
   const handleCardSuccess = (piId: string) => {
-    router.push(
-      `https://prestige-home.de/${locale}/thank-you?payment_intent=${piId}`,
-    );
+    router.push(`https://econelo.de/${locale}/danke?payment_intent=${piId}`);
   };
 
   const handleFail = (msg?: string) => {
