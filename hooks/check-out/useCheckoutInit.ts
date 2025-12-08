@@ -24,7 +24,7 @@ export function useCheckoutInit() {
   // Load from localStorage only on client
   useEffect(() => {
     const storedId = localStorage.getItem("userIdGuest");
-    const storedLogin = localStorage.getItem("userId");
+    const storedLogin = localStorage.getItem("user_id");
     if (storedLogin) setUserIdLogin(storedLogin);
     if (storedId) setUserId(storedId);
   }, []);
