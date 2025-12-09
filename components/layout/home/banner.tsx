@@ -112,7 +112,8 @@ const HomeBanner = () => {
               ref={titleRef}
               className="
                 capitalize 
-                text-2xl xl:text-5xl 
+                text-2xl xl:text-4xl
+                2xl:text-5xl 
                 xl:font-semibold font-bold 
                 xl:max-w-xl max-w-xs 
                 xl:pt-40 pt-0 
@@ -186,7 +187,7 @@ const HomeBanner = () => {
           <div
             ref={imageRef}
             className="
-              absolute right-0 xl:-right-30 2xl:-right-20 md:right-10
+              absolute right-0 xl:-right-30 2xl:-right-20 md:right-10 lg:-right-20
               xl:top-9/12 lg:top-10/12 md:top-10/12 top-10/12
               -translate-y-1/2
               
@@ -198,7 +199,7 @@ const HomeBanner = () => {
               width={1200}
               height={800}
               alt=""
-              className="3xl:h-[800px] 2xl:h-[700px] 2xl:w-auto xl:h-[600px] xl:w-auto lg:h-[600px] md:h-[450px] h-[300px] w-auto"
+              className="3xl:h-[800px] 2xl:h-[700px] 2xl:w-auto xl:h-[600px] xl:w-auto lg:h-[500px] md:h-[450px] h-[300px] w-auto"
             />
           </div>
         </div>

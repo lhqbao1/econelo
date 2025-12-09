@@ -108,7 +108,7 @@ const MainHeader = () => {
           <div className="items-center gap-8 hidden 3xl:flex">
             <NavBar />
           </div>
-          <div className="block lg:hidden">
+          <div className="block md:hidden">
             <SidebarTrigger />
             <SearchDrawer iconColor={"white"} />
             <CartIcon isSticky={isSticky} />
@@ -149,7 +149,7 @@ const MainHeader = () => {
       </div>
       <div className="items-center gap-8 lg:flex hidden justify-center 3xl:hidden">
         <NavBar />
-        <ListIcons isSticky={isSticky} />
+        {/* <ListIcons isSticky={isSticky} /> */}
       </div>
     </header>
   );
