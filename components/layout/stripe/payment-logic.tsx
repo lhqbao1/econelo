@@ -552,7 +552,7 @@ export default function CheckoutPaymentLogic({
     const pr = stripe.paymentRequest({
       country: "DE",
       currency,
-      total: { label: "Prestige Home", amount: total },
+      total: { label: "Econelo", amount: total },
       requestPayerEmail: true,
       requestPayerName: true,
     });

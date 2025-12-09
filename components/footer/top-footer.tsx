@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 const TopFooter = () => {
   const t = useTranslations();
   return (
-    <section className="flex flex-col lg:flex-row justify-center lg:items-center items-start gap-8 md:gap-16 py-8 bg-white px-4 lg:px-0">
+    <section className="flex flex-col lg:flex-row justify-center lg:items-center items-start gap-8 md:gap-8 lg:gap-16 py-8 bg-white px-4 lg:px-0">
       {/* Hotline */}
       <div className="flex items-center gap-4">
         <PhoneCall
@@ -29,7 +29,7 @@ const TopFooter = () => {
       </div>
 
       {/* Divider */}
-      <div className="hidden md:block w-px h-10 bg-gray-200"></div>
+      <div className="hidden lg:block md:hidden w-px h-10 bg-gray-200"></div>
 
       {/* Email */}
       <div className="flex items-center gap-4">
@@ -54,7 +54,7 @@ const TopFooter = () => {
       </div>
 
       {/* Divider */}
-      <div className="hidden md:block w-px h-10 bg-gray-200"></div>
+      <div className="hidden lg:block md:hidden w-px h-10 bg-gray-200"></div>
 
       {/* Location */}
       <div className="flex items-center gap-4">

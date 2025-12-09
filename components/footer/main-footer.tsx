@@ -64,16 +64,16 @@ const MainFooter = () => {
         </div>
       </div> */}
 
-      <div className="grid lg:grid-cols-4 grid-cols-2 gap-10 px-4 lg:px-20 lg:mt-16 mt-8">
+      <div className="grid md:grid-cols-4 grid-cols-2 gap-10 px-4 lg:px-20 lg:mt-16 mt-8">
         {/* MIDDLE: About */}
-        <div className="space-y-4">
+        <div className="space-y-4 col-span-2 xl:col-span-1">
           <h4 className="text-xl font-semibold">Econelo</h4>
           <div className="w-10 h-[2px] bg-primary mb-2" />
           <p className="text-gray-400 leading-relaxed">{t("footerDes")}</p>
         </div>
 
         {/* COMPANY INFO */}
-        <div className="space-y-4">
+        <div className="space-y-4 col-span-2 xl:col-span-1">
           <h4 className="text-xl font-semibold">{t("companyInfo")}</h4>
           <div className="w-10 h-[2px] bg-primary mb-2" />
           <ul className="space-y-2 text-gray-400">
@@ -90,7 +90,7 @@ const MainFooter = () => {
         </div>
 
         {/* POLICIES */}
-        <div className="space-y-4">
+        <div className="space-y-4 md:col-span-2 xl:col-span-1">
           <h4 className="text-xl font-semibold">{t("ourPolicy")}</h4>
           <div className="w-10 h-[2px] bg-primary mb-2" />
           <ul className="space-y-2 text-gray-400">
@@ -117,7 +117,7 @@ const MainFooter = () => {
         </div>
 
         {/* QUICK CONTACT */}
-        <div className="space-y-4">
+        <div className="space-y-4 md:col-span-2 xl:col-span-1">
           <h4 className="text-xl font-semibold">{t("quickContact")}</h4>
           <div className="w-10 h-[2px] bg-primary mb-2" />
           <div className="space-y-2">
