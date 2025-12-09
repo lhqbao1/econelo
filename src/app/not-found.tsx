@@ -4,17 +4,22 @@ import type { Metadata } from "next";
 
 // 🧠 SEO metadata cho trang 404
 export const metadata: Metadata = {
-  title: "404 | Page Not Found",
-  description: "Sorry, the page you are looking for does not exist.",
-  robots: { index: false, follow: false }, // 👈 Quan trọng: không index
+  title: "404 | Seite nicht gefunden",
+  description: "Die gesuchte Seite wurde leider nicht gefunden.",
+  robots: { index: false, follow: false },
   alternates: {
     canonical: "/404",
   },
   openGraph: {
-    title: "Page Not Found | Prestige Home",
-    description: "Sorry, the page you are looking for does not exist.",
+    title: "404 | Seite nicht gefunden",
+    description: "Die gesuchte Seite wurde leider nicht gefunden.",
     url: "https://www.econelo.de/404",
     type: "website",
+    // images: [
+    //   {
+    //     url: "https://www.econelo.de/og-image-404.png", // optional
+    //   },
+    // ],
   },
 };
 

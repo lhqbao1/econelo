@@ -40,17 +40,22 @@ export async function generateMetadata({
 
   try {
     const product = await getProductBySlug(lastSlug);
-    if (!product) return notFound();
-
+    if (!product) {
+      return {
+        title: "Produkt nicht gefunden",
+        description: "This page does not exist.",
+        robots: { index: false, follow: false },
+      };
+    }
     // ✅ Tạo dữ liệu schema JSON-LD
     const productSchema = {
       "@context": "https://schema.org/",
       "@type": "Product",
       name: product.name,
       description: product.description,
-      sku: product.sku || "",
-      mpn: product.id_provider || "",
-      gtin13: product.ean,
+      sku: product.sku ?? "",
+      mpn: product.id_provider ?? "",
+      gtin13: product.ean ?? "",
       brand: {
         "@type": "Brand",
         name: product.brand?.name || "Prestige Home",
@@ -60,29 +65,29 @@ export async function generateMetadata({
           ? product.static_files.map((f) => f.url)
           : ["/placeholder-product.webp"],
 
-      aggregateRating: {
-        "@type": "AggregateRating",
-        ratingValue: "4.8",
-        reviewCount: "23",
-      },
-      review: [
-        {
-          "@type": "Review",
-          author: { "@type": "Person", name: "Verified Customer" },
-          datePublished: "2024-12-15",
-          reviewRating: {
-            "@type": "Rating",
-            ratingValue: "5",
-            bestRating: "5",
-          },
-          reviewBody:
-            "Sehr bequem und qualitativ hochwertig. Schnelle Lieferung!",
-        },
-      ],
+      // aggregateRating: {
+      //   "@type": "AggregateRating",
+      //   ratingValue: "4.8",
+      //   reviewCount: "23",
+      // },
+      // review: [
+      //   {
+      //     "@type": "Review",
+      //     author: { "@type": "Person", name: "Verified Customer" },
+      //     datePublished: "2024-12-15",
+      //     reviewRating: {
+      //       "@type": "Rating",
+      //       ratingValue: "5",
+      //       bestRating: "5",
+      //     },
+      //     reviewBody:
+      //       "Sehr bequem und qualitativ hochwertig. Schnelle Lieferung!",
+      //   },
+      // ],
 
       offers: {
         "@type": "Offer",
-        url: `https://www.econelo.de/${locale}/produkt/${product.url_key}`,
+        url: `https://www.econelo.de/produkt/${product.url_key}`,
         priceCurrency: "EUR",
         price: product.final_price ?? product.price,
         priceValidUntil: "2026-12-31",
@@ -183,11 +188,15 @@ export default async function Page({
     : [resolvedParams.slug];
   const lastSlug = slugArray[slugArray.length - 1];
 
-  const product = await getProductBySlug(lastSlug);
-  if (!product) {
-    // ✅ Gọi notFound() => Next.js hiển thị /404.tsx tự động
-    notFound();
+  let product = null;
+  try {
+    product = await getProductBySlug(lastSlug);
+  } catch (e) {
+    console.error("API failed:", e);
   }
+
+  if (!product) notFound();
+
   let parentProduct = null;
   if (product?.parent_id) {
     parentProduct = await getProductGroupDetail(product.parent_id);

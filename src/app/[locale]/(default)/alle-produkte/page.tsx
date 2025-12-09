@@ -2,15 +2,10 @@
 import CustomBreadCrumb from "@/components/shared/breadcrumb";
 import { SlidersHorizontal } from "lucide-react";
 import React, { useState } from "react";
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from "@/components/ui/collapsible";
+
 import { useGetAllProducts } from "@/features/products/hook";
 import { ProductGridSkeleton } from "@/components/shared/product-grid-skeleton";
 import { useTranslations } from "next-intl";
-import ProductsGridLayout from "@/components/shared/product-grid-layout";
 import { CustomPagination } from "@/components/shared/pagination";
 import ShopGridLyaout from "@/components/shared/shop-grid";
 import { SortSelect } from "@/components/shared/sort-select";
@@ -24,7 +19,6 @@ export default function ShopAllPage() {
     isLoading,
     isError,
   } = useGetAllProducts({ page, page_size: pageSize, is_econelo: true });
-  if (!products || isLoading) return <ProductGridSkeleton length={12} />;
 
   return (
     <div className="pt-[70px] xl:pb-16 pb-6 md:pt-[130px] flex flex-col items-center">
@@ -46,16 +40,15 @@ export default function ShopAllPage() {
           </div>
         </div>
         <div className="">
-          {/* <p className="text-center text-xl font-bold mt-2">
-            {products.length === 0 ? t("emptyCategory") : ""}
-          </p> */}
           {!products || isLoading ? (
-            <ProductGridSkeleton
-              length={16}
-              col={3}
-              mobileCol={1}
-              width="full"
-            />
+            <div className="flex justify-center items-center">
+              <ProductGridSkeleton
+                length={16}
+                col={3}
+                mobileCol={1}
+                width="full"
+              />
+            </div>
           ) : (
             <div className="filter-section">
               <div className="">
