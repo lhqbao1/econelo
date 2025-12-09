@@ -15,21 +15,21 @@ import { useTranslations } from "next-intl";
 const testimonials = [
   {
     id: 1,
-    text: "I appreciate your hospital really good environment and excellent patient care. You are continuously handle patient treatment wonderfully. Thanks for your great service. Please enjoy the chocolates.",
-    name: "Striven Porter",
-    role: "Financial Adviser",
+    text: "Seit ich mein dreirädriges Elektromobil von Econelo habe, bin ich wieder selbstständig unterwegs. Das Fahrzeug ist stabil, leicht zu bedienen und gibt mir ein sicheres Gefühl im Alltag.",
+    name: "Helga Schneider",
+    role: "Rentnerin",
   },
   {
     id: 2,
-    text: "Econelo scooters have completely changed my daily commute. Smooth, silent, and efficient — love it!",
-    name: "Julia Weber",
-    role: "Marketing Expert",
+    text: "Das vierrädrige Seniorenmobil fährt sich unglaublich bequem. Kein Balancehalten, kein Stress – einfach draufsetzen und losfahren. Perfekt für Einkäufe und Arzttermine.",
+    name: "Walter Hofmann",
+    role: "Senior",
   },
   {
     id: 3,
-    text: "The delivery was fast and customer service was excellent. Highly recommend Econelo for anyone looking for an eco-friendly ride.",
-    name: "Lukas Meyer",
-    role: "Engineer",
+    text: "Die Lieferung war schnell und der Kundenservice sehr freundlich. Mein Dreirad ist leise, zuverlässig und ideal für kurze Strecken in der Stadt. Ich kann Econelo absolut empfehlen.",
+    name: "Monika Berger",
+    role: "Ehemalige Lehrerin",
   },
 ];
 
@@ -77,7 +77,7 @@ const TestimonialsSection = () => {
                 </p>
 
                 {/* Rating */}
-                <div className="flex justify-center mt-8 mb-4 text-primary">
+                {/* <div className="flex justify-center mt-8 mb-4 text-primary">
                   {Array(5)
                     .fill(0)
                     .map((_, i) => (
@@ -86,11 +86,11 @@ const TestimonialsSection = () => {
                         className="w-5 h-5 fill-primary text-primary"
                       />
                     ))}
-                </div>
+                </div> */}
 
                 {/* Author */}
                 <div className="flex justify-center items-center gap-4 mt-6">
-                  <div className="text-left">
+                  <div className="text-center">
                     <h4 className="font-bold text-lg text-black">{t.name}</h4>
                     <p className="text-sm text-primary font-medium">{t.role}</p>
                   </div>

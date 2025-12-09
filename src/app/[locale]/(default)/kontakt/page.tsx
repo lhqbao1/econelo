@@ -56,7 +56,7 @@ const ContactPage = () => {
         {/* <h1 className="text-4xl font-extrabold mb-12 text-center">
           Kontaktieren Sie uns
         </h1> */}
-        <ContactInfo />
+        {/* <ContactInfo /> */}
 
         {/* Giả sử bạn có component ContactForm */}
         <ContactForm />

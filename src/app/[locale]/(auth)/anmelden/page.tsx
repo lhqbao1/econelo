@@ -1,4 +1,3 @@
-import LoginFormTransparent from "@/components/layout/login/login-form";
 import SignUpFormTransparent from "@/components/layout/sign-up/signup-form";
 
 const SignUpPage = () => {

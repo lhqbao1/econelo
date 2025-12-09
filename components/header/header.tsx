@@ -10,13 +10,14 @@ import { usePathname } from "@/src/i18n/navigation";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import gsap from "gsap";
-import { useUser } from "@/hooks/useUser";
-import { useAtom, useAtomValue } from "jotai";
-import { isUserLoadedAtom, userIdAtom } from "@/store/auth";
+import { useAtom } from "jotai";
+import { userIdAtom } from "@/store/auth";
 import { useTranslations } from "next-intl";
 import { SidebarTrigger } from "../ui/sidebar";
 import { useQuery } from "@tanstack/react-query";
 import { getMe } from "@/features/auth/api";
+import SearchDrawer from "../search-drawer/search-drawer";
+import CartIcon from "./main-header/cart-icon";
 
 const MainHeader = () => {
   const [isSticky, setIsSticky] = useState(false);
@@ -84,7 +85,7 @@ const MainHeader = () => {
           : "absolute top-0 left-0 bg-white text-black shadow-md -translate-y-0",
       )}
     >
-      <div className="flex xl:gap-32 gap-4 xl:px-20 md:px-6 px-4 lg:min-h-[100px] min-h-[60px] items-center">
+      <div className="flex 3xl:gap-32 2xl:gap-12 gap-4 xl:px-20 md:px-6 px-4 lg:min-h-[100px] min-h-[60px] items-center">
         {/* Logo */}
         <Link href={"/"}>
           <Image
@@ -102,20 +103,21 @@ const MainHeader = () => {
           />
         </Link>
 
-        <div className="flex flex-1 xl:justify-between justify-end gap-4 items-center">
+        <div className="flex flex-1 3xl:justify-between justify-end gap-4 items-center">
           {/* Left side: Nav + Icons */}
-          <div className="items-center gap-8 hidden xl:flex">
+          <div className="items-center gap-8 hidden 3xl:flex">
             <NavBar />
-            <ListIcons isSticky={isSticky} />
           </div>
           <div className="block lg:hidden">
             <SidebarTrigger />
+            <SearchDrawer iconColor={"white"} />
+            <CartIcon isSticky={isSticky} />
           </div>
 
           {/* ✅ Right side: Contact + Login/User */}
           <div className="lg:flex hidden items-center gap-8">
             {/* Contact Info */}
-            <div
+            {/* <div
               ref={contactRef}
               className="flex items-center gap-2 opacity-0"
             >
@@ -123,7 +125,8 @@ const MainHeader = () => {
               <p className="font-semibold text-xl text-black">
                 +49 30 814 537 080
               </p>
-            </div>
+            </div> */}
+            <ListIcons isSticky={isSticky} />
 
             {/* Button (only after user loaded) */}
             <div
@@ -144,7 +147,7 @@ const MainHeader = () => {
           </div>
         </div>
       </div>
-      <div className="items-center gap-8 lg:flex hidden justify-center xl:hidden">
+      <div className="items-center gap-8 lg:flex hidden justify-center 3xl:hidden">
         <NavBar />
         <ListIcons isSticky={isSticky} />
       </div>

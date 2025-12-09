@@ -7,7 +7,7 @@ const TopFooter = () => {
   return (
     <section className="flex flex-col lg:flex-row justify-center lg:items-center items-start gap-8 md:gap-8 lg:gap-16 py-8 bg-white px-4 lg:px-0">
       {/* Hotline */}
-      <div className="flex items-center gap-4">
+      {/* <div className="flex items-center gap-4">
         <PhoneCall
           className="text-primary w-10 h-10"
           strokeWidth={1.5}
@@ -22,14 +22,13 @@ const TopFooter = () => {
           >
             <span className="inline-block">+49 30 814 537 080</span>
 
-            {/* animated underline */}
             <span className="absolute left-0 -bottom-0.5 h-[2px] w-0 bg-primary transition-all duration-500 group-hover:w-full rounded-full"></span>
           </a>
         </div>
-      </div>
+      </div> */}
 
       {/* Divider */}
-      <div className="hidden lg:block md:hidden w-px h-10 bg-gray-200"></div>
+      {/* <div className="hidden lg:block md:hidden w-px h-10 bg-gray-200"></div> */}
 
       {/* Email */}
       <div className="flex items-center gap-4">
