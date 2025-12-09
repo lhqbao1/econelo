@@ -103,7 +103,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
               return;
             }
             toast.error(message);
-            if (status === 401) router.push("/login");
+            if (status === 401) router.push("/einloggen");
           },
         },
       );
@@ -125,7 +125,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
             return;
           }
           toast.error(message);
-          if (status === 401) router.push("/login");
+          if (status === 401) router.push("/einloggen");
         },
       },
     );
@@ -290,7 +290,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
                     {/* Overlay ẩn (GSAP sẽ bật khi hover) */}
                     <div
                       onClick={() => router.push(`/produkt/${product.url_key}`)}
-                      className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/80 opacity-0 cursor-pointer"
+                      className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-white/80 opacity-0 cursor-pointer"
                     >
                       <Button
                         className="bg-black text-white px-6 py-2 font-semibold rounded-full"
@@ -362,14 +362,14 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
                         >
                           <Eye className="size-5" />
                         </Button>
-                        <Button
+                        {/* <Button
                           variant="outline"
                           size="icon"
                           className="rounded-full border-gray-300 hover:bg-black hover:text-white"
                           onClick={() => handleAddToWishlist(product)}
                         >
                           <Heart className="size-5" />
-                        </Button>
+                        </Button> */}
                       </div>
                     </div>
 

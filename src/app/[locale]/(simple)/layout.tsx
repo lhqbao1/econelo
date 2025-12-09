@@ -1,8 +1,4 @@
-import type { Metadata } from "next";
 import "../../globals.css";
-import LoginBackground from "@/components/layout/login/bg";
-import { ShoppingBag, ShoppingCart } from "lucide-react";
-import Link from "next/link";
 
 export default function AuthLayout({
   children,

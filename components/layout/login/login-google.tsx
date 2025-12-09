@@ -7,7 +7,7 @@ const LoginGoogleButton = () => {
   const t = useTranslations();
   const handleLoginGoogle = async () => {
     // Gọi thẳng đến backend bằng redirect, không dùng axios
-    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}google/login`;
+    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}econelo/google/login`;
   };
   return (
     <div className="flex flex-col gap-4 justify-center items-center mt-8">
@@ -16,7 +16,12 @@ const LoginGoogleButton = () => {
         variant={"outline"}
         onClick={() => handleLoginGoogle()}
       >
-        <Image src={"/google.svg"} width={20} height={20} alt="" />
+        <Image
+          src={"/google.svg"}
+          width={20}
+          height={20}
+          alt=""
+        />
         {t("continueGoogle")}
       </Button>
     </div>

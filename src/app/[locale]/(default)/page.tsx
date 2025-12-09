@@ -9,15 +9,10 @@ import { Suspense } from "react";
 
 import HomeBanner from "@/components/layout/home/banner";
 import MissionSection from "@/components/layout/home/mission";
-import NewArrivedSection from "@/components/layout/home/new-arrived";
-import VideoSection from "@/components/layout/home/video";
 import ProductTabsServer from "@/components/layout/home/server/product-tabs-server";
 import AdvantagesSection from "@/components/layout/home/about";
-import CategorySection from "@/components/layout/home/categories";
 import TestimonialsSection from "@/components/layout/home/testimonials";
-import LogoLoopSection from "@/components/layout/home/logo-loop";
 import { getCategories } from "@/features/category/api";
-import CategorySectionServer from "@/components/layout/home/server/product-category-server";
 
 export const revalidate = 300;
 
@@ -50,7 +45,7 @@ export default async function HomePage() {
 function HomeContent() {
   return (
     <div className="flex flex-col items-center lg:gap-12 md:gap-8 gap-6 w-full">
-      <div className="lg:h-[100vh] h-fit w-full">
+      <div className="xl:h-[100vh] h-fit w-full">
         <HomeBanner />
       </div>
       <MissionSection />

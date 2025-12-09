@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import "../../globals.css";
 import LoginBackground from "@/components/layout/login/bg";
 

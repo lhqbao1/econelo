@@ -153,7 +153,7 @@ const BuySection = ({
               return;
             }
             toast.error(message);
-            if (status === 401) router.push("/login", { locale });
+            if (status === 401) router.push("/einloggen", { locale });
           },
         },
       );

@@ -22,7 +22,7 @@ const AboutUsPage = () => {
         <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl flex gap-3 z-20 px-6 py-1.5 text-sm items-center">
           <Link href={"/"}>{t("home")}</Link>
           <ChevronsRight size={18} />
-          <p>{t("contact")}</p>
+          <p>{t("aboutUs")}</p>
         </div>
       </div>
       <MissionSection />

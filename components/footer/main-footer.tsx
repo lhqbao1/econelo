@@ -90,7 +90,7 @@ const MainFooter = () => {
         </div>
 
         {/* POLICIES */}
-        <div className="space-y-4 md:col-span-2 xl:col-span-1">
+        <div className="space-y-4 col-span-2 xl:col-span-1">
           <h4 className="text-xl font-semibold">{t("ourPolicy")}</h4>
           <div className="w-10 h-[2px] bg-primary mb-2" />
           <ul className="space-y-2 text-gray-400">
@@ -117,7 +117,7 @@ const MainFooter = () => {
         </div>
 
         {/* QUICK CONTACT */}
-        <div className="space-y-4 md:col-span-2 xl:col-span-1">
+        <div className="space-y-4 col-span-2 xl:col-span-1">
           <h4 className="text-xl font-semibold">{t("quickContact")}</h4>
           <div className="w-10 h-[2px] bg-primary mb-2" />
           <div className="space-y-2">
@@ -125,7 +125,7 @@ const MainFooter = () => {
             <p className="text-gray-400 leading-relaxed max-w-xs">
               Herr Andreas Bachl
             </p>
-            <div className="text-gray-400">+49 30 814 537 080</div>
+            {/* <div className="text-gray-400">+49 30 814 537 080</div> */}
             <div className="text-gray-400">andreas.bachl@prestige-home.de</div>
             {/* <p className="text-gray-400">{t("feelFree")}</p> */}
           </div>
@@ -134,7 +134,7 @@ const MainFooter = () => {
               {t("repairService")}
             </div>
             <p className="text-gray-400 leading-relaxed">Herr Frank Rafael</p>
-            <p className="text-gray-400">+49 1716 133971</p>
+            {/* <p className="text-gray-400">+49 1716 133971</p> */}
             <p className="text-gray-400">frank@frawa-aktiv.de</p>
           </div>
         </div>

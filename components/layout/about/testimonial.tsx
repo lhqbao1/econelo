@@ -56,7 +56,7 @@ const testimonials = [
 
 const TestimonialsSection = () => {
   const plugin = React.useRef(
-    Autoplay({ delay: 4000, stopOnInteraction: false })
+    Autoplay({ delay: 4000, stopOnInteraction: false }),
   );
 
   const emblaRef = useRef<EmblaCarouselType | null>(null);
@@ -76,7 +76,7 @@ const TestimonialsSection = () => {
           gsap.fromTo(
             card,
             { opacity: 0, y: 30, scale: 0.95 },
-            { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "power3.out" }
+            { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "power3.out" },
           );
         }
       });
@@ -144,7 +144,7 @@ const TestimonialsSection = () => {
           <CarouselNext className="absolute cursor-pointer -right-16 top-1/2 -translate-y-1/2 bg-primary hover:bg-black text-white hover:text-white transition-all duration-300 w-12 h-12 rounded-none rounded-l-xl"></CarouselNext>
         </Carousel>
       </div>
-      <StatsSection />
+      {/* <StatsSection /> */}
     </section>
   );
 };

@@ -12,14 +12,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Mail, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useLoginOtp, useSendOtp, useSendOtpAdmin } from "@/features/auth/hook";
 import { toast } from "sonner";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Link, useRouter } from "@/src/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useSyncLocalCart } from "@/features/cart/hook";
-import Image from "next/image";
 import LoginGoogleButton from "./login-google";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../../ui/input-otp";
 import { useAtom } from "jotai";

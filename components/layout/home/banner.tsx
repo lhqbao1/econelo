@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ClockFading, Gauge, ShieldCheck, Weight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import HoverButton from "../../shared/hover-button";
@@ -80,11 +79,11 @@ const HomeBanner = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative lg:min-h-[80vh] min-h-[450px] bg-primary bg-center z-10 md:px-20 px-4"
+      className="relative xl:min-h-[80vh] lg:min-h-[70vh] md:min-h-[70vh] min-h-[60vh] bg-primary bg-center z-10 md:px-20 px-4"
     >
       <div className="grid grid-cols-2 gap-4">
         <div className="col-span-1">
-          <div className="absolute left-20 top-2/5 -translate-y-1/2 lg:flex hidden flex-col items-center gap-12 text-black z-40">
+          <div className="absolute left-20 top-2/5 lg:top-6/12 -translate-y-1/2 lg:flex hidden flex-col items-center gap-12 text-black z-40">
             <div className="flex flex-col items-center gap-2 group">
               <span className="text-sm font-bold tracking-widest [writing-mode:vertical-rl] cursor-pointer rotate-180">
                 {t("followUs")}
@@ -107,7 +106,7 @@ const HomeBanner = () => {
             </ul>
           </div>
 
-          <div className="absolute lg:left-1/5 left-1/2 lg:top-2/5 top-1/2 -translate-y-1/2 lg:-translate-x-0 -translate-x-1/2 space-y-8 w-full flex flex-col items-center justify-center lg:block">
+          <div className="absolute lg:left-1/5 left-1/2 xl:top-2/5 lg:top-2/5 md:top-1/3 top-2/5 -translate-y-1/2 lg:-translate-x-0 -translate-x-1/2 space-y-8 w-full flex flex-col items-center justify-center lg:block">
             {/* 1️⃣ Tiêu đề */}
             <h1
               ref={titleRef}
@@ -178,7 +177,7 @@ const HomeBanner = () => {
             >
               <HoverButton
                 text={t("forThem")}
-                redirect_url="/produkt/econelo-j1000-seniorenmobil-nicht-strassenzulaessig-25-km-h-1000w-rot-1000014"
+                redirect_url="/produkt/econelo-j1000-seniorenmobil-lithium-akku-25-km-h-1000-watt-rot-1000014"
               />
             </div>
           </div>
@@ -186,13 +185,20 @@ const HomeBanner = () => {
           {/* 🖼️ 1️⃣ Image */}
           <div
             ref={imageRef}
-            className="absolute right-0 lg:top-9/12 top-10/12 -translate-y-1/2 space-y-8 opacity-0 z-40 hidden lg:block"
+            className="
+              absolute right-0 xl:-right-30 2xl:-right-20 md:right-10
+              xl:top-9/12 lg:top-10/12 md:top-10/12 top-10/12
+              -translate-y-1/2
+              
+              space-y-8 opacity-0 z-40 block
+            "
           >
             <Image
               src={"/J1000-banner.png"}
               width={1200}
               height={800}
               alt=""
+              className="3xl:h-[800px] 2xl:h-[700px] 2xl:w-auto xl:h-[600px] xl:w-auto lg:h-[600px] md:h-[450px] h-[300px] w-auto"
             />
           </div>
         </div>
