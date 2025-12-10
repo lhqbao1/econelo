@@ -1,20 +1,13 @@
 "use client";
 
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import TechnicalNumberSection from "./technical-number";
 import { ProductItem } from "@/types/products";
-import ShippingSection from "./shipping-section";
-import ProductShortDescription from "./product-short-description";
-import FaqAccordion from "./faq";
-import IncludedInPriceCard from "./included-in-price";
-import BuySection from "./buy-section";
 import { ProductGroupDetailResponse } from "@/types/product-group";
-import QAInput from "./qa/qa-input";
+
+import IncludedInPriceCard from "./included-in-price";
+import ProductShortDescription from "./product-short-description";
 import ProductDetailsUserManual from "./product-details-user-manual";
+import QAInput from "./qa/qa-input";
+import ShippingSection from "./shipping-section";
 
 interface BentoGridLayoutSection {
   productDetails: ProductItem;
@@ -26,28 +19,59 @@ export default function BentoGridLayout({
   parentProduct,
 }: BentoGridLayoutSection) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 py-6">
-      {/* RIGHT COLUMN */}
-      <div className="order-1 lg:order-2 lg:col-span-4 space-y-6">
-        {/* Get Started */}
-        <ShippingSection productDetails={productDetails} />
-        <ProductDetailsUserManual files={productDetails.pdf_files} />
-        <QAInput productId={productDetails.id} />
-      </div>
-
-      {/* LEFT COLUMN */}
-      <div className="order-2 lg:order-1 lg:col-span-8 space-y-6">
-        {/* Section 1 - Car Features */}
+    <div
+      className="
+        grid grid-cols-1 
+        lg:grid-cols-12 
+        gap-6 py-6
+      "
+    >
+      {/* LEFT MAIN CONTENT */}
+      <div
+        className="
+          lg:col-span-8 
+          flex 
+          flex-col 
+          gap-6
+          order-2 lg:order-1
+        "
+      >
+        {/* Section 1 */}
         <IncludedInPriceCard id={productDetails.id_provider} />
 
-        {/* <TechnicalNumberSection productDetails={productDetails} /> */}
-
-        {/* Section 2 - Overview */}
+        {/* Section 2 */}
         <ProductShortDescription description={productDetails.description} />
 
-        {/* Section 3 - Included in the Price */}
+        {/* User Manual (mobile order 3, desktop order stays inside right column) */}
+        <div className="lg:hidden">
+          <ProductDetailsUserManual files={productDetails.pdf_files} />
+        </div>
 
-        {/* <FaqAccordion /> */}
+        <div className="lg:hidden">
+          <QAInput productId={productDetails.id} />
+        </div>
+      </div>
+
+      {/* RIGHT SIDEBAR */}
+      <div
+        className="
+          lg:col-span-4 
+          flex 
+          flex-col 
+          gap-6
+          order-1 lg:order-2
+        "
+      >
+        <ShippingSection productDetails={productDetails} />
+
+        {/* On desktop: show inside sidebar */}
+        <div className="hidden lg:block">
+          <ProductDetailsUserManual files={productDetails.pdf_files} />
+        </div>
+
+        <div className="hidden lg:block">
+          <QAInput productId={productDetails.id} />
+        </div>
       </div>
     </div>
   );

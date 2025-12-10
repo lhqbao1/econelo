@@ -15,14 +15,11 @@ import {
 } from "@/lib/schema/checkout";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { useLocale, useTranslations } from "next-intl";
-import { useSidebar } from "@/components/ui/sidebar";
-import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function CheckoutPageNew() {
   const t = useTranslations();
   const locale = useLocale();
-  const { open } = useSidebar();
 
   const schema = CreateOrderSchema(t);
   const form = useForm<CreateOrderFormValues>({

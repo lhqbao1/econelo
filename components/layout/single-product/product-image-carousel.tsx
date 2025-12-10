@@ -1,19 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
-import {
-  Product,
-  ProductItem,
-  StaticFile,
-  StaticFileItem,
-} from "@/types/products";
-import type { EmblaCarouselType } from "embla-carousel";
+import { StaticFile, ProductItem } from "@/types/products";
 import type { CarouselApi } from "@/components/ui/carousel";
 
 interface ProductImageCarouselProps {
@@ -28,23 +20,52 @@ export function ProductImageCarousel({
   setMainImageIndex,
 }: ProductImageCarouselProps) {
   const [api, setApi] = useState<CarouselApi>();
+  const [orientation, setOrientation] = useState<"horizontal" | "vertical">(
+    "vertical",
+  );
+
+  // 🔥 Detect screen size
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 767px)");
+
+    const updateOrientation = () =>
+      setOrientation(media.matches ? "horizontal" : "vertical");
+
+    updateOrientation(); // run at mount
+    media.addEventListener("change", updateOrientation);
+
+    return () => media.removeEventListener("change", updateOrientation);
+  }, []);
 
   const handleSelectImage = (index: number) => {
     setMainImageIndex(index);
-    if (api) api.scrollTo(index); // 👈 scroll đến item vừa click
+    api?.scrollTo(index);
   };
 
   return (
-    <div className="flex flex-col">
+    <>
       <Carousel
         opts={{ loop: true, align: "start" }}
-        setApi={setApi} // 👈 lấy api khi mount
-        orientation="vertical"
+        setApi={setApi}
+        orientation={orientation} // ⬅️ switch automatically
       >
-        <CarouselContent className="w-full flex lg:h-[400px] h-[300px]">
+        <CarouselContent
+          className={`w-full flex ${
+            orientation === "vertical"
+              ? "md:flex-col flex-row lg:h-[400px] md:h-[300px]"
+              : "flex-row"
+          }`}
+        >
           {productDetails.static_files.map(
             (item: StaticFile, index: number) => (
-              <CarouselItem key={index} className="lg:basis-1/4 basis-1/3">
+              <CarouselItem
+                key={index}
+                className={
+                  orientation === "vertical"
+                    ? "lg:basis-1/4 basis-1/3"
+                    : "basis-1/3"
+                }
+              >
                 <div
                   className="cursor-pointer"
                   onClick={() => handleSelectImage(index)}
@@ -56,7 +77,7 @@ export function ProductImageCarousel({
                     alt=""
                     className={`${
                       mainImageIndex === index
-                        ? "border-2 border-primary lg:p-1 p-0.5 rounded-md object-cover"
+                        ? "border-2 border-primary lg:p-1 p-0.5 rounded-md"
                         : ""
                     } lg:h-[100px] h-[80px] object-cover rounded-md`}
                     priority={index < 2}
@@ -64,13 +85,10 @@ export function ProductImageCarousel({
                   />
                 </div>
               </CarouselItem>
-            )
+            ),
           )}
         </CarouselContent>
-
-        {/* <CarouselPrevious className="text-primary border-primary" />
-        <CarouselNext className="text-primary border-primary" /> */}
       </Carousel>
-    </div>
+    </>
   );
 }

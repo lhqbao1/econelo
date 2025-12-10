@@ -18,6 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getMe } from "@/features/auth/api";
 import SearchDrawer from "../search-drawer/search-drawer";
 import CartIcon from "./main-header/cart-icon";
+import { AppDrawer } from "../app-drawer/app-drawer";
 
 const MainHeader = () => {
   const [isSticky, setIsSticky] = useState(false);
@@ -108,10 +109,10 @@ const MainHeader = () => {
           <div className="items-center gap-8 hidden 3xl:flex">
             <NavBar />
           </div>
-          <div className="block md:hidden">
-            <SidebarTrigger />
+          <div className="lg:hidden flex flex-row gap-0 items-center">
             <SearchDrawer iconColor={"white"} />
             <CartIcon isSticky={isSticky} />
+            <AppDrawer />
           </div>
 
           {/* ✅ Right side: Contact + Login/User */}
