@@ -75,7 +75,7 @@ export default function ProductTabsClient({
         aria-labelledby="new-arrived-title"
       >
         <div className="w-full flex flex-col items-center">
-          <header className="text-center mb-8">
+          <div className="text-center mb-8 px-4">
             <div className="flex justify-center items-center gap-2 mb-3">
               <span className="w-2 h-2 bg-primary rounded-full"></span>
               <span className="text-sm font-semibold uppercase tracking-wide text-gray-500">
@@ -91,7 +91,7 @@ export default function ProductTabsClient({
             <p className="text-gray-600 mt-2 text-sm md:text-base">
               {t("tabDes")}
             </p>
-          </header>
+          </div>
 
           {isLoading && <ProductGridSkeleton />}
 
@@ -102,7 +102,7 @@ export default function ProductTabsClient({
               defaultValue={reordered[0]?.slug}
               className="w-full"
             >
-              <TabsList className="flex flex-wrap justify-center gap-3 mb-8 bg-transparent">
+              <TabsList className="flex flex-wrap justify-center gap-3 mb-8 bg-transparent px-4">
                 {reordered.map((cat, i) => (
                   <Fragment key={cat.id}>
                     <TabsTrigger

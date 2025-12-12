@@ -103,7 +103,7 @@ const ProductDetails = ({
               <div className="flex flex-col gap-8 items-start">
                 {/* Product images & carousel */}
                 <div className="w-full grid lg:grid-cols-3 grid-cols-1 lg:py-12 py-6 lg:space-y-6 space-y-4 ">
-                  <div className="flex flex-row-reverse gap-4 items-start lg:col-span-2 col-span-3">
+                  <div className="flex md:flex-row-reverse flex-col gap-4 items-start lg:col-span-2 col-span-3">
                     <div className="flex-1">
                       <ProductImageDialog productDetails={productDetails}>
                         <div
@@ -142,33 +142,38 @@ const ProductDetails = ({
                   </div>
 
                   {/* BuySection now contains the form */}
-                  <BuySection
-                    currentProduct={productDetails}
-                    parentProduct={parentProduct}
-                    variant={parentProduct?.variants}
-                  />
+                  <div>
+                    <div className="space-y-4 lg:hidden block mt-6">
+                      <ProductRating reviews={productReviews} />
+
+                      <div className="space-y-2">
+                        <h1 className="lg:text-3xl lg:w-2/3 w-full text-xl font-bold text-black">
+                          {productDetails.name}
+                        </h1>
+
+                        <ProductDetailHeader productDetails={productDetails} />
+                      </div>
+                    </div>
+                    <BuySection
+                      currentProduct={productDetails}
+                      parentProduct={parentProduct}
+                      variant={parentProduct?.variants}
+                    />
+                  </div>
                 </div>
 
                 {/* Product details */}
                 <div className="xl:col-span-6 col-span-12 flex flex-col gap-6 w-full">
-                  {adminId ? (
-                    <div
-                      className="cursor-pointer text-primary"
-                      onClick={() => moveToAdmin(productDetails.id)}
-                    >
-                      <Eye />
+                  <div className="space-y-4 lg:block hidden ">
+                    <ProductRating reviews={productReviews} />
+
+                    <div className="space-y-2">
+                      <h1 className="lg:text-3xl lg:w-2/3 w-full text-xl font-bold text-black">
+                        {productDetails.name}
+                      </h1>
+
+                      <ProductDetailHeader productDetails={productDetails} />
                     </div>
-                  ) : (
-                    ""
-                  )}
-                  <ProductRating reviews={productReviews} />
-
-                  <div className="space-y-2">
-                    <h1 className="lg:text-3xl lg:w-2/3 w-full text-xl font-bold text-black">
-                      {productDetails.name}
-                    </h1>
-
-                    <ProductDetailHeader productDetails={productDetails} />
                   </div>
 
                   <BentoGridLayout

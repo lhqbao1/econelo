@@ -400,8 +400,8 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
         </CarouselContent>
 
         {/* Nút điều hướng */}
-        <CarouselPrevious className="absolute cursor-pointer left-2 top-1/2 -translate-y-1/2 bg-black hover:bg-primary text-white hover:text-white transition-all duration-300 w-12 h-12 rounded-none rounded-r-xl"></CarouselPrevious>
-        <CarouselNext className="absolute cursor-pointer right-2 top-1/2 -translate-y-1/2 bg-primary hover:bg-black text-white hover:text-white transition-all duration-300 w-12 h-12 rounded-none rounded-l-xl"></CarouselNext>
+        <CarouselPrevious className="absolute cursor-pointer left-0 top-1/2 -translate-y-1/2 bg-black hover:bg-primary text-white hover:text-white transition-all duration-300 w-12 h-12 rounded-none rounded-r-xl"></CarouselPrevious>
+        <CarouselNext className="absolute cursor-pointer right-0 top-1/2 -translate-y-1/2 bg-primary hover:bg-black text-white hover:text-white transition-all duration-300 w-12 h-12 rounded-none rounded-l-xl"></CarouselNext>
       </Carousel>
     </div>
   );

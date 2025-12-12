@@ -3,8 +3,6 @@ import { notFound } from "next/navigation";
 import "../globals.css";
 import { routing } from "@/src/i18n/routing";
 import type { Metadata } from "next";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/sidebar/app-sidebar";
 
 type Props = {
   children: React.ReactNode;
@@ -93,12 +91,6 @@ export default async function LocaleLayout({ children, params }: Props) {
   }
 
   return (
-    <NextIntlClientProvider locale={locale}>
-      {" "}
-      <SidebarProvider>
-        <AppSidebar />
-        {children}
-      </SidebarProvider>
-    </NextIntlClientProvider>
+    <NextIntlClientProvider locale={locale}> {children}</NextIntlClientProvider>
   );
 }
