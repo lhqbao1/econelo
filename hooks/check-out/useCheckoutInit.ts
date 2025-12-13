@@ -16,46 +16,41 @@ import {
   checkShippingType,
   normalizeCartItems,
 } from "@/hooks/caculate-shipping";
+import { useAtom } from "jotai";
+import { userIdAtom, userIdGuestAtom } from "@/store/auth";
 
 export function useCheckoutInit() {
-  const [userId, setUserId] = useState("");
-  const [userIdLogin, setUserIdLogin] = useState("");
+  const [userLoginId, setUserLoginId] = useAtom(userIdAtom);
+  const [userGuestId, setUserGuestId] = useAtom(userIdGuestAtom);
 
-  // Load from localStorage only on client
-  useEffect(() => {
-    const storedId = localStorage.getItem("userIdGuest");
-    const storedLogin = localStorage.getItem("user_id");
-    if (storedLogin) setUserIdLogin(storedLogin);
-    if (storedId) setUserId(storedId);
-  }, []);
-
-  const finalUserId = userIdLogin || userId;
+  const finalUserId = userLoginId || userGuestId;
 
   const { data: user } = useQuery<User>({
     queryKey: ["user", finalUserId],
-    queryFn: () => getUserById(finalUserId),
+    queryFn: () => getUserById(finalUserId ?? ""),
     enabled: !!finalUserId,
     retry: false,
   });
 
   const { data: addresses } = useQuery({
-    queryKey: ["address-by-user", finalUserId],
-    queryFn: () => getAddressByUserId(finalUserId),
-    enabled: !!finalUserId,
+    queryKey: ["address-by-user", userLoginId],
+    queryFn: () => getAddressByUserId(userLoginId ?? ""),
+    enabled: !!userLoginId,
     retry: false,
   });
 
   const { data: invoiceAddress } = useQuery({
-    queryKey: ["invoice-address-by-user", finalUserId],
-    queryFn: () => getInvoiceAddressByUserId(finalUserId),
-    enabled: !!finalUserId,
+    queryKey: ["invoice-address-by-user", userLoginId],
+    queryFn: () => getInvoiceAddressByUserId(userLoginId ?? ""),
+    enabled: !!userLoginId,
     retry: false,
   });
 
   // Cart
   const { cart: localCart } = useCartLocal();
+
   const { data: cartItems, isLoading: isLoadingCart } = useQuery({
-    queryKey: ["cart-items", finalUserId],
+    queryKey: ["cart-items", userLoginId], // chỉ login user mới có cart server
     queryFn: async () => {
       const response = await getCartItems();
       return [...response].sort((a, b) => {
@@ -68,6 +63,8 @@ export function useCheckoutInit() {
         return latestB - latestA;
       });
     },
+
+    // ⭐ ONLY CALL WHEN REAL LOGIN EXISTS
     enabled: !!finalUserId,
     retry: false,
   });
@@ -81,6 +78,7 @@ export function useCheckoutInit() {
 
   const shippingCost = calculateShipping(normalized);
   const hasOtherCarrier = checkShippingType(normalized);
+  const totalAmount = 1;
 
   return {
     user,
@@ -92,9 +90,11 @@ export function useCheckoutInit() {
     hasServerCart,
     shippingCost,
     hasOtherCarrier,
-    userId,
-    setUserId,
-    userIdLogin,
-    setUserIdLogin,
+    userGuestId,
+    setUserGuestId,
+    userLoginId,
+    setUserLoginId,
+    finalUserId,
+    totalAmount,
   };
 }

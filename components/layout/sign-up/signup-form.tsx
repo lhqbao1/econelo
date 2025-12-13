@@ -16,33 +16,28 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "@/src/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { useSignUp, useCheckMailExist } from "@/features/auth/hook";
+import { useSignUp, useCheckMailExist, useSendOtp } from "@/features/auth/hook";
 import Image from "next/image";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { getSignUpSchema, SignUpSchema } from "@/lib/schema/sign-up";
+import { useState } from "react";
+import SignUpSignUpOtpDialog from "./sign-up-otp-dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import AGBDialogTrigger from "./agb-dialog";
+import WiderrufDialogTrigger from "./widerruf-dialog";
 
 export default function SignUpFormTransparent() {
   const t = useTranslations();
-  const signUp = useSignUp();
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+
   const checkMailMutation = useCheckMailExist();
-  const router = useRouter();
-  const locale = useLocale();
+  const sendOtpMutation = useSendOtp();
 
-  const formSchema = z.object({
-    email: z.string().min(1, t("emailRequired")).email(t("invalidEmail")),
-    first_name: z.string().min(1, { message: t("first_name_required") }),
-    last_name: z.string().min(1, { message: t("last_name_required") }),
-    phone_number: z
-      .string()
-      .min(6, { message: t("phone_number_short") })
-      .refine((val) => /^\+?[0-9]+$/.test(val), {
-        message: t("phone_number_invalid"),
-      }),
-    gender: z.string().min(1, { message: t("gender_required") }),
-  });
+  const formSchema = getSignUpSchema(t);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<SignUpSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
@@ -50,32 +45,20 @@ export default function SignUpFormTransparent() {
       last_name: "",
       phone_number: "",
       gender: "",
+      is_real: true,
+      agree_agb: false,
     },
-    mode: "onSubmit",
   });
 
-  const handleSubmit = (values: z.infer<typeof formSchema>) => {
+  const handleSubmit = (values: SignUpSchema) => {
     checkMailMutation.mutate(values.email, {
-      onSuccess() {
-        signUp.mutate(
-          {
-            email: values.email,
-            phone_number: values.phone_number,
-            first_name: values.first_name,
-            last_name: values.last_name,
-            gender: values.gender,
-          },
-          {
-            onSuccess: () => {
-              form.reset();
-              toast.success(t("signUpSuccess"));
-              router.push("/mein-konto", { locale });
-            },
-            onError: () => {
-              toast.error(t("signUpFail"));
-            },
-          },
-        );
+      onSuccess(data) {
+        if (data === false) {
+          toast.error(t("emailAlreadyUsed"));
+        } else {
+          sendOtpMutation.mutate(values.email);
+          setOpenDialog(true);
+        }
       },
       onError() {
         toast.error(t("useDifferentEmail"));
@@ -84,7 +67,7 @@ export default function SignUpFormTransparent() {
   };
 
   return (
-    <div className="min-h-screen flex items-center lg:min-w-[500px] justify-center relative overflow-hidden p-4">
+    <div className="min-h-screen flex items-center lg:max-w-[600px] justify-center relative overflow-hidden p-4">
       {/* Glass form container */}
       <div className="relative z-10 w-full bg-white/20 backdrop-blur-2xl rounded-3xl border border-white/40 shadow-xl p-8">
         <div className="flex flex-col items-center mb-8">
@@ -150,7 +133,7 @@ export default function SignUpFormTransparent() {
                           htmlFor="other"
                           className="text-gray-700"
                         >
-                          {t("other")}
+                          {t("otherGender")}
                         </label>
                       </div>
                     </RadioGroup>
@@ -232,13 +215,45 @@ export default function SignUpFormTransparent() {
               )}
             />
 
+            {/* Agree AGB */}
+            <FormField
+              control={form.control}
+              name="agree_agb"
+              render={({ field }) => (
+                <FormItem className="flex items-start gap-3 md:col-span-2 col-span-1">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      className="h-5 w-5 bg-white"
+                    />
+                  </FormControl>
+
+                  <div className="space-y-1 leading-none">
+                    <FormLabel className="text-sm block">
+                      {t("agreeTo")} <AGBDialogTrigger t={t} /> {t("and")}
+                      <WiderrufDialogTrigger t={t} /> {t("agree_widderuf")}
+                    </FormLabel>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
+
+            <SignUpSignUpOtpDialog
+              open={openDialog}
+              onOpenChange={setOpenDialog}
+            />
+
             {/* Submit */}
             <Button
               type="submit"
-              className="w-full py-3 rounded-xl bg-primary/90 text-white font-semibold hover:bg-primary/30 transition"
-              disabled={signUp.isPending || checkMailMutation.isPending}
+              className="w-full py-3 rounded-xl bg-primary/90 text-white font-semibold hover:bg-primary transition"
+              disabled={
+                sendOtpMutation.isPending || checkMailMutation.isPending
+              }
             >
-              {signUp.isPending || checkMailMutation.isPending ? (
+              {sendOtpMutation.isPending || checkMailMutation.isPending ? (
                 <div className="flex items-center justify-center gap-2">
                   <Loader2 className="animate-spin w-5 h-5" />
                 </div>

@@ -28,7 +28,11 @@ import {
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 
-export function AppDrawer() {
+interface AppDrawerProps {
+  isSticky: boolean;
+}
+
+export function AppDrawer({ isSticky }: AppDrawerProps) {
   const [open, setOpen] = useState(false);
   const [openSection, setOpenSection] = useState<string | null>(null);
 
@@ -87,6 +91,9 @@ export function AppDrawer() {
     else animateClose(categoriesRef);
   }, [openSection]);
 
+  const baseColor = isSticky ? "primary" : "white";
+  const iconColor = `text-${baseColor}`;
+
   return (
     <Drawer
       direction="right"
@@ -99,6 +106,7 @@ export function AppDrawer() {
           <AlignJustify
             className={cn(
               "w-6 h-6 cursor-pointer transition-colors duration-200 text-white",
+              iconColor,
             )}
             strokeWidth={2}
           />

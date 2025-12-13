@@ -13,16 +13,28 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mail, Key, Loader2, Eye, EyeOff } from "lucide-react";
-import { useLogin, useLoginOtp, useSendOtp } from "@/features/auth/hook";
+import {
+  useCheckMailExist,
+  useLogin,
+  useLoginOtp,
+  useSendOtp,
+} from "@/features/auth/hook";
 import { toast } from "sonner";
 import { useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useSyncLocalCart } from "@/features/cart/hook";
 import { useCartLocal } from "@/hooks/cart";
 import { Link, useRouter } from "@/src/i18n/navigation";
-import LoginGoogleButton from "../layout/login/login-google";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { userIdAtom } from "@/store/auth";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import LoginGoogleButton from "../layout/login/login-google";
+import ResendOtp from "../layout/login/resend-otp";
 
 interface CartLoginFormProps {
   onSuccess?: () => void;
@@ -38,7 +50,9 @@ export default function CartLoginForm({
   const locale = useLocale();
   const t = useTranslations();
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const queryClient = useQueryClient();
   const [userId, setUserId] = useAtom(userIdAtom);
+
   const { cart: localCart } = useCartLocal();
 
   const formSchema = z.object({
@@ -57,24 +71,39 @@ export default function CartLoginForm({
   const syncLocalCartMutation = useSyncLocalCart();
   const sendOtpMutation = useSendOtp();
   const submitOtpMutation = useLoginOtp();
+  const checkMailExistMutation = useCheckMailExist();
 
   const handleRedirectToCheckOut = () => {
     if (!localCart || localCart.length === 0) {
       toast.error(t("chooseAtLeastCart"));
-    } else {
-      if (onError) onError();
+      return;
     }
+
+    router.prefetch("/check-out", { locale }); // 🔥 preload đúng cách
+
+    router.push("/check-out");
   };
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     if (!seePassword) {
-      sendOtpMutation.mutate(values.username, {
+      checkMailExistMutation.mutate(values.username, {
         onSuccess: (data) => {
-          toast.success(t("sendedEmail"));
-          setSeePassword(true);
+          if (data === true) {
+            toast.error(t("emailNotRegistered"));
+          } else {
+            sendOtpMutation.mutate(values.username, {
+              onSuccess: (data) => {
+                toast.success(t("sendedEmail"));
+                setSeePassword(true);
+              },
+              onError(error, variables, context) {
+                toast.error(t("invalidEmail"));
+              },
+            });
+          }
         },
         onError(error, variables, context) {
-          toast.error(t("invalidEmail"));
+          console.log(error);
         },
       });
     } else {
@@ -87,11 +116,12 @@ export default function CartLoginForm({
           onSuccess: (data) => {
             const token = data.access_token;
             localStorage.setItem("access_token", token);
+            localStorage.setItem("userId", data.id);
             setUserId(data.id);
             syncLocalCartMutation.mutate();
 
             toast.success(t("loginSuccess"));
-            router.push("/kasse", { locale });
+            router.push("/check-out", { locale });
             // gọi callback onSuccess nếu được truyền
             if (onSuccess) onSuccess();
           },
@@ -115,11 +145,15 @@ export default function CartLoginForm({
         onSuccess: (data) => {
           const token = data.access_token;
           localStorage.setItem("access_token", token);
+          localStorage.setItem("userId", data.id);
           setUserId(data.id);
           syncLocalCartMutation.mutate();
-
+          queryClient.invalidateQueries({
+            queryKey: ["cart-items"],
+            exact: false,
+          });
           toast.success(t("loginSuccess"));
-          router.push("/kasse", { locale });
+          router.push("/check-out", { locale });
           // gọi callback onSuccess nếu được truyền
           if (onSuccess) onSuccess();
         },
@@ -159,7 +193,7 @@ export default function CartLoginForm({
           />
 
           {/* Password */}
-          {seePassword ? (
+          {/* {seePassword ? (
             <FormField
               control={form.control}
               name="code"
@@ -238,6 +272,50 @@ export default function CartLoginForm({
             />
           ) : (
             ""
+          )} */}
+          {seePassword ? (
+            <FormField
+              control={form.control}
+              name="code"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className="flex justify-center mb-4 w-full">
+                      {/* SHADCN OTP INPUT */}
+                      <InputOTP
+                        maxLength={6}
+                        value={field.value ?? ""}
+                        onChange={(val) => {
+                          field.onChange(val);
+
+                          // tự động submit khi đủ 6 số
+                          if (val.length === 6) {
+                            handleAutoSubmitOtp(val);
+                          }
+                        }}
+                      >
+                        <InputOTPGroup className="gap-2">
+                          {Array.from({ length: 6 }).map((_, idx) => (
+                            <InputOTPSlot
+                              key={idx}
+                              index={idx}
+                              className="
+                                w-10 h-12 text-lg 
+                                flex items-center justify-center 
+                                border rounded-md
+                              "
+                            />
+                          ))}
+                        </InputOTPGroup>
+                      </InputOTP>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ) : (
+            ""
           )}
 
           <div className="space-y-2">
@@ -269,23 +347,24 @@ export default function CartLoginForm({
             >
               {t("continueAsGuest")}
             </Button>
+
+            {seePassword && (
+              <ResendOtp
+                username={form.getValues("username")}
+                isAdmin={false}
+                sendOtpMutation={sendOtpMutation}
+                initialCountdown={60}
+              />
+            )}
           </div>
         </form>
       </Form>
 
       {/* Forgot password */}
-      {/* <div className="flex justify-end mt-2 lg:mt-4">
-                <Link href={`/forgot-password`} className="text-sm text-primary hover:underline">
-
-                    {t("forgotPassword")}?
-                </Link>
-            </div> */}
-
-      {/* Sign up link */}
       <div className="text-sm text-center mt-6 space-x-1">
         <span>{t("noAccount")}</span>
         <Link
-          href={`/sign-up`}
+          href={`/anmelden`}
           className="font-medium text-primary hover:underline"
         >
           {t("createAccount")}

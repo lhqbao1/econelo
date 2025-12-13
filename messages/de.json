@@ -431,5 +431,14 @@
   "userManual": "Aufbau & Details",
   "companyName": "Firmenname",
   "vatId": "USt-IdNr",
-  "imageGallery": "Bildergalerie"
+  "imageGallery": "Bildergalerie",
+  "other": "Other",
+  "agree_agb_required": "Sie müssen die Allgemeinen Geschäftsbedingungen (AGB) akzeptieren.",
+  "agreeTo": "Ich habe die",
+  "and": "und die",
+  "widderuf": "Widerrufsbelehrung",
+  "agree_widderuf": "gelesen und stimme diesen zu.",
+  "tax_id_required_when_company": "Eine Steuernummer ist erforderlich, wenn ein Firmenname angegeben wird.",
+  "emailNotRegistered": "Diese E-Mail-Adresse ist noch nicht registriert.",
+  "emailAlreadyUsed": "Diese E-Mail-Adresse wurde bereits zur Erstellung eines Kontos verwendet."
 }

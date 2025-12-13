@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { CheckoutFormSection } from "@/components/layout/checkout/checkout-form";
 import { CartSummary } from "@/components/layout/checkout/checkout-summary";
@@ -27,6 +27,7 @@ export default function CheckoutPageNew() {
     defaultValues: checkoutDefaultValues,
     mode: "onSubmit",
   });
+
   // -------------------------------
   // 1️⃣ INIT HOOK (user/cart/address/shipping logic)
   // -------------------------------
@@ -40,49 +41,13 @@ export default function CheckoutPageNew() {
     hasServerCart,
     shippingCost,
     hasOtherCarrier,
-    userId,
-    userIdLogin,
-    setUserIdLogin,
+    userGuestId,
+    userLoginId,
+    setUserGuestId,
+    setUserLoginId,
+    totalAmount,
+    finalUserId,
   } = useCheckoutInit();
-
-  // -------------------------------
-  // 2️⃣ FORM SETUP
-  // -------------------------------
-
-  // Pre-fill form values from user/address
-  useEffect(() => {
-    const defaults: Partial<CreateOrderFormValues> = {};
-
-    if (user) {
-      defaults.first_name = user.first_name ?? "";
-      defaults.last_name = user.last_name ?? "";
-      defaults.email = user.email ?? "";
-      defaults.gender = user.gender;
-      defaults.company_name = user.company_name ?? "";
-      defaults.tax_id = user.tax_id ?? "";
-    }
-
-    if (invoiceAddress) {
-      defaults.invoice_address_line = invoiceAddress.address_line ?? "";
-      defaults.invoice_postal_code = invoiceAddress.postal_code ?? "";
-      defaults.invoice_city = invoiceAddress.city ?? "";
-      defaults.invoice_address_id = invoiceAddress.id;
-    }
-
-    if (addresses && addresses.length > 0) {
-      const shippingAddress = addresses.find((a) => a.is_default);
-      if (shippingAddress) {
-        defaults.shipping_address_line = shippingAddress.address_line ?? "";
-        defaults.shipping_postal_code = shippingAddress.postal_code ?? "";
-        defaults.shipping_city = shippingAddress.city ?? "";
-        defaults.shipping_address_id = shippingAddress.id;
-        defaults.phone_number = shippingAddress.phone_number ?? "";
-      }
-    }
-
-    if (Object.keys(defaults).length > 0)
-      form.reset({ ...form.getValues(), ...defaults });
-  }, [user, invoiceAddress, addresses]);
 
   // -------------------------------
   // 3️⃣ SUBMIT HOOK (checkout + payment logic)
@@ -101,6 +66,8 @@ export default function CheckoutPageNew() {
     setOpenBankDialog,
     setOpenOtpDialog,
     handleSubmit,
+    handleOTP,
+    verifyOtp,
   } = useCheckoutSubmit({
     form,
     user,
@@ -111,11 +78,43 @@ export default function CheckoutPageNew() {
     hasServerCart,
     shippingCost,
     locale,
+    currentUserId: finalUserId ?? "",
   });
 
   const handleOtpSuccess = (verifiedUserId: string) => {
-    setUserIdLogin(verifiedUserId);
+    setUserLoginId(verifiedUserId);
   };
+
+  const couponAmount = form.watch("coupon_amount");
+  const voucherAmount = form.watch("voucher_amount");
+
+  const totalEuro = useMemo(() => {
+    const productsTotal =
+      cartItems && cartItems.length > 0
+        ? cartItems
+            .flatMap((g) => g.items)
+            .filter((i) => i.is_active)
+            .reduce((sum, item) => sum + (item.final_price ?? 0), 0)
+        : (localCart ?? [])
+            .filter((i) => i.is_active)
+            .reduce(
+              (sum, item) =>
+                sum + (item.item_price ?? 0) * (item.quantity ?? 1),
+              0,
+            );
+
+    return (
+      productsTotal +
+      (shippingCost ?? 0) -
+      (couponAmount ?? 0) -
+      (voucherAmount ?? 0)
+    );
+  }, [cartItems, localCart, shippingCost, couponAmount, voucherAmount]);
+
+  // Chuyển sang cents cho Stripe
+  const totalCents = useMemo(() => {
+    return Math.round(totalEuro * 100);
+  }, [totalEuro]);
 
   return (
     <section className="flex flex-row w-full">
@@ -128,10 +127,11 @@ export default function CheckoutPageNew() {
             setClientSecret={setClientSecret}
             total={total}
             setTotal={setTotal}
-            openDialog={openCardDialog}
-            setOpenDialog={setOpenCardDialog}
+            openCardDialog={openCardDialog}
+            setOpenCardDialog={setOpenCardDialog}
             onSubmit={handleSubmit}
             submitting={submitting}
+            totalCents={totalCents}
           />
         </div>
       </div>

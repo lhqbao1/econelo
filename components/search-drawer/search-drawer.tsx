@@ -12,7 +12,7 @@ import {
 import { Button } from "../ui/button";
 import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useRouter } from "@/src/i18n/navigation";
+import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import {
   Command,
@@ -28,16 +28,18 @@ import Image from "next/image";
 import { useGetAllProducts } from "@/features/products/hook";
 
 interface SearchDrawerProps {
-  iconColor?: string;
+  isSticky: boolean;
 }
 
-const SearchDrawer = ({ iconColor }: SearchDrawerProps) => {
+const SearchDrawer = ({ isSticky }: SearchDrawerProps) => {
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [debouncedQuery, setDebouncedQuery] = React.useState("");
+  const pathname = usePathname();
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations();
+  const isHome = pathname === "/" || pathname.match(/^\/[a-z]{2}$/);
 
   // debounce query
   React.useEffect(() => {
@@ -55,6 +57,9 @@ const SearchDrawer = ({ iconColor }: SearchDrawerProps) => {
     is_econelo: true,
   });
   const results = products?.items ?? [];
+
+  const baseColor = !isHome ? "primary" : isSticky ? "primary" : "white";
+  const iconColor = `text-${baseColor}`;
 
   return (
     <Drawer

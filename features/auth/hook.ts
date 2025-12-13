@@ -18,6 +18,7 @@ import {
   sendOtp,
   sendOtpDSP,
   loginOtpDSP,
+  loginOtpGuest,
 } from "./api";
 import { tokenStore } from "@/lib/token";
 
@@ -118,12 +119,27 @@ export function useLoginDSPOtp() {
 }
 
 export function useLoginOtp() {
+  const qc = useQueryClient();
+
   return useMutation({
     mutationFn: ({ email, code }: { email: string; code: string }) =>
       loginOtp(email, code),
-    onSuccess(data) {
-      // localStorage.setItem("access_token", data.access_token)
-      // localStorage.setItem("userId", data.id)
+
+    async onSuccess(data) {
+      // ⏳ chờ cookie update vào request (cực kỳ quan trọng!)
+      await new Promise((resolve) => setTimeout(resolve, 200));
+
+      // 🔥 force refresh cart
+      await qc.invalidateQueries({ queryKey: ["cart-items"] });
     },
+  });
+}
+
+export function useLoginOtpGuest() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ email, code }: { email: string; code: string }) =>
+      loginOtpGuest(email, code),
   });
 }

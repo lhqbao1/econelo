@@ -6,6 +6,10 @@ import { getMe } from "@/features/auth/api";
 import { User } from "@/types/user";
 
 export const userIdAtom = atomWithStorage<string | null>("user_id", null);
+export const userIdGuestAtom = atomWithStorage<string | null>(
+  "userIdGuest",
+  null,
+);
 export const accessTokenAtom = atomWithStorage<string | null>(
   "access_token",
   null,
