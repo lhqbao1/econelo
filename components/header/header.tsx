@@ -110,23 +110,14 @@ const MainHeader = () => {
             <NavBar />
           </div>
           <div className="lg:hidden flex flex-row gap-0 items-center">
-            <SearchDrawer iconColor={"white"} />
+            <SearchDrawer isSticky={isSticky} />
             <CartIcon isSticky={isSticky} />
-            <AppDrawer />
+            <AppDrawer isSticky={isSticky} />
           </div>
 
           {/* ✅ Right side: Contact + Login/User */}
           <div className="lg:flex hidden items-center gap-8">
             {/* Contact Info */}
-            {/* <div
-              ref={contactRef}
-              className="flex items-center gap-2 opacity-0"
-            >
-              <PhoneCall className="text-black" />
-              <p className="font-semibold text-xl text-black">
-                +49 30 814 537 080
-              </p>
-            </div> */}
             <ListIcons isSticky={isSticky} />
 
             {/* Button (only after user loaded) */}

@@ -16,13 +16,12 @@ const ListIcons = ({ isSticky }: ListIconsProps) => {
 
   // ✅ Gom logic style
   const baseColor = !isHome ? "primary" : isSticky ? "primary" : "white";
-  const iconColor = `text-${baseColor}`;
   const dividerColor = baseColor === "white" ? "bg-white" : `bg-primary`;
 
   return (
     <div className="flex items-center gap-4 px-4 py-2">
       {/* 🔍 Search Icon */}
-      <SearchDrawer iconColor={iconColor} />
+      <SearchDrawer isSticky={isSticky} />
       {/* Divider */}
       <div
         className={cn(

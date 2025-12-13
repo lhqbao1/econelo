@@ -1,19 +1,9 @@
 "use client";
 import React from "react";
-import {
-  Mail,
-  ArrowRight,
-  Facebook,
-  Youtube,
-  Linkedin,
-  X,
-  Instagram,
-} from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Facebook, Youtube, X, Instagram } from "lucide-react";
+
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import Dock from "../Dock";
 
 const MainFooter = () => {
   const t = useTranslations();
@@ -121,11 +111,19 @@ const MainFooter = () => {
           <h4 className="text-xl font-semibold">{t("quickContact")}</h4>
           <div className="w-10 h-[2px] bg-primary mb-2" />
           <div className="space-y-2">
-            <div className="text-primary font-bold text-lg">{t("B2B")}</div>
-            <p className="text-gray-400 leading-relaxed max-w-xs">
-              Herr Andreas Bachl
-            </p>
+            <div className="text-primary font-bold text-lg">
+              Anfragen Händler und Medienagenturen
+            </div>
+            <>
+              <p className="text-gray-400 leading-relaxed max-w-xs">
+                Andreas Bachl
+              </p>
+              <p className="text-gray-400 leading-relaxed max-w-xs">
+                Key Account Manager DACH
+              </p>
+            </>
             {/* <div className="text-gray-400">+49 30 814 537 080</div> */}
+            <div className="text-gray-400">004368110327073</div>
             <div className="text-gray-400">andreas.bachl@prestige-home.de</div>
             {/* <p className="text-gray-400">{t("feelFree")}</p> */}
           </div>

@@ -434,5 +434,14 @@
   "userManual": "User Manual",
   "companyName": "Company Name",
   "vatId": "VAT ID",
-  "imageGallery": "Image Gallery"
+  "imageGallery": "Image Gallery",
+    "other": "Other",
+    "agree_agb_required": "You must accept the terms and conditions (AGB).",
+  "agreeTo": "I agree to the",
+  "and": "and",
+  "widderuf": "Cancellation Policy",
+  "agree_widderuf": "I have read and agree to these terms.",
+  "tax_id_required_when_company": "A tax ID is required when a company name is provided.",
+    "emailNotRegistered": "This email is not registered yet.",
+  "emailAlreadyUsed": "This email address has already been used to create an account."
 }

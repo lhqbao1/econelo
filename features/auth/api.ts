@@ -11,6 +11,7 @@ export type SignUpInput = {
   gender?: string;
   company_name?: string | null;
   tax_id?: string | null;
+  is_real: boolean;
 };
 
 export async function login(input: LoginInput) {
@@ -180,5 +181,10 @@ export async function resetPassword(
       withCredentials: true,
     },
   );
+  return data;
+}
+
+export async function loginOtpGuest(email: string, code: string) {
+  const { data } = await apiPublic.post("/check-real-email", { email, code });
   return data;
 }

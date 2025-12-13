@@ -25,6 +25,12 @@ import StripeProvider from "../stripe/stripe";
 import StripeLayout from "../stripe/stripe-layout";
 import { CartItem, CartResponse } from "@/types/cart";
 import { Loader2 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useAtom } from "jotai";
+import { userIdAtom } from "@/store/auth";
+import { getUserById } from "@/features/users/api";
+import AGBDialogTrigger from "../sign-up/agb-dialog";
+import WiderrufDialogTrigger from "../sign-up/widerruf-dialog";
 
 interface CheckoutFormSectionProps {
   form: UseFormReturn<CreateOrderFormValues>;
@@ -32,10 +38,11 @@ interface CheckoutFormSectionProps {
   setClientSecret: React.Dispatch<React.SetStateAction<string | null>>;
   total?: number;
   setTotal?: React.Dispatch<React.SetStateAction<number>>;
-  openDialog: boolean;
-  setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>;
   onSubmit: (values: CreateOrderFormValues) => void;
   submitting: boolean;
+  openCardDialog: boolean;
+  setOpenCardDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  totalCents: number;
 }
 
 export const CheckoutFormSection = ({
@@ -44,12 +51,44 @@ export const CheckoutFormSection = ({
   setClientSecret,
   total,
   setTotal,
-  openDialog,
-  setOpenDialog,
   onSubmit,
   submitting,
+  openCardDialog,
+  setOpenCardDialog,
+  totalCents,
 }: CheckoutFormSectionProps) => {
   const t = useTranslations();
+  const [userIdLogin, setUserIdLogin] = useAtom(userIdAtom);
+
+  const { data: userData } = useQuery({
+    queryKey: ["user", userIdLogin],
+    queryFn: () => getUserById(userIdLogin ?? ""),
+    enabled: !!userIdLogin,
+    retry: false,
+  });
+
+  // Khi user login → đổ dữ liệu vào form
+  useEffect(() => {
+    if (!userData) return;
+
+    form.reset({
+      first_name: userData.first_name ?? "",
+      last_name: userData.last_name ?? "",
+      email: userData.email ?? "",
+      phone_number: userData.phone_number ?? "",
+      gender: userData.gender ?? "",
+      company_name: userData.company_name ?? "",
+      tax_id: userData.tax_id ?? "",
+
+      // invoice_address_line:
+      //   userData.default_invoice_address?.address_line ?? "",
+      // invoice_address_additional:
+      //   userData.default_invoice_address?.additional_address_line ?? "",
+      // invoice_postal_code: userData.default_invoice_address?.postal_code ?? "",
+      // invoice_city: userData.default_invoice_address?.city ?? "",
+      // invoice_country: userData.default_invoice_address?.country ?? "",
+    });
+  }, [userData]);
 
   return (
     <FormProvider {...form}>
@@ -126,39 +165,6 @@ export const CheckoutFormSection = ({
           <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="first_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("firstName")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder=""
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="last_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("lastName")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder=""
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
               name="company_name"
               render={({ field }) => (
                 <FormItem>
@@ -192,6 +198,38 @@ export const CheckoutFormSection = ({
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="first_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("firstName")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder=""
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="last_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("lastName")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder=""
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
         </div>
 
@@ -203,8 +241,8 @@ export const CheckoutFormSection = ({
         />
         <Separator />
 
-        {/* SECTION 4 — Payment Method */}
-        <div className="space-y-4">
+        <div className="space-y-4 py-5 border-y-2">
+          {/* ALWAYS SHOW PAYMENT OPTIONS */}
           <CheckoutPaymentUI
             control={form.control}
             selectedMethod={form.watch("payment_method")}
@@ -217,16 +255,17 @@ export const CheckoutFormSection = ({
                 form={form}
                 clientSecret={clientSecret}
                 setClientSecret={setClientSecret}
-                openDialog={openDialog}
-                setOpenDialog={setOpenDialog}
-                total={100}
+                openDialog={openCardDialog}
+                setOpenDialog={setOpenCardDialog}
+                total={totalCents}
               />
             </StripeProvider>
           )}
         </div>
 
         {/* SECTION 5 — Place Order */}
-        <div className="pt-6 space-y-4">
+        <div className="space-y-4">
+          {/* TERMS */}
           <FormField
             control={form.control}
             name="terms"
@@ -235,25 +274,17 @@ export const CheckoutFormSection = ({
                 <div className="flex flex-row gap-2 mt-4 items-center">
                   <Checkbox
                     checked={field.value}
-                    onCheckedChange={(checked) => field.onChange(checked)}
+                    onCheckedChange={field.onChange}
                   />
-                  <FormLabel className="text-sm flex flex-row font-medium text-gray-600">
-                    <span className="space-x-2">
-                      {t("byPlacing")}
-                      <span className="pl-2">
-                        <Link
-                          href={`/agb`}
-                          className="text-primary underline"
-                        >
-                          {t("termCondition")}
-                        </Link>
-                      </span>
-                    </span>
+                  <FormLabel className="text-sm block">
+                    {t("agreeTo")} <AGBDialogTrigger t={t} /> {t("and")}{" "}
+                    <WiderrufDialogTrigger t={t} /> {t("agree_widderuf")}
                   </FormLabel>
                 </div>
               </FormItem>
             )}
           />
+
           <Button
             type="submit"
             className="w-full bg-black text-white py-6 text-base font-semibold hover:bg-gray-800 transition"

@@ -4,7 +4,7 @@
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "@/src/i18n/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useAtom } from "jotai";
 import { checkOutIdAtom, paymentIdAtom } from "@/store/payment";
 import {
@@ -22,12 +22,14 @@ import {
 } from "@/hooks/caculate-shipping";
 import { mapToSupplierCarts } from "@/hooks/map-cart-to-supplier";
 import { CreateOrderFormValues } from "@/lib/schema/checkout";
-import { CartItem, CartResponse } from "@/types/cart";
+import { CartResponse } from "@/types/cart";
 import { Address } from "@/types/address";
-import { useSyncLocalCart } from "@/features/cart/hook";
 import { UseFormReturn } from "react-hook-form";
-import { Customer, User } from "@/types/user";
+import { User } from "@/types/user";
 import { CartItemLocal } from "@/lib/utils/cart";
+import { sendOtp } from "@/features/auth/api";
+import { userIdAtom, userIdGuestAtom } from "@/store/auth";
+import { useSyncLocalCartCheckOut } from "@/features/cart/hook";
 
 export function useCheckoutSubmit({
   form,
@@ -39,6 +41,7 @@ export function useCheckoutSubmit({
   hasServerCart,
   shippingCost,
   locale,
+  currentUserId,
 }: {
   form: UseFormReturn<CreateOrderFormValues>; // form RHF
   user: User | undefined; // user login hoặc guest
@@ -49,9 +52,12 @@ export function useCheckoutSubmit({
   hasServerCart: boolean; // flag cart server hay local
   shippingCost: number; // shipping được tính từ logic
   locale: string; // locale hiện tại
+  currentUserId: string;
 }) {
   const router = useRouter();
   const t = useTranslations();
+  const [userLoginId, setUserLoginId] = useAtom(userIdAtom);
+  const [userGuestId, setUserGuestId] = useAtom(userIdGuestAtom);
 
   const [paymentId, setPaymentId] = useAtom(paymentIdAtom);
   const [checkoutId, setCheckoutId] = useAtom(checkOutIdAtom);
@@ -62,6 +68,9 @@ export function useCheckoutSubmit({
   const [openBankDialog, setOpenBankDialog] = useState(false);
   const [openOtpDialog, setOpenOtpDialog] = useState(false);
   const [otpEmail, setOtpEmail] = useState("");
+  const [pendingData, setPendingData] = useState<CreateOrderFormValues | null>(
+    null,
+  );
 
   const createCheckOut = useCreateCheckOut();
   const createPayment = useCreatePayment();
@@ -69,8 +78,7 @@ export function useCheckoutSubmit({
   const createInvoice = useCreateInvoiceAddress();
   const updateInvoice = useUpdateInvoiceAddress();
   const createShipping = useCreateAddress();
-  const syncLocalCart = useSyncLocalCart(true);
-  const checkEmail = useCheckMailExist();
+  const syncLocalCart = useSyncLocalCartCheckOut();
 
   const submitting =
     createCheckOut.isPending ||
@@ -78,6 +86,41 @@ export function useCheckoutSubmit({
     createPayment.isPending ||
     createShipping.isPending ||
     createUser.isPending;
+
+  // =====================================================================================
+  // STEP 1 — Submit lần đầu → chỉ check email + mở OTP dialog
+  // =====================================================================================
+  const handleOTP = useCallback(
+    async (data: CreateOrderFormValues) => {
+      try {
+        const isDifferentEmail = user?.email && user.email !== data.email;
+
+        // Case 1: Guest
+        // Case 2: Logged-in user but email changed
+        if (!user?.id || isDifferentEmail) {
+          await sendOtp(data.email);
+          setPendingData(data);
+          setOtpEmail(data.email);
+          setOpenOtpDialog(true);
+          return;
+        }
+
+        // Case 3: Logged-in user, same email
+        setPendingData(data);
+        handleSubmit(data);
+      } catch (err) {
+        console.error(err);
+        toast.error(t("orderFail"));
+      }
+    },
+    [user],
+  );
+
+  const verifyOtp = useCallback(() => {
+    if (!pendingData) return;
+    handleSubmit(pendingData); // chạy tiếp phần checkout thật
+    setPendingData(null);
+  }, [pendingData]);
 
   const handleSubmit = useCallback(
     async (data: CreateOrderFormValues) => {
@@ -87,52 +130,53 @@ export function useCheckoutSubmit({
         let finalUserId = user?.id;
         let invoiceId = invoiceAddress?.id;
         let shippingId = addresses?.find((a: Address) => a.is_default)?.id;
-
         let cartData: CartResponse = [];
         let shippingCostCurrent = 0;
+        let currentGuestId = null;
 
-        // Guest checkout
-        if (data.email && !finalUserId) {
-          const exists = await checkEmail.mutateAsync(data.email);
-
-          if (!exists) {
-            // redirect to OTP
-            setOtpEmail(data.email);
-            setOpenOtpDialog(true);
-            cleanupNeeded = true;
-            return;
-          }
-
+        if (!userLoginId) {
           const newUser = await createUser.mutateAsync({
-            first_name: data.first_name,
-            last_name: data.last_name,
+            first_name: data.first_name ?? "",
+            last_name: data.last_name ?? "",
             email: data.email,
             phone_number: data.phone_number,
             company_name: data.company_name ?? null,
             tax_id: data.tax_id ?? null,
+            is_real: false,
           });
 
           finalUserId = newUser.id;
+          currentGuestId = newUser.id;
           cleanupNeeded = true;
 
           localStorage.setItem("access_token", newUser.access_token);
-          localStorage.setItem("userIdGuest", newUser.id);
-
-          await syncLocalCart.mutateAsync();
-          cartData = await getCartByUserId(newUser.id);
-
-          const normalized = normalizeCartItems(
-            cartData.flatMap((g) => g.items),
-            true,
-          );
-          shippingCostCurrent = calculateShipping(normalized);
+          setUserGuestId(newUser.id);
+          // setUserLoginId(newUser.id);
         }
+
+        // STEP 2 — Always sync cart after we know finalUserId
+        if (!userLoginId) {
+          await syncLocalCart.mutateAsync({
+            isCheckOut: true,
+            user_id: currentGuestId ?? "", // userGuestId
+          });
+        }
+
+        cartData = await getCartByUserId(finalUserId ?? "");
+
+        const normalized = normalizeCartItems(
+          cartData.flatMap((g) => g.items),
+          true,
+        );
 
         // Invoice
         if (!invoiceId) {
           const created = await createInvoice.mutateAsync({
             user_id: finalUserId ?? "",
-            recipient_name: `${data.first_name} ${data.last_name}`,
+            recipient_name:
+              data.company_name?.trim() ||
+              `${data.first_name ?? ""} ${data.last_name ?? ""}`.trim(),
+            email: data.email ?? "",
             postal_code: data.invoice_postal_code,
             phone_number: data.phone_number,
             address_line: data.invoice_address_line,
@@ -155,11 +199,14 @@ export function useCheckoutSubmit({
             addressId: invoiceId,
             address: {
               user_id: finalUserId ?? "",
-              recipient_name: `${data.first_name} ${data.last_name}`,
+              recipient_name:
+                data.company_name?.trim() ||
+                `${data.first_name ?? ""} ${data.last_name ?? ""}`.trim(),
+              email: data.email ?? "",
               postal_code: data.invoice_postal_code,
               phone_number: data.phone_number,
               address_line: data.invoice_address_line,
-              additional_address_line: data.invoice_address_additional ?? "",
+              additional_address_line: data.invoice_address_additional,
               city: data.invoice_city,
               country: data.invoice_country,
               state: data.invoice_city,
@@ -172,13 +219,14 @@ export function useCheckoutSubmit({
         if (!shippingId) {
           const created = await createShipping.mutateAsync({
             user_id: finalUserId ?? "",
-            recipient_name: data.shipping_recipient_name
-              ? data.shipping_recipient_name
-              : `${data.first_name} ${data.last_name}`,
+            recipient_name:
+              data.company_name?.trim() ||
+              `${data.first_name ?? ""} ${data.last_name ?? ""}`.trim(),
+            email: data.email ?? "",
             postal_code: data.shipping_postal_code,
             phone_number: data.shipping_phone_number ?? "",
             address_line: data.shipping_address_line,
-            additional_address_line: data.shipping_address_additional ?? "",
+            additional_address_line: data.shipping_address_additional,
             city: data.shipping_country,
             country: data.shipping_city,
             is_default: true,
@@ -218,7 +266,7 @@ export function useCheckoutSubmit({
           const method = data.payment_method;
 
           if (method === "paypal") {
-            router.push(payment.approve_url);
+            router.push(payment.approve_url, { locale });
             return;
           }
 
@@ -244,14 +292,15 @@ export function useCheckoutSubmit({
       } catch (err) {
         console.error(err);
         toast.error(t("orderFail"));
+        setCheckoutId("");
         // form.reset();
         cleanupNeeded = true;
       } finally {
         const guestId = localStorage.getItem("userIdGuest");
 
         if (cleanupNeeded && guestId !== null) {
-          localStorage.removeItem("userIdGuest");
-          localStorage.removeItem("access_token");
+          // localStorage.removeItem("userIdGuest");
+          // localStorage.removeItem("access_token");
         }
       }
     },
@@ -281,6 +330,8 @@ export function useCheckoutSubmit({
     setOpenBankDialog,
     setOpenOtpDialog,
 
+    handleOTP,
     handleSubmit,
+    verifyOtp,
   };
 }
