@@ -79,9 +79,9 @@ export default function CartLoginForm({
       return;
     }
 
-    router.prefetch("/check-out", { locale }); // 🔥 preload đúng cách
+    router.prefetch("/kasse", { locale }); // 🔥 preload đúng cách
 
-    router.push("/check-out");
+    router.push("/kasse");
   };
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
@@ -121,7 +121,7 @@ export default function CartLoginForm({
             syncLocalCartMutation.mutate();
 
             toast.success(t("loginSuccess"));
-            router.push("/check-out", { locale });
+            router.push("/kasse", { locale });
             // gọi callback onSuccess nếu được truyền
             if (onSuccess) onSuccess();
           },
@@ -153,7 +153,7 @@ export default function CartLoginForm({
             exact: false,
           });
           toast.success(t("loginSuccess"));
-          router.push("/check-out", { locale });
+          router.push("/kasse", { locale });
           // gọi callback onSuccess nếu được truyền
           if (onSuccess) onSuccess();
         },
