@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   AddOrRemoveProductToCategoryInput,
+  CategoryBySlugResponse,
   CategoryInput,
   CategoryResponse,
 } from "@/types/categories";
@@ -14,8 +15,17 @@ import {
   getCategoryById,
   getCategoryByName,
   getCategoryBySlug,
+  GetCategoryParams,
   removeProductFromCategory,
 } from "./api";
+
+export interface UseCategoryBySlugParams {
+  category_slug: string;
+  product_name?: string;
+  page?: number;
+  page_size?: number;
+  is_econelo?: boolean;
+}
 
 // --- GET ALL CATEGORIES ---
 export function useGetCategories(params?: { is_econelo?: boolean }) {
@@ -26,12 +36,32 @@ export function useGetCategories(params?: { is_econelo?: boolean }) {
   });
 }
 
-export function useGetCategoryBySlug(slug: string) {
-  return useQuery({
-    queryKey: ["categoryProducts", slug],
-    queryFn: () => getCategoryBySlug(slug),
-    enabled: !!slug, // chỉ gọi khi slug có giá trị
-    retry: false,
+export function useCategoryBySlug({
+  category_slug,
+  product_name,
+  page = 1,
+  page_size = 8,
+  is_econelo,
+}: UseCategoryBySlugParams) {
+  return useQuery<CategoryBySlugResponse>({
+    queryKey: [
+      "category-by-slug",
+      category_slug,
+      {
+        product_name,
+        page,
+        page_size,
+        is_econelo,
+      },
+    ],
+    queryFn: () =>
+      getCategoryBySlug(category_slug, {
+        product_name,
+        page,
+        page_size,
+        is_econelo,
+      }),
+    enabled: Boolean(category_slug),
   });
 }
 
