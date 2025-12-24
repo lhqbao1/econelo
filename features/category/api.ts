@@ -12,6 +12,7 @@ export interface GetCategoryParams {
   product_name?: string;
   page?: number;
   page_size?: number;
+  is_econelo?: boolean;
 }
 
 export async function getCategories(params?: { is_econelo?: boolean }) {
@@ -65,6 +66,7 @@ export async function getCategoryBySlug(
       product_name: params?.product_name,
       page: params?.page ?? 1,
       page_size: params?.page_size ?? 8,
+      is_econelo: params?.is_econelo,
     },
   });
   return data as CategoryBySlugResponse;

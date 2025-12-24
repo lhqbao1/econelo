@@ -29,7 +29,10 @@ export default function ProductTabsClient({
 
   const { data, isLoading } = useQuery({
     queryKey: ["categoryProducts", active],
-    queryFn: () => getCategoryBySlug(active),
+    queryFn: () =>
+      getCategoryBySlug(active, {
+        is_econelo: true,
+      }),
     enabled: !!active,
     staleTime: 1000 * 60 * 5,
   });
