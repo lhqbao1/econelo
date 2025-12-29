@@ -14,22 +14,19 @@ import {
 } from "@/features/address/hook";
 import { useCreateCheckOut } from "@/features/checkout/hook";
 import { useCreatePayment } from "@/features/payment/hook";
-import { useCheckMailExist, useSignUpGuess } from "@/features/auth/hook";
+import { useSignUpGuess } from "@/features/auth/hook";
 import { getCartByUserId } from "@/features/cart/api";
-import {
-  normalizeCartItems,
-  calculateShipping,
-} from "@/hooks/caculate-shipping";
+import { normalizeCartItems } from "@/hooks/caculate-shipping";
 import { mapToSupplierCarts } from "@/hooks/map-cart-to-supplier";
 import { CreateOrderFormValues } from "@/lib/schema/checkout";
 import { CartResponse } from "@/types/cart";
 import { Address } from "@/types/address";
+import { useSyncLocalCartCheckOut } from "@/features/cart/hook";
 import { UseFormReturn } from "react-hook-form";
 import { User } from "@/types/user";
 import { CartItemLocal } from "@/lib/utils/cart";
 import { sendOtp } from "@/features/auth/api";
 import { userIdAtom, userIdGuestAtom } from "@/store/auth";
-import { useSyncLocalCartCheckOut } from "@/features/cart/hook";
 
 export function useCheckoutSubmit({
   form,
@@ -61,6 +58,7 @@ export function useCheckoutSubmit({
 
   const [paymentId, setPaymentId] = useAtom(paymentIdAtom);
   const [checkoutId, setCheckoutId] = useAtom(checkOutIdAtom);
+  // const [voucherId, setVoucherId] = useAtom(currentVoucherAtom);
 
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [total, setTotal] = useState(0);
@@ -180,7 +178,7 @@ export function useCheckoutSubmit({
             postal_code: data.invoice_postal_code,
             phone_number: data.phone_number,
             address_line: data.invoice_address_line,
-            additional_address_line: data.invoice_address_additional ?? "",
+            additional_address_line: data.invoice_address_additional,
             city: data.invoice_city,
             country: data.invoice_country,
             state: data.invoice_city,
@@ -227,8 +225,8 @@ export function useCheckoutSubmit({
             phone_number: data.shipping_phone_number ?? "",
             address_line: data.shipping_address_line,
             additional_address_line: data.shipping_address_additional,
-            city: data.shipping_country,
-            country: data.shipping_city,
+            city: data.shipping_city,
+            country: data.shipping_country,
             is_default: true,
           });
           shippingId = created.id;
@@ -247,7 +245,7 @@ export function useCheckoutSubmit({
 
         // toast.success(t("orderSuccess"));
         setCheckoutId(checkout.id);
-
+        // setVoucherId(null);
         // Payment flow
 
         // ===========================
@@ -266,7 +264,9 @@ export function useCheckoutSubmit({
           const method = data.payment_method;
 
           if (method === "paypal") {
-            router.push(payment.approve_url, { locale });
+            window.location.href = payment.approve_url;
+            // router.push(payment.approve_url, { locale });
+            console.log(payment.approve_url);
             return;
           }
 

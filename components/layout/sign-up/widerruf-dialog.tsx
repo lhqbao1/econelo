@@ -54,7 +54,6 @@ export default function WiderrufDialogTrigger({ t }: { t: any }) {
             ? policyList.legal_policies
                 .filter((l) => l.name.includes("Widerruf"))
                 .map((item, index) => {
-                  console.log(item);
                   return (
                     <div
                       key={item.id}

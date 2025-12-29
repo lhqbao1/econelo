@@ -36,14 +36,12 @@ export function CartSummary({
       ? cart.flatMap((group) => group.items)
       : localCart ?? [];
 
-  console.log(items);
-
   const subTotal = items
     ?.filter((i) => i.is_active)
     ?.reduce(
       (sum, item) =>
         sum + (item.final_price ?? item.item_price ?? 0) * (item.quantity ?? 1),
-      0
+      0,
     );
 
   const totalPrice =
@@ -61,7 +59,10 @@ export function CartSummary({
         {isLoading ? (
           <div className="animate-pulse space-y-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="flex justify-between py-2">
+              <div
+                key={i}
+                className="flex justify-between py-2"
+              >
                 <div className="flex gap-3">
                   <div className="bg-gray-200 w-16 h-16 rounded-md" />
                   <div className="flex flex-col gap-2 w-32">
@@ -131,7 +132,7 @@ export function CartSummary({
                   .reduce(
                     (total, item) =>
                       total + (item.item_price ?? 0) * (item.quantity ?? 1),
-                    0
+                    0,
                   ) ?? 0
             ).toLocaleString("de-DE", {
               minimumFractionDigits: 2,
@@ -175,7 +176,7 @@ export function CartSummary({
                   .reduce(
                     (total, item) =>
                       total + (item.item_price ?? 0) * (item.quantity ?? 1),
-                    0
+                    0,
                   ) ?? 0) +
             (shippingCost ?? 0) -
             (couponAmount ?? 0) -
