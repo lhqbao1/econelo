@@ -440,5 +440,7 @@
   "agree_widderuf": "gelesen und stimme diesen zu.",
   "tax_id_required_when_company": "Eine Steuernummer ist erforderlich, wenn ein Firmenname angegeben wird.",
   "emailNotRegistered": "Diese E-Mail-Adresse ist noch nicht registriert.",
-  "emailAlreadyUsed": "Diese E-Mail-Adresse wurde bereits zur Erstellung eines Kontos verwendet."
+  "emailAlreadyUsed": "Diese E-Mail-Adresse wurde bereits zur Erstellung eines Kontos verwendet.",
+   "resendOtp": "OTP erneut senden",
+  "resendIn": "Erneut senden in"
 }
