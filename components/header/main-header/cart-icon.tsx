@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { ShoppingCart } from "lucide-react";
 import React, { useEffect, useRef } from "react";
-
+import gsap from "gsap";
 interface CartIconProps {
   isSticky: boolean;
 }

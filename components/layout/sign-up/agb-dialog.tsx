@@ -54,7 +54,6 @@ export default function AGBDialogTrigger({ t }: { t: any }) {
             ? policyList.legal_policies
                 .filter((l) => l.name.includes("AGB"))
                 .map((item, index) => {
-                  console.log(item);
                   return (
                     <div
                       key={item.id}

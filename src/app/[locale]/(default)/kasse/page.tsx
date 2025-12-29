@@ -117,9 +117,9 @@ export default function CheckoutPageNew() {
   }, [totalEuro]);
 
   return (
-    <section className="flex flex-row w-full">
+    <section className="flex lg:flex-row w-full lg:flex-nowrap flex-col-reverse flex-wrap">
       {/* LEFT: Form Section */}
-      <div className="bg-white flex justify-end lg:pr-8 lg:py-8 lg:w-1/2 w-full lg:pt-36">
+      <div className="bg-white flex justify-end py-8 px-8 w-full lg:pt-36">
         <div className="lg:w-1/2 w-full">
           <CheckoutFormSection
             form={form}
@@ -137,7 +137,7 @@ export default function CheckoutPageNew() {
       </div>
 
       {/* RIGHT: Cart Summary */}
-      <div className="bg-gray-100 flex justify-start lg:pl-8 lg:py-8 lg:w-1/2 w-full lg:pt-36">
+      <div className="bg-gray-100 flex justify-start py-8 px-8 w-full lg:pt-36">
         <div className="lg:w-1/2 w-full">
           <CartSummary
             total={total}
