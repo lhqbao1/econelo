@@ -71,10 +71,8 @@ export function LoginDrawer({
             <CartLoginForm
               onSuccess={() => {
                 setOpenLogin(false);
-                setUserId(userId); // cập nhật state
                 queryClient.refetchQueries({ queryKey: ["me"] });
                 queryClient.refetchQueries({ queryKey: ["cart-items"] });
-                router.push("/kasse", { locale });
               }}
               onError={() => {
                 setOpenLogin(false);

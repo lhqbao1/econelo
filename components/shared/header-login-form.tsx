@@ -92,7 +92,6 @@ export default function HeaderLoginForm({ onSuccess }: HeaderLoginFormProps) {
             const token = data.access_token;
             localStorage.setItem("access_token", token);
             setUserId(data.id);
-            localStorage.setItem("userId", data.id);
             queryClient.refetchQueries({ queryKey: ["me"], exact: true });
             queryClient.refetchQueries({
               queryKey: ["cart-items", data.id],
@@ -123,8 +122,8 @@ export default function HeaderLoginForm({ onSuccess }: HeaderLoginFormProps) {
         onSuccess(data, variables, context) {
           const token = data.access_token;
           localStorage.setItem("access_token", token);
-          localStorage.setItem("userId", data.id);
-          setUserId(data.id);
+          const cleanUserId = String(data.id).replace(/^"|"$/g, "");
+          setUserId(cleanUserId);
           queryClient.refetchQueries({ queryKey: ["me"], exact: true });
           queryClient.refetchQueries({
             queryKey: ["cart-items", data.id],
@@ -135,7 +134,7 @@ export default function HeaderLoginForm({ onSuccess }: HeaderLoginFormProps) {
           toast.success(t("loginSuccess"));
 
           // gọi callback onSuccess nếu được truyền
-          if (onSuccess) onSuccess();
+          // if (onSuccess) onSuccess();
         },
         onError(error) {
           toast.error(t("invalidCredentials"));

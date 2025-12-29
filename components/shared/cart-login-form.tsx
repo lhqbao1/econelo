@@ -116,7 +116,6 @@ export default function CartLoginForm({
           onSuccess: (data) => {
             const token = data.access_token;
             localStorage.setItem("access_token", token);
-            localStorage.setItem("userId", data.id);
             setUserId(data.id);
             syncLocalCartMutation.mutate();
 
@@ -145,7 +144,6 @@ export default function CartLoginForm({
         onSuccess: (data) => {
           const token = data.access_token;
           localStorage.setItem("access_token", token);
-          localStorage.setItem("userId", data.id);
           setUserId(data.id);
           syncLocalCartMutation.mutate();
           queryClient.invalidateQueries({
@@ -153,7 +151,7 @@ export default function CartLoginForm({
             exact: false,
           });
           toast.success(t("loginSuccess"));
-          router.push("/kasse", { locale });
+          // router.push("/kasse", { locale });
           // gọi callback onSuccess nếu được truyền
           if (onSuccess) onSuccess();
         },

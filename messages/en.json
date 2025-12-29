@@ -443,5 +443,7 @@
   "agree_widderuf": "I have read and agree to these terms.",
   "tax_id_required_when_company": "A tax ID is required when a company name is provided.",
     "emailNotRegistered": "This email is not registered yet.",
-  "emailAlreadyUsed": "This email address has already been used to create an account."
+  "emailAlreadyUsed": "This email address has already been used to create an account.",
+      "resendOtp": "Resend OTP",
+  "resendIn": "Resend in"
 }
