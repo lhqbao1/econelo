@@ -4,23 +4,57 @@ import { NextRequest, NextResponse } from "next/server";
 const intlMiddleware = createMiddleware({
   locales: ["de", "en"],
   defaultLocale: "de",
-  localePrefix: "as-needed", // ✅ Ẩn /de cho default locale
+  localePrefix: "as-needed",
   localeDetection: false,
 });
 
-export default function middleware(req: NextRequest) {
-  const { pathname, searchParams } = req.nextUrl;
+const TRACKING_PARAMS = [
+  "srsltid",
+  "gclid",
+  "fbclid",
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_term",
+  "utm_content",
+];
 
-  // 🚫 Redirect /de/... -> /... để tránh trùng lặp canonical
+export default function middleware(req: NextRequest) {
+  const url = req.nextUrl.clone();
+  const { pathname, searchParams } = url;
+
+  let changed = false;
+
+  // =========================
+  // 1️⃣ REMOVE TRACKING PARAMS
+  // =========================
+  TRACKING_PARAMS.forEach((param) => {
+    if (searchParams.has(param)) {
+      searchParams.delete(param);
+      changed = true;
+    }
+  });
+
+  if (changed) {
+    return NextResponse.redirect(url, 301);
+  }
+
+  // =========================
+  // 2️⃣ REDIRECT /de/... → /
+  // =========================
   if (pathname.startsWith("/de/")) {
     const cleanPath = pathname.replace(/^\/de/, "") || "/";
     return NextResponse.redirect(new URL(cleanPath, req.url), 301);
   }
 
-  // ✅ Nhận diện URL kiểu WooCommerce cũ
+  // =========================
+  // 3️⃣ BLOCK WOOCOMMERCE CŨ
+  // =========================
   const looksLikeOldWooProduct =
     pathname.startsWith("/product/") &&
-    !/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/.test(pathname);
+    !/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i.test(
+      pathname,
+    );
 
   const hasWpParams = [
     "add_to_wishlist",
@@ -32,17 +66,16 @@ export default function middleware(req: NextRequest) {
     "orderby",
     "coupon_code",
     "apply_coupon",
-    "order"
+    "order",
   ].some((param) => searchParams.has(param));
 
   const isOtherOldWpPaths =
-    pathname.startsWith("/shop/") ||
-    pathname.startsWith("/product-category/") ||
+    pathname.startsWith("/shop") ||
+    pathname.startsWith("/product-category") ||
     pathname.startsWith("/cart") ||
     pathname.startsWith("/checkout") ||
     pathname.startsWith("/my-account");
 
-  // 🚫 Nếu là URL WooCommerce cũ → trả về 410 Gone
   if (looksLikeOldWooProduct || hasWpParams || isOtherOldWpPaths) {
     return new NextResponse("This page has been permanently removed.", {
       status: 410,
@@ -53,7 +86,9 @@ export default function middleware(req: NextRequest) {
     });
   }
 
-  // ✅ Cho phép route Next.js hợp lệ tiếp tục
+  // =========================
+  // 4️⃣ NEXT-INTL
+  // =========================
   return intlMiddleware(req);
 }
 
