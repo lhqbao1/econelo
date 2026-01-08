@@ -65,10 +65,17 @@ export function useCategoryBySlug({
   });
 }
 
-export function useGetCategoriesWithChildren() {
+export function useGetCategoriesWithChildren({
+  is_econelo,
+}: {
+  is_econelo: boolean;
+}) {
   return useQuery({
     queryKey: ["categories-with-children"],
-    queryFn: () => getCategoriesWithChildren(),
+    queryFn: () =>
+      getCategoriesWithChildren({
+        is_econelo,
+      }),
     retry: false,
   });
 }
