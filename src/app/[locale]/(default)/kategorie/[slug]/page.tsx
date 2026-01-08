@@ -111,8 +111,15 @@ export default async function Page({ params }: PageProps) {
     : [resolvedParams.slug];
   const lastSlug = slugArray[slugArray.length - 1];
 
-  const category = await getCategoryBySlug(lastSlug).catch(() => null);
+  const category = await getCategoryBySlug(lastSlug, {
+    is_econelo: true,
+  }).catch(() => null);
   if (!category) return notFound();
 
-  return <ProductCategory category={category} categorySlugs={slugArray} />;
+  return (
+    <ProductCategory
+      category={category}
+      categorySlugs={slugArray}
+    />
+  );
 }

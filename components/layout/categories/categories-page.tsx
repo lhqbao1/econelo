@@ -41,6 +41,7 @@ const ProductCategory = ({
       getCategoryBySlug(categorySlugs[categorySlugs.length - 1], {
         page,
         page_size: pageSize,
+        is_econelo: true,
       }),
     initialData: category, // 👈 lấy từ server render lần đầu
   });
