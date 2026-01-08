@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { CircleCheckIcon, CircleHelpIcon, CircleIcon } from "lucide-react";
 import { useMediaQuery } from "react-responsive";
 
 import {
@@ -12,10 +11,12 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { useTranslations } from "next-intl";
-import { useGetCategories } from "@/features/category/hook";
+import {
+  useGetCategories,
+  useGetCategoriesWithChildren,
+} from "@/features/category/hook";
 import { flattenChildCategories } from "@/lib/flattern-categories";
 
 export function NavBar() {
@@ -26,7 +27,7 @@ export function NavBar() {
     data: categories,
     isLoading,
     isError,
-  } = useGetCategories({ is_econelo: true });
+  } = useGetCategoriesWithChildren({ is_econelo: true });
 
   const childCategories = React.useMemo(
     () => flattenChildCategories(categories ?? []),

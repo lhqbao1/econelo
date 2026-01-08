@@ -22,8 +22,16 @@ export async function getCategories(params?: { is_econelo?: boolean }) {
   return data as CategoryResponse[];
 }
 
-export async function getCategoriesWithChildren() {
-  const { data } = await apiPublic.get("/categories/cat_have_products");
+export async function getCategoriesWithChildren({
+  is_econelo,
+}: {
+  is_econelo: boolean;
+}) {
+  const { data } = await apiPublic.get("/categories/cat_have_products", {
+    params: {
+      is_econelo,
+    },
+  });
   return data as CategoryResponse[];
 }
 
