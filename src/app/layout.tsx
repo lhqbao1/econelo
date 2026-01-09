@@ -7,6 +7,7 @@ import Script from "next/script";
 import SiteHeader from "@/components/header/header";
 import ImportantNotice from "@/components/shared/notice";
 import { QueryProvider } from "@/lib/query-provider";
+import { TrustedShops } from "@/components/shared/trusted-shop";
 
 const quickSand = Quicksand({
   subsets: ["latin"],
@@ -14,11 +15,54 @@ const quickSand = Quicksand({
 });
 
 export const metadata: Metadata = {
-  title: "Econelo",
-  description: "Econelo",
+  metadataBase: new URL("https://www.econelo.de"),
+  title: {
+    default: "Econelo – Elektroroller, Elektromobile & E-Mobilität",
+    template: "%s | Econelo",
+  },
+  description:
+    "Econelo bietet Elektroroller, Elektromobile und Seniorenfahrzeuge für eine komfortable, sichere und moderne Mobilität. Nachhaltige E-Mobilität für Alltag, Freizeit und Senioren.",
+  keywords: [
+    "Econelo",
+    "Elektroroller",
+    "Elektromobile",
+    "Seniorenmobil",
+    "E Scooter",
+    "E-Mobile",
+    "Roller elektrisch",
+    "Elektrische Fahrzeuge",
+    "Nachhaltige Mobilität",
+    "E-Mobilität Deutschland",
+  ],
   icons: {
     icon: "/favicon.ico",
     apple: "/favicon.ico",
+  },
+  alternates: {
+    canonical: "https://www.econelo.de",
+  },
+  openGraph: {
+    title: "Econelo – Elektroroller & Elektromobile für moderne Mobilität",
+    description:
+      "Elektroroller, Elektromobile und Seniorenfahrzeuge für Alltag und Freizeit. Nachhaltige E-Mobilität mit Qualität und Komfort.",
+    url: "https://www.econelo.de",
+    siteName: "Econelo",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: "de_DE",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Econelo – Elektroroller & Elektromobile",
+    description:
+      "Elektroroller, Elektromobile und Seniorenfahrzeuge für nachhaltige Mobilität.",
+    images: ["/og-image.jpg"],
   },
 };
 
@@ -40,7 +84,7 @@ export default function RootLayout({
           ></iframe>
         </noscript>
         {/* <ImportantNotice /> */}
-
+        <TrustedShops />
         <Providers>{children}</Providers>
         <Toaster
           expand

@@ -12,7 +12,7 @@ export function TrustedShops() {
   return (
     <Script
       id="trusted-shops"
-      src="//widgets.trustedshops.com/js/XDA9856CEB99C2BDF63BF8E9EF89A20FE.js"
+      src="//widgets.trustedshops.com/js/XEDAB0ABA095EB0276C83ADAB7FC0885F.js"
       strategy="lazyOnload"
       async
       data-desktop-position="left"
