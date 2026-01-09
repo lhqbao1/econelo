@@ -7,6 +7,7 @@ import Script from "next/script";
 import SiteHeader from "@/components/header/header";
 import ImportantNotice from "@/components/shared/notice";
 import { QueryProvider } from "@/lib/query-provider";
+import { TrustedShops } from "@/components/shared/trusted-shop";
 
 const quickSand = Quicksand({
   subsets: ["latin"],
@@ -40,7 +41,7 @@ export default function RootLayout({
           ></iframe>
         </noscript>
         {/* <ImportantNotice /> */}
-
+        <TrustedShops />
         <Providers>{children}</Providers>
         <Toaster
           expand
