@@ -190,10 +190,6 @@ const BuySection = ({
                   €
                 </span>
               </div>
-              <div className="flex justify-between items-center">
-                <label>{t("discount")}</label>
-                <span>0.00€</span>
-              </div>
               <div className="flex justify-between items-center font-semibold text-black text-lg">
                 <label>{t("total")}</label>
                 <span>
