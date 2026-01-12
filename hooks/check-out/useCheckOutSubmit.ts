@@ -35,7 +35,6 @@ export function useCheckoutSubmit({
   invoiceAddress,
   cartItems,
   localCart,
-  hasServerCart,
   shippingCost,
   locale,
   currentUserId,
@@ -46,7 +45,6 @@ export function useCheckoutSubmit({
   invoiceAddress: Address | undefined; // invoice address
   cartItems: CartResponse | undefined; // cart server (mảng supplier)
   localCart: CartItemLocal[]; // cart local (guest)
-  hasServerCart: boolean; // flag cart server hay local
   shippingCost: number; // shipping được tính từ logic
   locale: string; // locale hiện tại
   currentUserId: string;
@@ -58,7 +56,6 @@ export function useCheckoutSubmit({
 
   const [paymentId, setPaymentId] = useAtom(paymentIdAtom);
   const [checkoutId, setCheckoutId] = useAtom(checkOutIdAtom);
-  // const [voucherId, setVoucherId] = useAtom(currentVoucherAtom);
 
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [total, setTotal] = useState(0);
@@ -148,6 +145,7 @@ export function useCheckoutSubmit({
           cleanupNeeded = true;
 
           localStorage.setItem("access_token", newUser.access_token);
+          localStorage.setItem("user_id", newUser.id);
           setUserGuestId(newUser.id);
           // setUserLoginId(newUser.id);
         }
@@ -214,23 +212,21 @@ export function useCheckoutSubmit({
         }
 
         // Shipping
-        if (!shippingId) {
-          const created = await createShipping.mutateAsync({
-            user_id: finalUserId ?? "",
-            recipient_name:
-              data.company_name?.trim() ||
-              `${data.first_name ?? ""} ${data.last_name ?? ""}`.trim(),
-            email: data.email ?? "",
-            postal_code: data.shipping_postal_code,
-            phone_number: data.shipping_phone_number ?? "",
-            address_line: data.shipping_address_line,
-            additional_address_line: data.shipping_address_additional,
-            city: data.shipping_city,
-            country: data.shipping_country,
-            is_default: true,
-          });
-          shippingId = created.id;
-        }
+        // if (!shippingId) {
+        const created = await createShipping.mutateAsync({
+          user_id: finalUserId ?? "",
+          recipient_name: data.shipping_recipient_name ?? "",
+          email: data.email ?? "",
+          postal_code: data.shipping_postal_code,
+          phone_number: data.shipping_phone_number ?? "",
+          address_line: data.shipping_address_line,
+          additional_address_line: data.shipping_address_additional,
+          city: data.shipping_city,
+          country: data.shipping_country,
+          is_default: true,
+        });
+        shippingId = created.id;
+        // }
 
         // Checkout
         const checkout = await createCheckOut.mutateAsync({
@@ -241,11 +237,13 @@ export function useCheckoutSubmit({
           note: data.note,
           total_shipping:
             shippingCostCurrent > 0 ? shippingCostCurrent : shippingCost,
+          carrier: normalized.find((i) => i.carrier === "amm")
+            ? "spedition"
+            : "dpd",
         });
 
         // toast.success(t("orderSuccess"));
         setCheckoutId(checkout.id);
-        // setVoucherId(null);
         // Payment flow
 
         // ===========================
@@ -264,9 +262,7 @@ export function useCheckoutSubmit({
           const method = data.payment_method;
 
           if (method === "paypal") {
-            window.location.href = payment.approve_url;
-            // router.push(payment.approve_url, { locale });
-            console.log(payment.approve_url);
+            router.push(payment.approve_url);
             return;
           }
 
@@ -295,6 +291,9 @@ export function useCheckoutSubmit({
         setCheckoutId("");
         // form.reset();
         cleanupNeeded = true;
+        localStorage.removeItem("user_id");
+        localStorage.removeItem("userIdGuest");
+        localStorage.removeItem("access_token");
       } finally {
         const guestId = localStorage.getItem("userIdGuest");
 

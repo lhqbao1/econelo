@@ -9,6 +9,19 @@ interface CheckOutResponse {
   pagination: Pagination;
 }
 
+export interface CheckOutShipment {
+  checkout_id: string;
+  checkout_marketplace_id: string;
+  status: string;
+  id: string;
+  ship_code: string;
+  created_at: string;
+  updated_at: string;
+  tracking_number: string;
+  shipper_date: string;
+  shipping_carrier: string;
+}
+
 interface CartResponseCheckOut {
   user_id: string;
   supplier_id: string;
@@ -66,9 +79,76 @@ interface CheckOutMainResponse {
   pagination: Pagination;
 }
 
-interface CheckOutStatistics {
-  order_processing: number;
-  processing_transaction: number;
-  cancel_transaction: number;
-  completed_transaction: number;
+export interface CheckOutStatistics {
+  count_order: number;
+  total_order: number;
+
+  count_waiting_payment_order: number;
+  total_waiting_payment_order: number;
+
+  count_payment_received_order: number;
+  total_payment_received_order: number;
+
+  count_preparing_shipping_order: number;
+  total_preparing_shipping_order: number;
+
+  count_dispatched_order: number;
+  total_dispatched_order: number;
+
+  count_cancel_order: number;
+  total_cancel_order: number;
+
+  count_return_order: number;
+  total_return_order: number;
+
+  count_stock_reserved_order: number;
+  total_stock_reserved_order: number;
+}
+
+export interface MarketplaceOverviewItem {
+  marketplace: string;
+  total_orders: number;
+  total_amount: number;
+  percentage: number; // % trên grand total
+}
+
+export interface CheckoutDashboardResponse {
+  from_date: string | null;
+  to_date: string | null;
+  grand_total_amount: number;
+  grand_total_orders: number;
+  data: MarketplaceOverviewItem[];
+}
+
+export interface QuantityAmount {
+  total_quantity: number;
+  total_amount: number;
+}
+
+export interface ProviderItem {
+  id_provider: string;
+
+  total_quantity: number;
+  total_amount: number;
+
+  by_marketplace: Record<string, QuantityAmount>;
+  by_status: Record<string, QuantityAmount>;
+
+  cost: number;
+  delivery_cost: number;
+  total_cost: number;
+  total_profit: number;
+  product_margin: number;
+}
+
+export interface ProviderSummary {
+  total_id_provider: number;
+  total_quantity: number;
+  total_amount: number;
+  total_cost: number;
+}
+
+export interface ProviderOverviewResponse {
+  summary: ProviderSummary;
+  items: ProviderItem[];
 }

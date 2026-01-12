@@ -16,12 +16,7 @@ import { CartResponseItem } from "@/types/cart";
 export function useGetCartItems() {
   return useQuery({
     queryKey: ["cart-items"],
-    queryFn: async () => {
-      const data = await getCartItems();
-      // Sort theo created_at giảm dần (mới nhất lên trước)
-      // data.items.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-      return data;
-    },
+    queryFn: () => getCart(),
     retry: false,
   });
 }
@@ -109,7 +104,7 @@ export function useUpdateCartItemStatus() {
   });
 }
 
-export function useSyncLocalCart(isCheckOut = false) {
+export function useSyncLocalCart(isCheckOut = false, user_id?: string) {
   const qc = useQueryClient();
 
   return useMutation({
@@ -126,6 +121,8 @@ export function useSyncLocalCart(isCheckOut = false) {
 
       // 2️⃣ Nếu là checkout => xóa item cũ trên server
       if (isCheckOut) {
+        clearCartUser(user_id ?? "");
+
         const serverCart: CartResponseItem[] = await getCartItems();
 
         // Server trả về danh sách theo supplier => flatten tất cả items
@@ -142,7 +139,7 @@ export function useSyncLocalCart(isCheckOut = false) {
       }
 
       // 3️⃣ Dọn local cart sau khi sync
-      saveCart([]);
+      // saveCart([]);
       return true;
     },
 
