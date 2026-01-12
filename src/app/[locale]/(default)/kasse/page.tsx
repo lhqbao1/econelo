@@ -75,7 +75,6 @@ export default function CheckoutPageNew() {
     invoiceAddress,
     cartItems,
     localCart,
-    hasServerCart,
     shippingCost,
     locale,
     currentUserId: finalUserId ?? "",
@@ -132,6 +131,14 @@ export default function CheckoutPageNew() {
             onSubmit={handleSubmit}
             submitting={submitting}
             totalCents={totalCents}
+            open={openOtpDialog}
+            onOpenChange={setOpenOtpDialog}
+            email={otpEmail}
+            onSuccess={handleOtpSuccess}
+            verifyOtp={verifyOtp}
+            openBankDialog={openBankDialog}
+            setOpenBankDialog={setOpenBankDialog}
+            handleOTP={handleOTP}
           />
         </div>
       </div>
@@ -148,18 +155,6 @@ export default function CheckoutPageNew() {
           />
         </div>
       </div>
-
-      <OtpDialog
-        open={openOtpDialog}
-        onOpenChange={setOpenOtpDialog}
-        email={otpEmail}
-        onSuccess={handleOtpSuccess}
-      />
-
-      <BankDialog
-        open={openBankDialog}
-        onOpenChange={setOpenBankDialog}
-      />
     </section>
   );
 }

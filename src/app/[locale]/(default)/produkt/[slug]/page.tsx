@@ -23,20 +23,30 @@ export async function generateStaticParams() {
   const products = await getProductsFeed();
   const locales = ["de", "en"];
 
-  return products.flatMap((p) =>
-    locales.map((locale) => ({
-      locale,
-      slug: p.url_key, // ✅ string, không bọc trong []
-    })),
-  );
+  return products
+    .filter((p) => typeof p.url_key === "string" && p.url_key.length > 0)
+    .flatMap((p) =>
+      locales.map((locale) => ({
+        locale,
+        slug: p.url_key,
+      })),
+    );
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug, locale } = await params;
-  const slugArray = Array.isArray(slug) ? slug : [slug];
-  const lastSlug = slugArray[slugArray.length - 1];
+  const slugArr = Array.isArray(slug) ? slug : [slug];
+  const lastSlug = slugArr.at(-1);
+
+  if (
+    !lastSlug ||
+    typeof lastSlug !== "string" ||
+    lastSlug.trim().length === 0
+  ) {
+    return notFound();
+  }
 
   try {
     const product = await getProductBySlug(lastSlug);
@@ -187,6 +197,14 @@ export default async function Page({
     ? resolvedParams.slug
     : [resolvedParams.slug];
   const lastSlug = slugArray[slugArray.length - 1];
+
+  if (
+    !lastSlug ||
+    typeof lastSlug !== "string" ||
+    lastSlug.trim().length === 0
+  ) {
+    return notFound();
+  }
 
   let product = null;
   try {
