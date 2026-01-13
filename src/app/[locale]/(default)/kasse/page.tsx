@@ -89,7 +89,7 @@ export default function CheckoutPageNew() {
 
   const totalEuro = useMemo(() => {
     const productsTotal =
-      cartItems && cartItems.length > 0
+      userLoginId && cartItems && cartItems.length > 0
         ? cartItems
             .flatMap((g) => g.items)
             .filter((i) => i.is_active)
@@ -152,6 +152,7 @@ export default function CheckoutPageNew() {
             localCart={localCart}
             hasOtherCarrier={hasOtherCarrier}
             shippingCost={shippingCost}
+            userLoginId={userLoginId ?? null}
           />
         </div>
       </div>

@@ -6,7 +6,6 @@ import { useRouter } from "@/src/i18n/navigation";
 import { useCartLocal } from "@/hooks/cart";
 import { useQuery } from "@tanstack/react-query";
 import { getCartItems } from "@/features/cart/api";
-import { CartItemLocal } from "@/lib/utils/cart";
 import { toast } from "sonner";
 import CartTable from "@/components/layout/cart/cart-table";
 import CartLocalTable from "@/components/layout/cart/cart-local-table";
