@@ -465,5 +465,13 @@
     "invoiceAddress": "Rechnungsadresse",
     "orderHelp": "Hilfe zur Bestellung"
   },
-    "orderProcessingMessage": "Ihre Bestellung wird bearbeitet. Dies kann einen Moment dauern. Bitte bleiben Sie auf dieser Seite."
+    "orderProcessingMessage": "Ihre Bestellung wird bearbeitet. Dies kann einen Moment dauern. Bitte bleiben Sie auf dieser Seite.",
+  "cancelOrder": {
+    "cancelOrderTitle": "Bestellung stornieren",
+    "cancelOrderConfirm": "Möchten Sie diese Bestellung wirklich stornieren? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "cancel": "Stornieren",
+    "close": "Abbrechen",
+    "cancelOrderSuccess": "Ihre Bestellung wurde erfolgreich storniert.",
+    "cancelOrderError": "Die Bestellung konnte nicht storniert werden. Bitte versuchen Sie es erneut."
+  }
 }

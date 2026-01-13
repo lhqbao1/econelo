@@ -65,7 +65,6 @@ export default function CartPage() {
 
     // ❌ Có user nhưng API error → fallback (optional)
     if (isErrorCart) {
-      toast.error("Cannot load your cart, please try again.");
       return [];
     }
 
@@ -156,7 +155,7 @@ export default function CartPage() {
 
           {/* Summary */}
           <aside className="space-y-6">
-            <Card className="py-4 px-0 border-0 shadow-none border rounded-xl sticky top-20">
+            <Card className="py-4 px-0  shadow-none border rounded-xl sticky top-20">
               <CardHeader className="pb-0 border-b">
                 <CardTitle className="text-xl font-bold text-center">
                   {t("orderSummary")}
