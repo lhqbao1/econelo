@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { LoginDrawer } from "@/components/shared/login-drawer";
 import { useAtom } from "jotai";
 import { userIdAtom } from "@/store/auth";
+import CartTableSkeleton from "@/components/layout/cart/cart-table-skeleton";
 
 export default function CartPage() {
   const [userId, setUserId] = useAtom(userIdAtom);
@@ -55,40 +56,51 @@ export default function CartPage() {
   });
 
   // Nếu có user thì hiển thị cart trên server, không thì localCart
-  const displayedCart = useMemo(
-    () => (userId ? cart ?? [] : localCart),
-    [cart, localCart, userId],
-  );
+  const displayedCart = useMemo(() => {
+    // ❌ No user → dùng localCart
+    if (!userId) return localCart;
+
+    // ⏳ Có user nhưng API đang loading → trả empty để render skeleton
+    if (isLoadingCart) return null;
+
+    // ❌ Có user nhưng API error → fallback (optional)
+    if (isErrorCart) {
+      toast.error("Cannot load your cart, please try again.");
+      return [];
+    }
+
+    // 🎯 Có user + API ok → dùng serverCart
+    return cart ?? [];
+  }, [userId, localCart, cart, isLoadingCart, isErrorCart]);
 
   const { updateStatus } = useCartLocal();
 
   let total = 0;
 
-  if (userId && cart) {
-    // 🛒 Trường hợp user đăng nhập → cart là CartResponse
+  if (!userId) {
+    // Guest
+    total = localCart
+      .filter((i) => i.is_active)
+      .reduce((acc, item) => {
+        const key = item.product_id;
+        const qty = localQuantities[key] ?? item.quantity;
+        return acc + qty * item.item_price;
+      }, 0);
+  } else if (cart && !isLoadingCart) {
+    // Logged in
     total = cart
       .flatMap((group) => group.items)
-      .filter((item) => item.is_active)
+      .filter((i) => i.is_active)
       .reduce((acc, item) => {
         const key = item.id;
-        const quantity = localQuantities[key ?? ""] ?? item.quantity;
-        return acc + quantity * item.item_price;
+        const qty = localQuantities[key] ?? item.quantity;
+        return acc + qty * item.item_price;
       }, 0);
-  } else {
-    // 🧺 Trường hợp guest → localCart là CartItem[]
-    total =
-      localCart
-        ?.filter((item) => item.is_active)
-        .reduce((acc, item) => {
-          const key =
-            "id" in item ? item.id : (item as CartItemLocal).product_id;
-          const quantity = localQuantities[key ?? ""] ?? item.quantity;
-          return acc + quantity * item.item_price;
-        }, 0) ?? 0;
   }
 
   // Proceed checkout
   const proceedToCart = () => {
+    if (!displayedCart) return;
     if (userId) {
       if (displayedCart.length === 0) {
         toast.error(t("chooseAtLeastCart"));
@@ -113,15 +125,7 @@ export default function CartPage() {
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-10">
           {/* Left: Cart Items */}
           <div>
-            {userId ? (
-              <CartTable
-                isLoadingCart={isLoadingCart}
-                cart={cart ?? []}
-                localQuantities={localQuantities}
-                setLocalQuantities={setLocalQuantities}
-                isCheckout={false}
-              />
-            ) : (
+            {!userId && (
               <CartLocalTable
                 data={localCart}
                 onToggleItem={(product_id, is_active) =>
@@ -132,6 +136,20 @@ export default function CartPage() {
                     updateStatus({ product_id: item.product_id, is_active }),
                   );
                 }}
+              />
+            )}
+
+            {userId && isLoadingCart && (
+              <CartTableSkeleton /> // hoặc cái loading hiện có
+            )}
+
+            {userId && !isLoadingCart && cart && (
+              <CartTable
+                isLoadingCart={isLoadingCart}
+                cart={cart ?? []}
+                localQuantities={localQuantities}
+                setLocalQuantities={setLocalQuantities}
+                isCheckout={false}
               />
             )}
           </div>

@@ -464,5 +464,6 @@
     "shippingAddress": "Lieferadresse",
     "invoiceAddress": "Rechnungsadresse",
     "orderHelp": "Hilfe zur Bestellung"
-  }
+  },
+    "orderProcessingMessage": "Ihre Bestellung wird bearbeitet. Dies kann einen Moment dauern. Bitte bleiben Sie auf dieser Seite."
 }
