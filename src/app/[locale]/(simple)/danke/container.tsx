@@ -238,7 +238,6 @@ const OrderPlaced = () => {
         )}
 
         <Button
-          variant="secondary"
           onClick={() => router.push("/", { locale })}
           className="mt-6"
           disabled={isProcessingPayment}
