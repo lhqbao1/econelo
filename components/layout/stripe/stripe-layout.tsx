@@ -60,7 +60,8 @@ export default function StripeLayout({
   }, [stripe, clientSecret, selectedMethod]);
 
   const handleCardSuccess = (piId: string) => {
-    router.push(`https://econelo.de/${locale}/danke?payment_intent=${piId}he`);
+    console.log(piId);
+    router.push(`https://econelo.de/danke?payment_intent=${piId}`);
   };
 
   const handleFail = (msg?: string) => {
