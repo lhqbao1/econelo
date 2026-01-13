@@ -25,6 +25,7 @@ import {
   formatDateToTrustedShops,
   getOrderLatestDeliveryDate,
 } from "@/hooks/get-estimated-delivery-date";
+import { Loader2 } from "lucide-react";
 
 const OrderPlaced = () => {
   const router = useRouter();
@@ -208,21 +209,16 @@ const OrderPlaced = () => {
   }, [checkout, estimatedDeliveryDate, trustedShopData]);
 
   return (
-    <div className="w-full min-h-screen flex flex-col justify-center items-center gap-12 -translate-y-10">
+    <div className="w-full min-h-screen flex flex-col justify-center items-center gap-12 -translate-y-10 col-span-2">
       <div className="px-5 py-6 flex flex-col items-center gap-3">
         <Image
-          src="/new-logo.svg"
+          src="/econelo-logo.png"
           alt="Econelo logo"
           width={100}
           height={100}
           priority
           className="w-auto h-[80px]"
         />
-        <div className="text-2xl flex gap-1">
-          <span className="text-primary text-[40px] font-semibold">
-            Econelo
-          </span>
-        </div>
       </div>
       <div className="relative flex flex-col items-center justify-center bg-white text-center w-fit h-fit px-40 py-8">
         <div className="absolute top-0 left-0 w-40 h-32 bg-primary clip-triangle-top-left" />
@@ -233,6 +229,13 @@ const OrderPlaced = () => {
         <p className="text-gray-600 text-lg">{t("orderPlacedMessage")}</p>
         <p className="text-gray-600 text-lg mt-2">{t("trackingInfoMessage")}</p>
         <p className="text-gray-600 text-lg mt-2">{t("thankYouShopping")}</p>
+
+        {isProcessingPayment && (
+          <div className="mt-6 flex flex-col items-center gap-3 text-gray-600">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-sm italic">{t("orderProcessingMessage")}</p>
+          </div>
+        )}
 
         <Button
           variant="secondary"
