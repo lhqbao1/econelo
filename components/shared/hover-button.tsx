@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { userIdAtom } from "@/store/auth";
+import { useTranslations } from "next-intl";
 
 interface HoverButtonProps {
   text?: React.ReactNode; // 👈 Cho phép string hoặc t('...')
@@ -33,12 +34,13 @@ const HoverButton = ({
 }: HoverButtonProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-
+  const t = useTranslations();
   const [userId, setUserId] = useAtom(userIdAtom);
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("userId");
+    localStorage.removeItem("user_id");
     localStorage.removeItem("checkout");
     localStorage.removeItem("payment");
 
@@ -81,7 +83,7 @@ const HoverButton = ({
             className="cursor-pointer flex items-center gap-2 hover:bg-gray-200 hover:shadow-xl"
           >
             <Package className="w-4 h-4 text-gray-600" />
-            <span>My Orders</span>
+            <span> {t("myOrder")}</span>
           </DropdownMenuItem>
 
           <DropdownMenuItem
@@ -89,7 +91,7 @@ const HoverButton = ({
             className="cursor-pointer flex items-center gap-2"
           >
             <User className="w-4 h-4 text-gray-600" />
-            <span>Profile</span>
+            <span>{t("accountInformation")}</span>
           </DropdownMenuItem>
 
           <DropdownMenuItem
@@ -97,7 +99,7 @@ const HoverButton = ({
             className="cursor-pointer flex items-center gap-2 text-red-600 focus:text-red-700"
           >
             <LogOut className="w-4 h-4" />
-            <span>Logout</span>
+            <span>{t("logout")}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

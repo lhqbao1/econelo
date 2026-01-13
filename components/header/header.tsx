@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-import { PhoneCall } from "lucide-react";
 import { NavBar } from "./main-header/nav-bar";
 import ListIcons from "./main-header/list-icons";
 import HoverButton from "../shared/hover-button";
@@ -13,7 +12,6 @@ import gsap from "gsap";
 import { useAtom } from "jotai";
 import { userIdAtom } from "@/store/auth";
 import { useTranslations } from "next-intl";
-import { SidebarTrigger } from "../ui/sidebar";
 import { useQuery } from "@tanstack/react-query";
 import { getMe } from "@/features/auth/api";
 import SearchDrawer from "../search-drawer/search-drawer";

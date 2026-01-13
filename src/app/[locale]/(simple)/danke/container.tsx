@@ -17,6 +17,14 @@ import { useRouter } from "@/src/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { userIdAtom } from "@/store/auth";
 import { InvoicePDF } from "@/components/shared/file/file-pdf";
+import {
+  TrustedShopsCheckout,
+  TrustedShopsCheckoutProps,
+} from "./trusted-card";
+import {
+  formatDateToTrustedShops,
+  getOrderLatestDeliveryDate,
+} from "@/hooks/get-estimated-delivery-date";
 
 const OrderPlaced = () => {
   const router = useRouter();
@@ -26,10 +34,13 @@ const OrderPlaced = () => {
   const hasFetchedRef = React.useRef(false);
   const hasProcessedRef = React.useRef(false);
   const [delayed, setDelayed] = React.useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(true);
 
   const [userId, setUserId] = useAtom(userIdAtom);
   const [checkoutId, setCheckOutId] = useAtom(checkOutIdAtom);
   const [paymentId, setPaymentId] = useAtom(paymentIdAtom);
+  const [trustedShopData, setTrustedShopData] =
+    useState<TrustedShopsCheckoutProps | null>(null);
 
   const capturePaymentMutation = useCapturePayment();
   const uploadStaticFileMutation = useUploadStaticFile();
@@ -43,6 +54,18 @@ const OrderPlaced = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!isProcessingPayment) return;
+
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [isProcessingPayment]);
 
   const retryCaptureUntilSuccess = async (paymentId: string) => {
     const maxRetries = 5;
@@ -71,20 +94,33 @@ const OrderPlaced = () => {
     throw new Error("Capture payment failed after 5 retries");
   };
 
-  const { data: checkout } = useQuery({
+  const { data: checkout, error } = useQuery({
     queryKey: ["checkout-id", checkoutId],
     enabled: delayed && Boolean(checkoutId) && !hasFetchedRef.current,
     retry: false, // Ta tự retry rồi nên không cần retry của React Query
     queryFn: async () => {
       hasFetchedRef.current = true;
 
-      if (!paymentIntentId && paymentId) {
-        await retryCaptureUntilSuccess(paymentId);
-      }
+      try {
+        if (!paymentIntentId && paymentId) {
+          await retryCaptureUntilSuccess(paymentId);
+        }
 
-      return getMainCheckOutByMainCheckOutId(checkoutId!);
+        return await getMainCheckOutByMainCheckOutId(checkoutId!);
+      } catch (err) {
+        console.error(err);
+        throw err;
+      } finally {
+        setIsProcessingPayment(false); // 🔥 LUÔN TẮT
+      }
     },
   });
+
+  useEffect(() => {
+    if (checkout) {
+      setIsProcessingPayment(false);
+    }
+  }, [checkout]);
 
   const { data: invoice } = useQuery({
     queryKey: ["invoice-checkout", checkoutId],
@@ -142,12 +178,41 @@ const OrderPlaced = () => {
     process();
   }, [checkout, invoice, user]);
 
+  const estimatedDeliveryDate = formatDateToTrustedShops(
+    getOrderLatestDeliveryDate(
+      checkout?.checkouts.flatMap((c) =>
+        c.cart.items.map((item) => ({
+          stock: item.products.stock,
+          inventory: item.products.inventory,
+          deliveryTime: item.products.delivery_time,
+        })),
+      ) ?? [],
+    ),
+  );
+
+  useEffect(() => {
+    if (!checkout) return;
+    if (trustedShopData) return; // ❗ chỉ set 1 lần
+
+    setTrustedShopData({
+      orderNumber: checkout.checkout_code,
+      buyerEmail: checkout.checkouts[0].user.email,
+      amount: checkout.total_amount,
+      currency: "EUR",
+      paymentType: checkout.payment_method,
+      estimatedDeliveryDate: estimatedDeliveryDate ?? "",
+      products: checkout.checkouts
+        .flatMap((c) => c.cart.items)
+        .map((i) => i.products),
+    });
+  }, [checkout, estimatedDeliveryDate, trustedShopData]);
+
   return (
     <div className="w-full min-h-screen flex flex-col justify-center items-center gap-12 -translate-y-10">
       <div className="px-5 py-6 flex flex-col items-center gap-3">
         <Image
           src="/new-logo.svg"
-          alt="Prestige Home logo"
+          alt="Econelo logo"
           width={100}
           height={100}
           priority
@@ -169,15 +234,16 @@ const OrderPlaced = () => {
         <p className="text-gray-600 text-lg mt-2">{t("trackingInfoMessage")}</p>
         <p className="text-gray-600 text-lg mt-2">{t("thankYouShopping")}</p>
 
-        {/* <p className="text-primary text-base mt-6">
-                    {t('redirectHome')} <span className="font-semibold text-primary">{counter}</span> {t('seconds')}.
-                </p> */}
         <Button
+          variant="secondary"
           onClick={() => router.push("/", { locale })}
           className="mt-6"
+          disabled={isProcessingPayment}
         >
           {t("continueShopping")}
         </Button>
+
+        {trustedShopData && <TrustedShopsCheckout {...trustedShopData} />}
       </div>
     </div>
   );

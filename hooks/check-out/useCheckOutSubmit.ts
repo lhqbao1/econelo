@@ -237,7 +237,9 @@ export function useCheckoutSubmit({
           note: data.note,
           total_shipping:
             shippingCostCurrent > 0 ? shippingCostCurrent : shippingCost,
-          carrier: normalized.find((i) => i.carrier === "amm")
+          carrier: normalized.find(
+            (i) => i.carrier === "amm" || i.carrier === "spedition",
+          )
             ? "spedition"
             : "dpd",
         });

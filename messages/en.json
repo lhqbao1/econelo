@@ -445,5 +445,27 @@
     "emailNotRegistered": "This email is not registered yet.",
   "emailAlreadyUsed": "This email address has already been used to create an account.",
       "resendOtp": "Resend OTP",
-  "resendIn": "Resend in"
+  "resendIn": "Resend in",
+  "orderDetailsDrawer": {
+    "deliveredOn": "Delivered on",
+    "standardDeliveryBy": "Standard delivery by",
+    "articleNumber": "Article no.",
+     "viewDetails": "View Details",
+     "orderDetails": "Order Details",
+     "orderId": "Order ID",
+     "orderDate": "Order Date",
+     "paymentMethod": "Payment Method",
+     "updating": "Updating",
+     "tracking": "Tracking",
+      "totalSummary": "Total",
+      "downloadInvoice": "Download invoice",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "total": "Total",
+      "totalIncludesVat": "(Total includes VAT.)",
+      "orderProducts": "Ordered products",
+      "shippingAddress": "Shipping Address",
+    "invoiceAddress": "Invoice Address",
+    "orderHelp": "Help with your order"
+  }
 }

@@ -13,11 +13,17 @@ export default function MyAccountSideBar({ user }: MyAccountSideBarProps) {
   const t = useTranslations();
   return (
     <>
-      <TabsTrigger
+      {/* <TabsTrigger
         value="orders"
         className="w-full justify-start gap-2 data-[state=active]:bg-gray-100 rounded-lg px-3 py-2"
       >
         <Package className="w-4 h-4" /> {t("orders")}
+      </TabsTrigger> */}
+      <TabsTrigger
+        value="profile"
+        className="w-full justify-start gap-2 data-[state=active]:bg-gray-100 rounded-lg px-3 py-2"
+      >
+        <UserIcon className="w-4 h-4" /> {t("profile")}
       </TabsTrigger>
 
       <TabsTrigger
@@ -25,13 +31,6 @@ export default function MyAccountSideBar({ user }: MyAccountSideBarProps) {
         className="w-full justify-start gap-2 data-[state=active]:bg-gray-100 rounded-lg px-3 py-2"
       >
         <Heart className="w-4 h-4" /> {t("favorites")}
-      </TabsTrigger>
-
-      <TabsTrigger
-        value="profile"
-        className="w-full justify-start gap-2 data-[state=active]:bg-gray-100 rounded-lg px-3 py-2"
-      >
-        <UserIcon className="w-4 h-4" /> {t("profile")}
       </TabsTrigger>
 
       <TabsTrigger
