@@ -98,7 +98,11 @@ function CheckOutInvoiceAddress({
           render={({ field }) => (
             <FormItem className="col-span-2">
               <FormLabel className="text-black text-sm">
-                {isAdmin ? "Additional Address" : t("addressSupplement")}
+                {isAdmin ? (
+                  "Additional Address"
+                ) : (
+                  <>{t("addressSupplement")} (Optional)</>
+                )}
               </FormLabel>
               <FormControl>
                 <Input

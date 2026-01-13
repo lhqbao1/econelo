@@ -16,6 +16,7 @@ interface CartSummaryProps {
   total?: number;
   isLoading?: boolean;
   hasOtherCarrier: boolean;
+  userLoginId: string | null;
 }
 
 export function CartSummary({
@@ -27,12 +28,13 @@ export function CartSummary({
   total,
   isLoading,
   hasOtherCarrier,
+  userLoginId,
 }: CartSummaryProps) {
   const t = useTranslations();
 
   // Gộp items từ server hoặc local cart
   const items =
-    cart && cart.length > 0
+    userLoginId && cart && cart.length > 0
       ? cart.flatMap((group) => group.items)
       : localCart ?? [];
 
@@ -122,7 +124,7 @@ export function CartSummary({
           <span className="text-right">{t("subTotalInclude")}</span>
           <span className="text-right">
             €
-            {(cart && Array.isArray(cart) && cart.length > 0
+            {(userLoginId && cart && Array.isArray(cart) && cart.length > 0
               ? cart
                   .flatMap((group) => group.items) // gom tất cả items trong từng supplier cart
                   .filter((item) => item.is_active)
@@ -166,7 +168,7 @@ export function CartSummary({
         <span className="text-right col-span-2">
           €
           {(
-            (Array.isArray(cart) && cart.length > 0
+            (userLoginId && Array.isArray(cart) && cart.length > 0
               ? cart
                   .flatMap((group) => group.items) // gộp tất cả CartItem từ các supplier
                   .filter((item) => item.is_active)

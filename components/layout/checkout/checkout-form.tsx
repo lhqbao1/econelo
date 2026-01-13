@@ -200,7 +200,7 @@ export const CheckoutFormSection = ({
                 name="company_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("companyName")}</FormLabel>
+                    <FormLabel>{t("companyName")} (Optional)</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -218,7 +218,7 @@ export const CheckoutFormSection = ({
                 name="tax_id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("vatId")}</FormLabel>
+                    <FormLabel>{t("vatId")} (Optional)</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -273,7 +273,7 @@ export const CheckoutFormSection = ({
           />
           <Separator />
 
-          <div className="space-y-4 py-5 border-y-2">
+          <div className="space-y-4">
             {/* ALWAYS SHOW PAYMENT OPTIONS */}
             <CheckoutPaymentUI
               control={form.control}
