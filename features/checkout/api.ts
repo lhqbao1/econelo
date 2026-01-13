@@ -89,3 +89,13 @@ export async function getCheckOutStatistics() {
   const { data } = await apiAdmin.get("/checkout/statistics");
   return data as CheckOutStatistics;
 }
+
+export const cancelMainCheckout = async (mainCheckoutId: string) => {
+  const res = await api.put(`/checkout/canceled/${mainCheckoutId}`);
+  return res.data;
+};
+
+export async function cancelOrder(main_checkout_id: string) {
+  const { data } = await apiAdmin.put(`/checkout/cancel/${main_checkout_id}`);
+  return data;
+}

@@ -28,7 +28,7 @@ export default function MyAccountPage() {
     enabled: !!userId,
   });
 
-  const [activeTab, setActiveTab] = useState("orders");
+  const [activeTab, setActiveTab] = useState("profile");
   const contentRef = useRef<HTMLDivElement>(null);
 
   // ✅ GSAP hiệu ứng nhẹ khi tab đổi
@@ -64,9 +64,9 @@ export default function MyAccountPage() {
           ref={contentRef}
         >
           <Card className="p-6 shadow-[0_0_10px_rgba(0,0,0,0.1)]">
-            <TabsContent value="orders">
+            {/* <TabsContent value="orders">
               <MyAccountOrders />
-            </TabsContent>
+            </TabsContent> */}
             <TabsContent value="favorites">
               <MyAccountFavorites />
             </TabsContent>

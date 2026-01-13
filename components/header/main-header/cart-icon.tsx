@@ -24,40 +24,34 @@ const CartIcon = ({ isSticky }: CartIconProps) => {
 
   //Get cart local and server
   const { cart: localCart } = useCartLocal();
-  const {
-    data: cart,
-    isLoading: isLoadingCart,
-    isError: isErrorCart,
-    isFetched,
-  } = useQuery({
+  const { data: cart } = useQuery({
     queryKey: ["cart-items", userId],
-    queryFn: async () => {
-      const data = await getCartItems();
-      return data;
-    },
+    queryFn: getCartItems,
     enabled: !!userId,
-    retry: false,
   });
+
+  console.log(localCart);
+  console.log(cart);
 
   const displayedCart = userId
     ? cart?.reduce((count, group) => count + group.items.length, 0) ?? 0
     : localCart.length;
 
   // ✅ GSAP hiệu ứng scale-in bounce khi badge xuất hiện
-  useEffect(() => {
-    if (badgeRef.current && displayedCart > 0 && isFetched) {
-      gsap.fromTo(
-        badgeRef.current,
-        { scale: 0, opacity: 0, transformOrigin: "center" },
-        {
-          scale: 1,
-          opacity: 1,
-          duration: 0.5,
-          ease: "back.out(1.7)", // bounce nhẹ
-        },
-      );
-    }
-  }, [displayedCart, isFetched]);
+  // useEffect(() => {
+  //   if (badgeRef.current && displayedCart > 0) {
+  //     gsap.fromTo(
+  //       badgeRef.current,
+  //       { scale: 0, opacity: 0, transformOrigin: "center" },
+  //       {
+  //         scale: 1,
+  //         opacity: 1,
+  //         duration: 0.5,
+  //         ease: "back.out(1.7)", // bounce nhẹ
+  //       },
+  //     );
+  //   }
+  // }, [displayedCart]);
 
   return (
     <Link href="/warenkorb">
@@ -69,9 +63,9 @@ const CartIcon = ({ isSticky }: CartIconProps) => {
           )}
           strokeWidth={2}
         />
-        {displayedCart && displayedCart > 0 ? (
+        {displayedCart > 0 ? (
           <span
-            ref={badgeRef}
+            // ref={badgeRef}
             className={cn(
               "absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-semibold rounded-full",
               // chỉ khi đang ở Home và chưa sticky → màu cũ

@@ -362,14 +362,6 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
                         >
                           <Eye className="size-5" />
                         </Button>
-                        {/* <Button
-                          variant="outline"
-                          size="icon"
-                          className="rounded-full border-gray-300 hover:bg-black hover:text-white"
-                          onClick={() => handleAddToWishlist(product)}
-                        >
-                          <Heart className="size-5" />
-                        </Button> */}
                       </div>
                     </div>
 
