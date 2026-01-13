@@ -126,3 +126,11 @@
 #xX9adx {
   display: none;
 }
+
+.clip-triangle-top-left {
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+.clip-triangle-bottom-right {
+  clip-path: polygon(100% 100%, 0 100%, 100% 0);
+}
