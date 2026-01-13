@@ -53,14 +53,14 @@ export default function StripeLayout({
         return_url: `https://econelo.de/${locale}/danke`,
       });
 
-      if (error) toast.error(error.message + "heheh");
+      if (error) toast.error(error.message);
     };
 
     autoKlarna();
   }, [stripe, clientSecret, selectedMethod]);
 
   const handleCardSuccess = (piId: string) => {
-    router.push(`https://econelo.de/${locale}/danke?payment_intent=${piId}`);
+    router.push(`https://econelo.de/${locale}/danke?payment_intent=${piId}he`);
   };
 
   const handleFail = (msg?: string) => {
