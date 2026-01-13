@@ -468,5 +468,13 @@
     "invoiceAddress": "Invoice Address",
     "orderHelp": "Help with your order"
   },
-    "orderProcessingMessage": "Your order is being processed. This may take a moment. Please remain on this page."
+    "orderProcessingMessage": "Your order is being processed. This may take a moment. Please remain on this page.",
+     "cancelOrder": {
+    "cancelOrderTitle": "Cancel order",
+    "cancelOrderConfirm": "Are you sure you want to cancel this order? This action cannot be undone.",
+    "cancel": "Cancel",
+    "close": "Close",
+    "cancelOrderSuccess": "Your order has been successfully canceled.",
+    "cancelOrderError": "Failed to cancel the order. Please try again."
+  }
 }
