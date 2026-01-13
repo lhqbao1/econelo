@@ -467,5 +467,6 @@
       "shippingAddress": "Shipping Address",
     "invoiceAddress": "Invoice Address",
     "orderHelp": "Help with your order"
-  }
+  },
+    "orderProcessingMessage": "Your order is being processed. This may take a moment. Please remain on this page."
 }
