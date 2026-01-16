@@ -10,7 +10,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-const CART_QUERY_KEY = ["cart"];
+export const CART_QUERY_KEY = ["cart"];
 
 export function useCartLocal() {
   const queryClient = useQueryClient();
@@ -19,7 +19,9 @@ export function useCartLocal() {
   const cartQuery = useQuery<CartItemLocal[]>({
     queryKey: CART_QUERY_KEY,
     queryFn: () => getCart(),
-    initialData: [],
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    // initialData: getCart(),
   });
 
   // mutation: add item
