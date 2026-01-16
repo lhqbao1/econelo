@@ -30,12 +30,21 @@ export function saveCart(items: CartItemLocal[]) {
 export function addToLocalCart(item: CartItemLocal) {
   const cart = getCart();
   const existing = cart.find((i) => i.product_id === item.product_id);
+
+  let newCart: CartItemLocal[];
+
   if (existing) {
-    existing.quantity += item.quantity;
+    newCart = cart.map((i) =>
+      i.product_id === item.product_id
+        ? { ...i, quantity: i.quantity + item.quantity }
+        : i,
+    );
   } else {
-    cart.push(item);
+    newCart = [...cart, item];
   }
-  saveCart(cart);
+
+  saveCart(newCart);
+  return newCart;
 }
 
 export function removeFromLocalCart(product_id: string) {

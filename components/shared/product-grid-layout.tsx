@@ -8,7 +8,7 @@ import { Heart, ShoppingBasket, Star, Eye } from "lucide-react";
 import { Button } from "../ui/button";
 import { useAddToCart } from "@/features/cart/hook";
 import { useAddToWishList } from "@/features/wishlist/hook";
-import { useCartLocal } from "@/hooks/cart";
+import { CART_QUERY_KEY, useCartLocal } from "@/hooks/cart";
 import { toast } from "sonner";
 import { HandleApiError } from "@/lib/api-helper";
 import { CartItemLocal } from "@/lib/utils/cart";
@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils";
 import useEmblaCarousel from "embla-carousel-react";
 import { useAtom } from "jotai";
 import { userIdAtom } from "@/store/auth";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ProductsGridLayoutProps {
   hasBadge?: boolean;
@@ -36,6 +37,7 @@ interface ProductsGridLayoutProps {
 
 const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
   const t = useTranslations();
+  const queryClient = useQueryClient();
   const router = useRouter();
   const [userId, setUserId] = useAtom(userIdAtom);
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -56,11 +58,14 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
       const existingItem = cart.find(
         (item: CartItemLocal) => item.product_id === currentProduct.id,
       );
+
       const totalQuantity = (existingItem?.quantity || 0) + 1;
+
       if (totalQuantity > currentProduct.stock) {
         toast.error(t("notEnoughStock"));
         return;
       }
+
       addToCartLocal(
         {
           item: {
@@ -83,6 +88,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
         {
           onSuccess() {
             toast.success(t("addToCartSuccess"));
+            queryClient.invalidateQueries({ queryKey: CART_QUERY_KEY });
           },
           onError() {
             toast.error(t("addToCartFail"));
@@ -245,7 +251,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
         });
       });
     });
-  }, [data]);
+  }, [data, cart]);
 
   if (!data?.length) {
     return (
@@ -302,7 +308,9 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
                       </Button>
                       <Button
                         className="bg-lime-400 text-black px-6 py-2 font-semibold rounded-full"
-                        onClick={() => handleAddToCart(product)}
+                        onClick={(e) => {
+                          handleAddToCart(product);
+                        }}
                       >
                         {t("addToCart")}
                       </Button>

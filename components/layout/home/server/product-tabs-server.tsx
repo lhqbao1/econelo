@@ -22,9 +22,5 @@ export default async function ProductTabsServer() {
   const categoriesList = categories?.flatMap((cat) => cat.children || []) ?? [];
 
   // hydrate categories để client không fetch lại
-  return (
-    <QueryProvider state={state}>
-      <ProductTabsClient categoriesList={categoriesList} />
-    </QueryProvider>
-  );
+  return <ProductTabsClient categoriesList={categoriesList} />;
 }

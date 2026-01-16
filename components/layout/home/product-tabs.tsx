@@ -34,7 +34,6 @@ export default function ProductTabsClient({
         is_econelo: true,
       }),
     enabled: !!active,
-    staleTime: 1000 * 60 * 5,
   });
 
   const products = data?.products ?? [];

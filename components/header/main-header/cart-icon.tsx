@@ -1,10 +1,10 @@
 "use client";
 import { getCartItems } from "@/features/cart/api";
-import { useCartLocal } from "@/hooks/cart";
+import { CART_QUERY_KEY, useCartLocal } from "@/hooks/cart";
 import { cn } from "@/lib/utils";
 import { Link, usePathname } from "@/src/i18n/navigation";
 import { userIdAtom } from "@/store/auth";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { ShoppingCart } from "lucide-react";
 import React, { useEffect, useRef } from "react";
@@ -22,8 +22,15 @@ const CartIcon = ({ isSticky }: CartIconProps) => {
   const baseColor = !isHome ? "primary" : isSticky ? "primary" : "white";
   const iconColor = `text-${baseColor}`;
 
+  const queryClient = useQueryClient();
+  queryClient.getQueryData(CART_QUERY_KEY); // đọc -> subscribe
+
   //Get cart local and server
-  const { cart: localCart } = useCartLocal();
+  const { cart: localCart } = useCartLocal(); // giữ
+  useEffect(() => {
+    console.log("localCart changed", localCart);
+  }, [localCart]);
+
   const { data: cart } = useQuery({
     queryKey: ["cart-items", userId],
     queryFn: getCartItems,
@@ -31,11 +38,10 @@ const CartIcon = ({ isSticky }: CartIconProps) => {
   });
 
   console.log(localCart);
-  console.log(cart);
 
   const displayedCart = userId
     ? cart?.reduce((count, group) => count + group.items.length, 0) ?? 0
-    : localCart.length;
+    : localCart.reduce((sum, item) => sum + item.quantity, 0);
 
   // ✅ GSAP hiệu ứng scale-in bounce khi badge xuất hiện
   // useEffect(() => {

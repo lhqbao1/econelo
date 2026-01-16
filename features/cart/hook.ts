@@ -32,7 +32,7 @@ export function useAddToCart() {
       quantity: number;
     }) => addToCart(productId, quantity),
     onSuccess: () => {
-      qc.refetchQueries({ queryKey: ["cart-items"] });
+      qc.invalidateQueries({ queryKey: ["cart-items"] });
     },
   });
 }

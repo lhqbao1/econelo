@@ -13,6 +13,9 @@ import ProductTabsServer from "@/components/layout/home/server/product-tabs-serv
 import AdvantagesSection from "@/components/layout/home/about";
 import TestimonialsSection from "@/components/layout/home/testimonials";
 import { getCategories } from "@/features/category/api";
+import { getCart } from "@/lib/utils/cart";
+import { CART_QUERY_KEY } from "@/hooks/cart";
+import { getCartItems } from "@/features/cart/api";
 
 export const revalidate = 300;
 

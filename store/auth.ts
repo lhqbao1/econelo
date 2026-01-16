@@ -10,6 +10,8 @@ export const userIdGuestAtom = atomWithStorage<string | null>(
   "userIdGuest",
   null,
 );
+export const authHydratedAtom = atom(false);
+
 export const accessTokenAtom = atomWithStorage<string | null>(
   "access_token",
   null,

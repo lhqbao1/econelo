@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import "../globals.css";
 import { routing } from "@/src/i18n/routing";
 import type { Metadata } from "next";
+import IntlClientProviderWithAuth from "./intlProviderWithAuth";
+import { getMessages } from "next-intl/server";
 
 type Props = {
   children: React.ReactNode;
@@ -90,7 +92,15 @@ export default async function LocaleLayout({ children, params }: Props) {
     notFound();
   }
 
+  const messages = await getMessages();
+
   return (
-    <NextIntlClientProvider locale={locale}> {children}</NextIntlClientProvider>
+    <IntlClientProviderWithAuth
+      locale={locale}
+      messages={messages} // ✅ BẮT BUỘC
+      timeZone="Europe/Berlin"
+    >
+      {children}
+    </IntlClientProviderWithAuth>
   );
 }
