@@ -178,7 +178,7 @@ const HomeBanner = () => {
             >
               <HoverButton
                 text={t("forThem")}
-                redirect_url="/produkt/econelo-j1000-seniorenmobil-lithium-akku-25-km-h-1000-watt-rot-1000014"
+                redirect_url="/produkt/seniorenmobil-j1000-lithium-akku-25-km-h-1000-watt-rot-1000014"
               />
             </div>
           </div>

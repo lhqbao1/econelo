@@ -53,7 +53,7 @@ const SearchDrawer = ({ isSticky }: SearchDrawerProps) => {
     search: debouncedQuery,
     page: 1,
     page_size: 20,
-    all_products: false,
+    all_products: true,
     is_econelo: true,
   });
   const results = products?.items ?? [];
