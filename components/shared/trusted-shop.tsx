@@ -10,7 +10,6 @@ export function TrustedShops() {
   if (pathname.includes("/anmelden") || pathname.includes("/einloggen")) {
     return null;
   }
-  // ❌ Không load TrustedShops trong admin
 
   return (
     <Script
