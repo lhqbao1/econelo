@@ -18,7 +18,12 @@ export default function ShopAllPage() {
     data: products,
     isLoading,
     isError,
-  } = useGetAllProducts({ page, page_size: pageSize, is_econelo: true });
+  } = useGetAllProducts({
+    page,
+    page_size: pageSize,
+    is_econelo: true,
+    all_products: true,
+  });
 
   return (
     <div className="pt-[70px] xl:pb-16 pb-6 md:pt-[130px] flex flex-col items-center">
