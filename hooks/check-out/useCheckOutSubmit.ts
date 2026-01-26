@@ -294,8 +294,8 @@ export function useCheckoutSubmit({
         setCheckoutId("");
         // form.reset();
         cleanupNeeded = true;
-        localStorage.removeItem("user_id");
-        localStorage.removeItem("userIdGuest");
+        setUserLoginId(null);
+        setUserGuestId(null);
         localStorage.removeItem("access_token");
       } finally {
         const guestId = localStorage.getItem("userIdGuest");
