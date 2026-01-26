@@ -255,6 +255,7 @@ export function useCheckoutSubmit({
           const payment = await createPayment.mutateAsync({
             checkout_id: checkout.id,
             pay_channel: data.payment_method,
+            domain: "econelo.de",
           });
 
           setPaymentId(payment.payment_order_id);
