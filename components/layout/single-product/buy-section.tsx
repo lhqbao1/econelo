@@ -30,6 +30,7 @@ import { useRouter } from "@/src/i18n/navigation";
 import { useLocale } from "next-intl";
 import { useAtom } from "jotai";
 import { userIdAtom } from "@/store/auth";
+import { formatEUR } from "@/lib/format-euro";
 
 interface BuySectionProps {
   variant?: VariantOptionsResponse[];
@@ -163,6 +164,17 @@ const BuySection = ({
   // optionally watch quantity to disable buy button if zero or > stock
   const quantity = watch("quantity");
 
+  const carrier = currentProduct?.carrier ?? "default";
+
+  const shippingCostMap: Record<string, number> = {
+    amm: 35.95,
+    spedition: 35.95,
+  };
+
+  const shippingCost = shippingCostMap[carrier] ?? 5.95;
+
+  const totalWithShipping = Number(currentProduct.final_price) + shippingCost;
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -182,23 +194,15 @@ const BuySection = ({
             <div className="space-y-2 pb-4">
               <div className="flex justify-between items-center">
                 <label>{t("subTotalInclude")}</label>
-                <span>
-                  {currentProduct.final_price.toLocaleString("de-DE", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
-                  €
-                </span>
+                <span>{formatEUR(currentProduct.final_price)}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <label>{t("shippingCost")}</label>
+                <span>{formatEUR(shippingCost)}</span>
               </div>
               <div className="flex justify-between items-center font-semibold text-black text-lg">
                 <label>{t("total")}</label>
-                <span>
-                  {currentProduct.final_price.toLocaleString("de-DE", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
-                  €
-                </span>
+                <span>{formatEUR(totalWithShipping)}</span>
               </div>
             </div>
 

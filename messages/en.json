@@ -476,5 +476,7 @@
     "close": "Close",
     "cancelOrderSuccess": "Your order has been successfully canceled.",
     "cancelOrderError": "Failed to cancel the order. Please try again."
-  }
+  },
+  "availabilityAndShipping": "Availability and Shipping",
+  "shippingCost": "Shipping Cost"
 }

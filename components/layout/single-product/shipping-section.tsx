@@ -15,7 +15,7 @@ const ShippingSection = ({ productDetails }: ShippingSectionProps) => {
     <Card className="shadow-lg">
       <CardHeader>
         <CardTitle className="text-xl font-bold">
-          Availability and Shipping
+          {t("availabilityAndShipping")}
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
@@ -29,10 +29,10 @@ const ShippingSection = ({ productDetails }: ShippingSectionProps) => {
                   productDetails.stock === 0
                     ? "bg-gray-300"
                     : productDetails.stock < 10
-                    ? "bg-red-500"
-                    : productDetails.stock <= 20
-                    ? "bg-primary"
-                    : "bg-primary"
+                      ? "bg-red-500"
+                      : productDetails.stock <= 20
+                        ? "bg-primary"
+                        : "bg-primary"
                 }`}
               />
 
@@ -41,10 +41,10 @@ const ShippingSection = ({ productDetails }: ShippingSectionProps) => {
                   productDetails.stock === 0
                     ? "bg-gray-300"
                     : productDetails.stock < 10
-                    ? "bg-gray-300"
-                    : productDetails.stock <= 20
-                    ? "bg-primary"
-                    : "bg-primary"
+                      ? "bg-gray-300"
+                      : productDetails.stock <= 20
+                        ? "bg-primary"
+                        : "bg-primary"
                 }`}
               />
 
@@ -53,10 +53,10 @@ const ShippingSection = ({ productDetails }: ShippingSectionProps) => {
                   productDetails.stock === 0
                     ? "bg-gray-300"
                     : productDetails.stock < 10
-                    ? "bg-gray-300"
-                    : productDetails.stock <= 20
-                    ? "bg-gray-400"
-                    : "bg-primary"
+                      ? "bg-gray-300"
+                      : productDetails.stock <= 20
+                        ? "bg-gray-400"
+                        : "bg-primary"
                 }`}
               />
             </div>

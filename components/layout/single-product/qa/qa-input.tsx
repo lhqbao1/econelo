@@ -156,7 +156,7 @@ const QAInput = ({ productId }: QAInputProps) => {
         <CardTitle className="text-xl font-bold">{t("haveQuestion")}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
-        <div className="">
+        <div className="space-y-4">
           <div>
             {user && (
               <div className="text-lg font-bold mb-2">{user.first_name}</div>
