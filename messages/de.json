@@ -473,5 +473,7 @@
     "close": "Abbrechen",
     "cancelOrderSuccess": "Ihre Bestellung wurde erfolgreich storniert.",
     "cancelOrderError": "Die Bestellung konnte nicht storniert werden. Bitte versuchen Sie es erneut."
-  }
+  },
+  "availabilityAndShipping": "Verfügbarkeit und Versand",
+  "shippingCost": "Versandkosten"
 }

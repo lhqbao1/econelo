@@ -1,15 +1,9 @@
-import {
-  getAllProducts,
-  getProductById,
-  getProductBySlug,
-  getProductsFeed,
-} from "@/features/products/api";
+import { getProductBySlug, getProductsFeed } from "@/features/products/api";
 import type { Metadata } from "next";
 import { StaticFile } from "@/types/products";
 import { getProductGroupDetail } from "@/features/product-group/api";
 import { notFound } from "next/navigation";
 import ProductDetails from "@/components/layout/single-product/product-details";
-// import ProductDetails from '@/components/layout/single-product/product-details'
 
 interface PageProps {
   params: Promise<{ slug: string[]; locale: string }>;
@@ -74,26 +68,6 @@ export async function generateMetadata({
         product.static_files?.length > 0
           ? product.static_files.map((f) => f.url)
           : ["/placeholder-product.webp"],
-
-      // aggregateRating: {
-      //   "@type": "AggregateRating",
-      //   ratingValue: "4.8",
-      //   reviewCount: "23",
-      // },
-      // review: [
-      //   {
-      //     "@type": "Review",
-      //     author: { "@type": "Person", name: "Verified Customer" },
-      //     datePublished: "2024-12-15",
-      //     reviewRating: {
-      //       "@type": "Rating",
-      //       ratingValue: "5",
-      //       bestRating: "5",
-      //     },
-      //     reviewBody:
-      //       "Sehr bequem und qualitativ hochwertig. Schnelle Lieferung!",
-      //   },
-      // ],
 
       offers: {
         "@type": "Offer",

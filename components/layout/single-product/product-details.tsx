@@ -2,7 +2,7 @@
 // import CustomBreadCrumb from "@/components/shared/breadcrumb";
 import { Eye } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ProductItem } from "@/types/products";
 import { useLocale, useTranslations } from "next-intl";
 import { useSwipeable } from "react-swipeable";
@@ -31,10 +31,15 @@ const ProductDetails = ({
   parentProductData,
 }: ProductDetailsProps) => {
   const [mainImageIndex, setMainImageIndex] = useState(0);
-  const t = useTranslations();
-  const { addToCartLocal, cart } = useCartLocal();
-  const router = useRouter();
-  const locale = useLocale();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  }, [productId]);
 
   const {
     product: productDetails,
@@ -52,17 +57,6 @@ const ProductDetails = ({
     const x = ((e.pageX - left) / width) * 100;
     const y = ((e.pageY - top) / height) * 100;
     setPosition({ x, y });
-  };
-
-  const adminId =
-    typeof window !== "undefined"
-      ? localStorage.getItem("admin_access_token")
-      : null;
-
-  const moveToAdmin = (productId: string) => {
-    if (adminId) {
-      router.push(`/admin/products/${productId}/edit`, { locale });
-    }
   };
 
   const handlers = useSwipeable({
