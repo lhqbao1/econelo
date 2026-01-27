@@ -11,11 +11,13 @@ export function AuthSanity() {
     const uid = localStorage.getItem("user_id");
     const token = localStorage.getItem("access_token");
 
-    if (uid && !token) {
+    // ❌ chỉ có 1 trong 2 → clear hết
+    if ((uid && !token) || (!uid && token)) {
       localStorage.removeItem("user_id");
+      localStorage.removeItem("access_token");
       setUserId(null);
     }
-  }, []);
+  }, [setUserId]);
 
   return null;
 }
