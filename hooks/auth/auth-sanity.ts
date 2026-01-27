@@ -3,27 +3,23 @@
 import { useEffect } from "react";
 import { useAtom } from "jotai";
 import { userIdAtom } from "@/store/auth";
-
-const isValid = (v: string | null) =>
-  v !== null && v !== "null" && v !== "undefined" && v.trim() !== "";
+import { useRouter } from "@/src/i18n/navigation";
+import { useLocale } from "next-intl";
 
 export function AuthSanity() {
   const [, setUserId] = useAtom(userIdAtom);
+  const router = useRouter();
+  const locale = useLocale();
 
   useEffect(() => {
-    const uidRaw = localStorage.getItem("user_id");
-    const tokenRaw = localStorage.getItem("access_token");
+    const uid = localStorage.getItem("user_id");
+    const token = localStorage.getItem("access_token");
 
-    const hasUid = isValid(uidRaw);
-    const hasToken = isValid(tokenRaw);
-
-    // ❌ chỉ có 1 trong 2 → clear hết
-    if (hasUid !== hasToken) {
+    if (uid && !token) {
       localStorage.removeItem("user_id");
-      localStorage.removeItem("access_token");
       setUserId(null);
     }
-  }, [setUserId]);
+  }, []);
 
   return null;
 }
