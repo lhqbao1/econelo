@@ -143,7 +143,6 @@ export function useCheckoutSubmit({
           cleanupNeeded = true;
 
           localStorage.setItem("access_token", newUser.access_token);
-          // localStorage.setItem("user_id", newUser.id);
           setUserGuestId(newUser.id);
           // setUserLoginId(newUser.id);
         }
