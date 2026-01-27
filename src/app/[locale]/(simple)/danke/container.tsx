@@ -249,11 +249,21 @@ const OrderPlaced = () => {
         <div className="absolute top-0 left-0 w-40 h-32 bg-primary clip-triangle-top-left" />
         <div className="absolute bottom-0 right-0 w-40 h-32 bg-primary clip-triangle-bottom-right" />
 
-        <h1 className="text-6xl text-gray-700 mb-6 italic">{t("thankYou")}</h1>
+        {!isProcessingPayment && (
+          <>
+            <h1 className="text-6xl text-gray-700 mb-6 italic">
+              {t("thankYou")}
+            </h1>
 
-        <p className="text-gray-600 text-lg">{t("orderPlacedMessage")}</p>
-        <p className="text-gray-600 text-lg mt-2">{t("trackingInfoMessage")}</p>
-        <p className="text-gray-600 text-lg mt-2">{t("thankYouShopping")}</p>
+            <p className="text-gray-600 text-lg">{t("orderPlacedMessage")}</p>
+            <p className="text-gray-600 text-lg mt-2">
+              {t("trackingInfoMessage")}
+            </p>
+            <p className="text-gray-600 text-lg mt-2">
+              {t("thankYouShopping")}
+            </p>
+          </>
+        )}
 
         {isProcessingPayment && (
           <div className="mt-6 flex flex-col items-center gap-3 text-gray-600">
