@@ -220,6 +220,7 @@ const OrderPlaced = () => {
 
   //Trusted shop init
   useEffect(() => {
+    console.log(checkout);
     if (!checkout) return;
     if (trustedShopData) return; // ❗ chỉ set 1 lần
 
@@ -258,6 +259,7 @@ const OrderPlaced = () => {
 
     return () => clearTimeout(timer);
   }, [trustedShopData]);
+  console.log(trustedShopData);
 
   return (
     <div className="w-full min-h-screen flex flex-col justify-center items-center gap-12 -translate-y-10 col-span-2">
