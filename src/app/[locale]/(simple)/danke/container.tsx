@@ -319,6 +319,8 @@ const OrderPlaced = () => {
           {t("continueShopping")}
         </Button>
       </div>
+
+      {trustedShopData && <TrustedShopsCheckout {...trustedShopData} />}
     </div>
   );
 };
