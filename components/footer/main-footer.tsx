@@ -4,6 +4,7 @@ import { Facebook, Youtube, X, Instagram } from "lucide-react";
 
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import Image from "next/image";
 
 const MainFooter = () => {
   const t = useTranslations();
@@ -31,35 +32,26 @@ const MainFooter = () => {
   ];
   return (
     <section className="bg-black text-white pt-16 pb-6 rounded-tr-[50px] overflow-hidden md:w-[95%] w-full">
-      {/* <div className="flex justify-start px-4 lg:px-20">
-        <div className="lg:w-1/2 w-full">
-          <div className="bg-primary p-10 rounded-md w-full space-y-5">
-            <Mail className="w-12 h-12 text-white" />
-            <h3 className="lg:text-2xl text-xl font-bold text-white leading-snug">
-              {t("contactTitle")}
-            </h3>
-
-            <div className="space-y-3">
-              <Input
-                id="email"
-                type="email"
-                placeholder={t("emailPlaceholder")}
-                className="bg-white text-black border-none focus-visible:ring-0"
-              />
-              <Button className="bg-black text-white px-8 py-6 rounded-full hover:bg-white hover:text-black transition-all duration-300">
-                {t("subscribe")}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div> */}
-
       <div className="grid md:grid-cols-4 grid-cols-2 gap-10 px-4 lg:px-20 lg:mt-16 mt-8">
         {/* MIDDLE: About */}
         <div className="space-y-4 col-span-2 xl:col-span-1">
           <h4 className="text-xl font-semibold">Econelo</h4>
           <div className="w-10 h-[2px] bg-primary mb-2" />
           <p className="text-gray-400 leading-relaxed">{t("footerDes")}</p>
+          <a
+            href="https://geizhals.de"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-fit"
+          >
+            <Image
+              src="https://gzhls.at/b/brands/geizhals_logo_official.svg"
+              width={120}
+              height={60}
+              alt="Geizhals Preisvergleich"
+              priority
+            />
+          </a>
         </div>
 
         {/* COMPANY INFO */}
@@ -138,6 +130,23 @@ const MainFooter = () => {
         </div>
       </div>
 
+      {/* <div className="flex justify-center items-center">
+        <a
+          href="https://geizhals.de"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-fit"
+        >
+          <Image
+            src="https://gzhls.at/b/brands/geizhals_logo_official.svg"
+            width={120}
+            height={60}
+            alt="Geizhals Preisvergleich"
+            priority
+          />
+        </a>
+      </div> */}
+
       {/* BOTTOM FOOTER */}
       <div className="mt-16 border-t border-gray-800 pt-8 px-8 lg:px-20 flex flex-col-reverse lg:flex-row justify-between items-center gap-6">
         {/* COPYRIGHT */}
@@ -155,24 +164,6 @@ const MainFooter = () => {
           >
             <Facebook className="w-4 h-4 group-hover:scale-125 duration-600" />
           </a>
-          {/* <a
-            href="#"
-            className="w-10 h-10 flex items-center justify-center border border-gray-700 hover:bg-primary hover:text-white group transition-all duration-300 rounded-sm"
-          >
-            <X className="w-4 h-4 group-hover:scale-125 duration-600" />
-          </a>
-          <a
-            href="#"
-            className="w-10 h-10 flex items-center justify-center border border-gray-700 hover:bg-primary hover:text-white rounded-sm group transition-all duration-300"
-          >
-            <Youtube className="w-4 h-4 group-hover:scale-125 duration-600" />
-          </a>
-          <a
-            href="#"
-            className="w-10 h-10 flex items-center justify-center border border-gray-700 hover:bg-primary hover:text-white group transition-all duration-300 rounded-sm"
-          >
-            <Linkedin className="w-4 h-4 group-hover:scale-125 duration-600" />
-          </a> */}
         </div>
       </div>
     </section>

@@ -218,7 +218,7 @@ const BuySection = ({
               {createCartMutation.isPending ? (
                 <Loader2 className="animate-spin" />
               ) : (
-                t("buyNow")
+                t("addToCart")
               )}
             </Button>
 
