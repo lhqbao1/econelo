@@ -478,5 +478,9 @@
     "cancelOrderError": "Failed to cancel the order. Please try again."
   },
   "availabilityAndShipping": "Availability and Shipping",
-  "shippingCost": "Shipping Cost"
+  "shippingCost": "Shipping Cost",
+  "noProducts": "No product found",
+  "paymentFailedTitle": "Payment failed",
+  "paymentFailedMessage": "Unfortunately, we could not complete your payment. No amount has been charged. Please try again or choose a different payment method.",
+  "retryPayment": "Try payment again"
 }
