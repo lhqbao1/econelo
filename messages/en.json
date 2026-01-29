@@ -482,5 +482,8 @@
   "noProducts": "No product found",
   "paymentFailedTitle": "Payment failed",
   "paymentFailedMessage": "Unfortunately, we could not complete your payment. No amount has been charged. Please try again or choose a different payment method.",
-  "retryPayment": "Try payment again"
+  "retryPayment": "Try payment again",
+  "checking": "Checking...",
+  "voucherApplied": "Voucher applied successfully",
+  "invalidVoucher": "This voucher code is not valid"
 }

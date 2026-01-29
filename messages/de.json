@@ -479,5 +479,8 @@
   "noProducts": "Keine Produkte gefunden",
   "paymentFailedTitle": "Zahlung fehlgeschlagen",
   "paymentFailedMessage": "Leider konnte Ihre Zahlung nicht abgeschlossen werden. Es wurde kein Betrag abgebucht. Bitte versuchen Sie es erneut oder wählen Sie eine andere Zahlungsmethode.",
-  "retryPayment": "Zahlung erneut versuchen"
+  "retryPayment": "Zahlung erneut versuchen",
+   "checking": "Wird geprüft...",
+  "voucherApplied": "Gutschein erfolgreich angewendet",
+  "invalidVoucher": "Dieser Gutscheincode ist ungültig"
 }

@@ -16,6 +16,7 @@ import {
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { useLocale, useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 
 export default function CheckoutPageNew() {
   const t = useTranslations();
@@ -116,46 +117,63 @@ export default function CheckoutPageNew() {
   }, [totalEuro]);
 
   return (
-    <section className="flex lg:flex-row w-full lg:flex-nowrap flex-col-reverse flex-wrap">
-      {/* LEFT: Form Section */}
-      <div className="bg-white flex justify-end py-8 px-8 w-full lg:pt-36">
-        <div className="lg:w-1/2 w-full">
-          <CheckoutFormSection
-            form={form}
-            clientSecret={clientSecret}
-            setClientSecret={setClientSecret}
-            total={total}
-            setTotal={setTotal}
-            openCardDialog={openCardDialog}
-            setOpenCardDialog={setOpenCardDialog}
-            onSubmit={handleSubmit}
-            submitting={submitting}
-            totalCents={totalCents}
-            open={openOtpDialog}
-            onOpenChange={setOpenOtpDialog}
-            email={otpEmail}
-            onSuccess={handleOtpSuccess}
-            verifyOtp={verifyOtp}
-            openBankDialog={openBankDialog}
-            setOpenBankDialog={setOpenBankDialog}
-            handleOTP={handleOTP}
-          />
-        </div>
-      </div>
+    <FormProvider {...form}>
+      <form
+        onSubmit={form.handleSubmit(
+          (values) => handleOTP(values),
+          (error) => {
+            const firstKey = Object.keys(error)[0] as keyof typeof error;
+            const firstMessage = error[firstKey]?.message;
 
-      {/* RIGHT: Cart Summary */}
-      <div className="bg-gray-100 flex justify-start py-8 px-8 w-full lg:pt-36">
-        <div className="lg:w-1/2 w-full">
-          <CartSummary
-            total={total}
-            cart={cartItems}
-            localCart={localCart}
-            hasOtherCarrier={hasOtherCarrier}
-            shippingCost={shippingCost}
-            userLoginId={userLoginId ?? null}
-          />
-        </div>
-      </div>
-    </section>
+            toast.error(t("checkFormError"), {
+              description: firstMessage,
+            });
+          },
+        )}
+        className="flex flex-col gap-8 section-padding"
+      >
+        <section className="flex lg:flex-row w-full lg:flex-nowrap flex-col-reverse flex-wrap">
+          {/* LEFT: Form Section */}
+          <div className="bg-white flex justify-end py-8 px-8 w-full lg:pt-36">
+            <div className="lg:w-1/2 w-full">
+              <CheckoutFormSection
+                form={form}
+                clientSecret={clientSecret}
+                setClientSecret={setClientSecret}
+                total={total}
+                setTotal={setTotal}
+                openCardDialog={openCardDialog}
+                setOpenCardDialog={setOpenCardDialog}
+                onSubmit={handleSubmit}
+                submitting={submitting}
+                totalCents={totalCents}
+                open={openOtpDialog}
+                onOpenChange={setOpenOtpDialog}
+                email={otpEmail}
+                onSuccess={handleOtpSuccess}
+                verifyOtp={verifyOtp}
+                openBankDialog={openBankDialog}
+                setOpenBankDialog={setOpenBankDialog}
+                handleOTP={handleOTP}
+              />
+            </div>
+          </div>
+
+          {/* RIGHT: Cart Summary */}
+          <div className="bg-gray-100 flex justify-start py-8 px-8 w-full lg:pt-36">
+            <div className="lg:w-1/2 w-full">
+              <CartSummary
+                total={total}
+                cart={cartItems}
+                localCart={localCart}
+                hasOtherCarrier={hasOtherCarrier}
+                shippingCost={shippingCost}
+                userLoginId={userLoginId ?? null}
+              />
+            </div>
+          </div>
+        </section>
+      </form>
+    </FormProvider>
   );
 }
