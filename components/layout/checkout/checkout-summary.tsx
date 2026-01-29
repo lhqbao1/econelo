@@ -332,12 +332,12 @@ export function CartSummary({
             })}
           </span>
         </div>
-        {voucherAmount && (
-          <div className="flex justify-between items-center">
-            <span className="text-right">{t("discount")}</span>
-            <span className="text-right">€{voucherAmount.toFixed(2)}</span>
-          </div>
-        )}
+        <div className="flex justify-between items-center">
+          <span className="text-right">{t("discount")}</span>
+          <span className="text-right">
+            €{voucherAmount ? voucherAmount.toFixed(2) : "0.00"}
+          </span>
+        </div>
       </div>
 
       <Separator />
