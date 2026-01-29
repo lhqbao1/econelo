@@ -121,240 +121,218 @@ export const CheckoutFormSection = ({
 
   return (
     <>
-      <FormProvider {...form}>
-        <form
-          onSubmit={form.handleSubmit(
-            (values) => handleOTP(values),
-            (error) => {
-              const firstKey = Object.keys(error)[0] as keyof typeof error;
-              const firstMessage = error[firstKey]?.message;
-
-              toast.error(t("checkFormError"), {
-                description: firstMessage,
-              });
-            },
-          )}
-          className="flex flex-col gap-8 section-padding"
-        >
-          {/* SECTION 1 — Contact Info */}
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold">{t("contactInfomation")}</h2>
+      <div className="space-y-6">
+        {" "}
+        {/* SECTION 1 — Contact Info */}
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold">{t("contactInfomation")}</h2>
+          <FormField
+            control={form.control}
+            name="gender"
+            render={({ field }) => (
+              <FormItem>
+                {/* <FormLabel>{t("gender")}</FormLabel> */}
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    className="flex gap-4"
+                  >
+                    <FormItem className="flex gap-1 items-center">
+                      <FormControl>
+                        <RadioGroupItem value="male" />
+                      </FormControl>
+                      <FormLabel className="ml-2">{t("male")}</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex gap-1 items-center">
+                      <FormControl>
+                        <RadioGroupItem value="female" />
+                      </FormControl>
+                      <FormLabel className="ml-2">{t("female")}</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex gap-1 items-center">
+                      <FormControl>
+                        <RadioGroupItem value="other" />
+                      </FormControl>
+                      <FormLabel className="ml-2">{t("otherGender")}</FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("email")}</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder=""
+                    type="email"
+                    className="w-full rounded-md border-gray-300"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="gender"
+              name="company_name"
               render={({ field }) => (
                 <FormItem>
-                  {/* <FormLabel>{t("gender")}</FormLabel> */}
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      className="flex gap-4"
-                    >
-                      <FormItem className="flex gap-1 items-center">
-                        <FormControl>
-                          <RadioGroupItem value="male" />
-                        </FormControl>
-                        <FormLabel className="ml-2">{t("male")}</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex gap-1 items-center">
-                        <FormControl>
-                          <RadioGroupItem value="female" />
-                        </FormControl>
-                        <FormLabel className="ml-2">{t("female")}</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex gap-1 items-center">
-                        <FormControl>
-                          <RadioGroupItem value="other" />
-                        </FormControl>
-                        <FormLabel className="ml-2">
-                          {t("otherGender")}
-                        </FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("email")}</FormLabel>
+                  <FormLabel>{t("companyName")} (Optional)</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
+                      value={field.value ?? ""}
                       placeholder=""
-                      type="email"
-                      className="w-full rounded-md border-gray-300"
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="company_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("companyName")} (Optional)</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        value={field.value ?? ""}
-                        placeholder=""
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
-              <FormField
-                control={form.control}
-                name="tax_id"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("vatId")} (Optional)</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        value={field.value ?? ""}
-                        placeholder=""
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="first_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("firstName")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder=""
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="last_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("lastName")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder=""
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-
-          <Separator />
-
-          <CheckoutAddressSection
-            form={form}
-            t={t}
-          />
-          <Separator />
-
-          <div className="space-y-4">
-            {/* ALWAYS SHOW PAYMENT OPTIONS */}
-            <CheckoutPaymentUI
-              control={form.control}
-              selectedMethod={form.watch("payment_method")}
-              onChange={(v) => form.setValue("payment_method", v)}
-              t={t}
-            />
-            {clientSecret && (
-              <StripeProvider clientSecret={clientSecret}>
-                <StripeLayout
-                  form={form}
-                  clientSecret={clientSecret}
-                  setClientSecret={setClientSecret}
-                  openDialog={openCardDialog}
-                  setOpenDialog={setOpenCardDialog}
-                  total={totalCents}
-                />
-              </StripeProvider>
-            )}
-          </div>
-
-          {/* SECTION 5 — Place Order */}
-          <div className="space-y-4">
-            {/* TERMS */}
             <FormField
               control={form.control}
-              name="terms"
+              name="tax_id"
               render={({ field }) => (
                 <FormItem>
-                  <div className="flex flex-row gap-2 mt-4 items-center">
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
+                  <FormLabel>{t("vatId")} (Optional)</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      value={field.value ?? ""}
+                      placeholder=""
                     />
-                    <FormLabel className="text-sm block">
-                      {t("agreeTo")} <AGBDialogTrigger t={t} /> {t("and")}{" "}
-                      <WiderrufDialogTrigger t={t} /> {t("agree_widderuf")}
-                    </FormLabel>
-                  </div>
+                  </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
-
-            <Button
-              type="submit"
-              className="w-full bg-black text-white py-6 text-base font-semibold hover:bg-gray-800 transition"
-            >
-              {submitting ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                t("placeOrder")
+            <FormField
+              control={form.control}
+              name="first_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("firstName")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder=""
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-            </Button>
+            />
+            <FormField
+              control={form.control}
+              name="last_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("lastName")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder=""
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+        <Separator />
+        <CheckoutAddressSection
+          form={form}
+          t={t}
+        />
+        <Separator />
+      </div>
 
-            {/* Footer links (Refund, Privacy, etc.) */}
-            <div className="border-t mt-8 pt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-600">
-              {[
-                { href: "/refund-policy", label: t("termCondition") },
-                { href: "/datenschutzerklaerung", label: t("privacyPolicy") },
-                { href: "/impressum", label: t("imprint") },
-                { href: "/widerrufsbelehrung", label: t("cancellations") },
-                { href: "/kontakt", label: t("contact") },
-              ].map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="
+      <div className="space-y-4">
+        {/* ALWAYS SHOW PAYMENT OPTIONS */}
+        <CheckoutPaymentUI
+          control={form.control}
+          selectedMethod={form.watch("payment_method")}
+          onChange={(v) => form.setValue("payment_method", v)}
+          t={t}
+        />
+        {clientSecret && (
+          <StripeProvider clientSecret={clientSecret}>
+            <StripeLayout
+              form={form}
+              clientSecret={clientSecret}
+              setClientSecret={setClientSecret}
+              openDialog={openCardDialog}
+              setOpenDialog={setOpenCardDialog}
+              total={totalCents}
+            />
+          </StripeProvider>
+        )}
+      </div>
+
+      {/* SECTION 5 — Place Order */}
+      <div className="space-y-4">
+        {/* TERMS */}
+        <FormField
+          control={form.control}
+          name="terms"
+          render={({ field }) => (
+            <FormItem>
+              <div className="flex flex-row gap-2 mt-4 items-center">
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+                <FormLabel className="text-sm block">
+                  {t("agreeTo")} <AGBDialogTrigger t={t} /> {t("and")}{" "}
+                  <WiderrufDialogTrigger t={t} /> {t("agree_widderuf")}
+                </FormLabel>
+              </div>
+            </FormItem>
+          )}
+        />
+
+        <Button
+          type="submit"
+          className="w-full bg-black text-white py-6 text-base font-semibold hover:bg-gray-800 transition"
+        >
+          {submitting ? <Loader2 className="animate-spin" /> : t("placeOrder")}
+        </Button>
+
+        {/* Footer links (Refund, Privacy, etc.) */}
+        <div className="border-t mt-8 pt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-600">
+          {[
+            { href: "/refund-policy", label: t("termCondition") },
+            { href: "/datenschutzerklaerung", label: t("privacyPolicy") },
+            { href: "/impressum", label: t("imprint") },
+            { href: "/widerrufsbelehrung", label: t("cancellations") },
+            { href: "/kontakt", label: t("contact") },
+          ].map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="
         relative 
         text-gray-600 
         after:absolute after:left-0 after:-bottom-[2px] after:h-[1px]
         after:w-0 after:bg-black after:transition-all after:duration-300
         hover:after:w-full
       "
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </form>
-      </FormProvider>
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+      </div>
 
       <OtpDialog
         open={open}

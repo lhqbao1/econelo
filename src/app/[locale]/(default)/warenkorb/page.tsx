@@ -161,15 +161,6 @@ export default function CartPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Apply Coupon */}
-                {/* <div className="flex items-center gap-2">
-                  <BadgePercent className="w-5 h-5 text-muted-foreground" />
-                  <Input placeholder={t("applyCoupons")} className="flex-1" />
-                  <Button className="bg-secondary/85 hover:bg-secondary cursor-pointer">
-                    {t("apply")}
-                  </Button>
-                </div> */}
-
                 {/* Total */}
                 <div className="xl:py-7 py-3 border-b space-y-4">
                   <div className="flex justify-between text-base font-semibold items-center">

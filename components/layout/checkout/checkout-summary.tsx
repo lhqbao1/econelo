@@ -1,11 +1,19 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { useTranslations } from "next-intl";
 import { CartResponse } from "@/types/cart";
 import { cn } from "@/lib/utils";
+import VoucherApply from "./voucher-apply";
+import { useAtom } from "jotai";
+import { currentVoucherAtom } from "@/store/voucher";
+import { useFormContext, useWatch } from "react-hook-form";
+import {
+  useGetVoucherById,
+  useGetVoucherProducts,
+} from "@/features/voucher/hook";
 
 interface CartSummaryProps {
   cart?: CartResponse | any[];
@@ -23,34 +31,189 @@ export function CartSummary({
   cart = [],
   localCart = [],
   shippingCost = 0,
-  couponAmount = 0,
-  voucherAmount = 0,
+
   total,
   isLoading,
   hasOtherCarrier,
   userLoginId,
 }: CartSummaryProps) {
+  const form = useFormContext();
+
+  const [currentVoucher, setCurrentVoucher] = useAtom(currentVoucherAtom);
+  const [voucherId, setVoucherId] = useState<string | null>(currentVoucher);
+
   const t = useTranslations();
+
+  const hasServerCart = !!userLoginId && Array.isArray(cart) && cart.length > 0;
+
+  const { data: listValidProducts } = useGetVoucherProducts(voucherId ?? "");
 
   // Gộp items từ server hoặc local cart
   const items =
     userLoginId && cart && cart.length > 0
       ? cart.flatMap((group) => group.items)
-      : localCart ?? [];
+      : (localCart ?? []);
 
-  const subTotal = items
-    ?.filter((i) => i.is_active)
-    ?.reduce(
-      (sum, item) =>
-        sum + (item.final_price ?? item.item_price ?? 0) * (item.quantity ?? 1),
-      0,
+  const validProductIdSet = React.useMemo<Set<string>>(() => {
+    return new Set(listValidProducts?.map((p) => p.id) ?? []);
+  }, [listValidProducts]);
+
+  const productSubtotalForVoucher = React.useMemo(() => {
+    if (validProductIdSet.size === 0) return 0;
+
+    if (hasServerCart) {
+      return cart
+        .flatMap((g) => g.items)
+        .filter(
+          (i) =>
+            i.is_active &&
+            i.products?.id &&
+            validProductIdSet.has(i.products.id),
+        )
+        .reduce((sum, i) => sum + (i.final_price ?? 0), 0);
+    }
+
+    return (
+      localCart
+        ?.filter((i) => i.is_active && validProductIdSet.has(i.product_id))
+        .reduce((sum, i) => sum + (i.item_price ?? 0) * (i.quantity ?? 1), 0) ??
+      0
     );
+  }, [validProductIdSet, cart, localCart, hasServerCart]);
 
-  const totalPrice =
-    (subTotal || 0) +
-    (shippingCost || 0) -
-    (couponAmount || 0) -
-    (voucherAmount || 0);
+  const voucherAmount = useWatch({
+    control: form.control,
+    name: "voucher_amount",
+  });
+
+  const couponAmount = useWatch({
+    control: form.control,
+    name: "coupon_amount",
+  });
+
+  const orderValue = React.useMemo(() => {
+    if (hasServerCart) {
+      return cart
+        .flatMap((g) => g.items)
+        .filter((i) => i.is_active)
+        .reduce((s, i) => s + (i.final_price ?? 0), 0);
+    }
+
+    return (
+      localCart
+        ?.filter((i) => i.is_active)
+        .reduce((s, i) => s + (i.item_price ?? 0) * (i.quantity ?? 1), 0) ?? 0
+    );
+  }, [cart, localCart, hasServerCart]);
+
+  // const carrier = React.useMemo<"dpd" | "amm" | undefined>(() => {
+  //   if (shippingCost === 35.95) return "amm";
+  //   if (shippingCost === 5.95) return "dpd";
+  //   return undefined;
+  // }, [shippingCost]);
+
+  // const { data: listVouchers, isLoading } = useGetVoucherForCheckout(
+  //   {
+  //     product_ids: productIds,
+  //     user_id: userId,
+  //     carrier,
+  //     order_value: orderValue,
+  //   },
+  //   true,
+  // );
+
+  const { data: selectedVoucher, isLoading: isLoadingVoucher } =
+    useGetVoucherById(currentVoucher ?? "");
+
+  React.useEffect(() => {
+    if (!selectedVoucher) return;
+
+    // ⛔ Product voucher nhưng chưa load products → STOP
+    if (selectedVoucher.type === "product" && !listValidProducts) {
+      return;
+    }
+
+    let nextValue = 0;
+    const currentValue = form.getValues("voucher_amount");
+
+    /**
+     * 1️⃣ PRODUCT voucher
+     */
+    if (selectedVoucher.type === "product") {
+      if (productSubtotalForVoucher <= 0) {
+        nextValue = 0;
+      } else if (selectedVoucher.discount_type === "percent") {
+        nextValue =
+          (productSubtotalForVoucher * selectedVoucher.discount_value) / 100;
+      } else {
+        nextValue = selectedVoucher.discount_value;
+      }
+    }
+
+    /**
+     * 2️⃣ USER SPECIFIC
+     */
+    if (
+      selectedVoucher.type === "user_specific" ||
+      selectedVoucher.type === "order"
+    ) {
+      nextValue =
+        selectedVoucher.discount_type === "percent"
+          ? (orderValue * selectedVoucher.discount_value) / 100
+          : selectedVoucher.discount_value;
+    }
+
+    /**
+     * 3️⃣ SHIPPING
+     */
+    if (selectedVoucher.type === "shipping") {
+      nextValue =
+        selectedVoucher.discount_type === "percent"
+          ? shippingCost
+          : selectedVoucher.discount_value;
+    }
+
+    /**
+     * 4️⃣ max_discount
+     */
+    if (
+      selectedVoucher.max_discount &&
+      nextValue > selectedVoucher.max_discount
+    ) {
+      nextValue = selectedVoucher.max_discount;
+    }
+
+    /**
+     * 5️⃣ SET VALUE
+     */
+
+    if (currentValue !== nextValue) {
+      form.setValue("voucher_amount", nextValue, {
+        shouldDirty: false,
+        shouldTouch: false,
+        shouldValidate: false,
+      });
+    }
+  }, [
+    selectedVoucher,
+    orderValue,
+    shippingCost,
+    productSubtotalForVoucher, // 🔥 BẮT BUỘC
+    listValidProducts, // 🔥 BẮT BUỘC
+  ]);
+
+  React.useEffect(() => {
+    if (!voucherId) {
+      const current = form.getValues("voucher_amount");
+      if (current !== 0) {
+        form.setValue("voucher_amount", 0, {
+          shouldDirty: false,
+          shouldTouch: false,
+          shouldValidate: false,
+        });
+      }
+    }
+  }, [voucherId]);
 
   return (
     <div className="w-full space-y-6">
@@ -77,43 +240,58 @@ export function CartSummary({
             ))}
           </div>
         ) : items && items.length > 0 ? (
-          items.map((item, i) => (
-            <div
-              key={i}
-              className="flex justify-between items-center gap-6 py-4"
-            >
-              <div className="flex gap-3 items-center">
-                <div className="relative w-24 h-24 flex-shrink-0 overflow-hidden">
-                  <Image
-                    src={
-                      item.img_url ||
-                      item.products?.static_files?.[0]?.url ||
-                      "/placeholder.png"
-                    }
-                    alt={item.name || item.products?.name || "Product"}
-                    fill
-                    className="object-cover"
-                  />
+          items.map((item, i) => {
+            const price =
+              (item.final_price ?? item.item_price ?? 0) * item.quantity;
+
+            return (
+              <div
+                key={i}
+                className="flex justify-between items-center gap-6 py-4"
+              >
+                <div className="flex gap-3 items-center">
+                  <div className="relative w-24 h-24 flex-shrink-0 overflow-hidden">
+                    <Image
+                      src={
+                        item.img_url ||
+                        item.products?.static_files?.[0]?.url ||
+                        "/placeholder.png"
+                      }
+                      alt={item.name || item.products?.name || "Product"}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-800 line-clamp-2">
+                      {item.products?.name || item.product_name}
+                    </p>
+                    <div className="w-1/3 h-[1px] bg-black my-1"></div>
+                    <p className="text-sm font-medium text-gray-800 line-clamp-1">
+                      {t("quantity")}: {item.quantity}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-800 line-clamp-2">
-                    {item.products?.name || item.product_name}
+                <div className="">
+                  <p className="font-bold text-gray-800 whitespace-nowrap">
+                    €{price.toFixed(2)}
                   </p>
                 </div>
               </div>
-              <div className="">
-                <p className="font-bold text-gray-800 whitespace-nowrap">
-                  €{(item.final_price ?? item.item_price ?? 0).toFixed(2)}
-                </p>
-                <p className="text-sm font-medium text-gray-800 line-clamp-1">
-                  {t("quantity")}: {item.quantity}
-                </p>
-              </div>
-            </div>
-          ))
+            );
+          })
         ) : (
           <p className="text-sm text-gray-500">{t("noProductsFound")}</p>
         )}
+      </div>
+
+      <Separator />
+
+      <div className="space-y-4 flex justify-end xl:mb-8">
+        <VoucherApply
+          voucherId={voucherId}
+          setVoucherId={setVoucherId}
+        />
       </div>
 
       <Separator />
@@ -129,13 +307,13 @@ export function CartSummary({
                   .flatMap((group) => group.items) // gom tất cả items trong từng supplier cart
                   .filter((item) => item.is_active)
                   .reduce((total, item) => total + (item.final_price ?? 0), 0)
-              : localCart
+              : (localCart
                   ?.filter((item) => item.is_active)
                   .reduce(
                     (total, item) =>
                       total + (item.item_price ?? 0) * (item.quantity ?? 1),
                     0,
-                  ) ?? 0
+                  ) ?? 0)
             ).toLocaleString("de-DE", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
@@ -156,7 +334,7 @@ export function CartSummary({
         </div>
         <div className="flex justify-between items-center">
           <span className="text-right">{t("discount")}</span>
-          <span className="text-right">€0</span>
+          <span className="text-right">€{voucherAmount.toFixed(2)}</span>
         </div>
       </div>
 
@@ -173,13 +351,13 @@ export function CartSummary({
                   .flatMap((group) => group.items) // gộp tất cả CartItem từ các supplier
                   .filter((item) => item.is_active)
                   .reduce((total, item) => total + (item.final_price ?? 0), 0)
-              : localCart
+              : (localCart
                   ?.filter((item) => item.is_active)
                   .reduce(
                     (total, item) =>
                       total + (item.item_price ?? 0) * (item.quantity ?? 1),
                     0,
-                  ) ?? 0) +
+                  ) ?? 0)) +
             (shippingCost ?? 0) -
             (couponAmount ?? 0) -
             (voucherAmount ?? 0)
