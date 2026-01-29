@@ -298,9 +298,11 @@ export function useCheckoutSubmit({
         cleanupNeeded = true;
         setUserLoginId(null);
         setUserGuestId(null);
+        setVoucherId(null);
         localStorage.removeItem("access_token");
       } finally {
         const guestId = localStorage.getItem("userIdGuest");
+        setVoucherId(null);
 
         if (cleanupNeeded && guestId !== null) {
           // localStorage.removeItem("userIdGuest");
