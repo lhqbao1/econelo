@@ -334,7 +334,15 @@ export function CartSummary({
         </div>
         <div className="flex justify-between items-center">
           <span className="text-right">{t("discount")}</span>
-          <span className="text-right">€{voucherAmount.toFixed(2)}</span>
+          <span className="text-right">
+            €
+            {voucherAmount
+              ? voucherAmount.toLocaleString("de-DE", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })
+              : "0.00"}
+          </span>
         </div>
       </div>
 
