@@ -9,9 +9,34 @@ import { useAtom } from "jotai";
 import { ShoppingCart } from "lucide-react";
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { CartResponse, CartResponseItem } from "@/types/cart";
 interface CartIconProps {
   isSticky: boolean;
 }
+
+const getCartCountFromServer = (cart: CartResponse): number => {
+  if (!Array.isArray(cart)) return 0;
+
+  return cart.reduce((count, group) => {
+    const items = Array.isArray(group?.items) ? group.items : [];
+
+    const groupCount = items.reduce((sum, item) => {
+      const qty = Number(item?.quantity);
+      return sum + (Number.isFinite(qty) && qty > 0 ? qty : 0);
+    }, 0);
+
+    return count + groupCount;
+  }, 0);
+};
+
+const getCartCountFromLocal = (localCart: any): number => {
+  if (!Array.isArray(localCart)) return 0;
+
+  return localCart.reduce((sum, item) => {
+    const qty = Number(item?.quantity);
+    return sum + (Number.isFinite(qty) && qty > 0 ? qty : 0);
+  }, 0);
+};
 
 const CartIcon = ({ isSticky }: CartIconProps) => {
   const pathname = usePathname();
@@ -37,27 +62,11 @@ const CartIcon = ({ isSticky }: CartIconProps) => {
     enabled: !!userId,
   });
 
-  console.log(localCart);
-
-  const displayedCart = userId
-    ? cart?.reduce((count, group) => count + group.items.length, 0) ?? 0
-    : localCart.reduce((sum, item) => sum + item.quantity, 0);
-
-  // ✅ GSAP hiệu ứng scale-in bounce khi badge xuất hiện
-  // useEffect(() => {
-  //   if (badgeRef.current && displayedCart > 0) {
-  //     gsap.fromTo(
-  //       badgeRef.current,
-  //       { scale: 0, opacity: 0, transformOrigin: "center" },
-  //       {
-  //         scale: 1,
-  //         opacity: 1,
-  //         duration: 0.5,
-  //         ease: "back.out(1.7)", // bounce nhẹ
-  //       },
-  //     );
-  //   }
-  // }, [displayedCart]);
+  const displayedCart = React.useMemo(() => {
+    return userId && cart
+      ? getCartCountFromServer(cart)
+      : getCartCountFromLocal(localCart);
+  }, [userId, cart, localCart]);
 
   return (
     <Link href="/warenkorb">

@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { Figtree, Libre_Caslon_Display, Quicksand } from "next/font/google";
 import "./globals.css";
-import Providers from "./provider";
 import { Toaster } from "@/components/ui/sonner";
 import Script from "next/script";
 import SiteHeader from "@/components/header/header";
 import ImportantNotice from "@/components/shared/notice";
 import { QueryProvider } from "@/lib/query-provider";
 import { TrustedShops } from "@/components/shared/trusted-shop";
+import { Providers } from "./provider";
 
 const quickSand = Quicksand({
   subsets: ["latin"],
@@ -75,17 +75,19 @@ export default function RootLayout({
     <html lang="de">
       <body className={`${quickSand.variable} font-quicksand antialiased`}>
         {/* Google Tag Manager (noscript) */}
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-WKVQP2QH"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-          ></iframe>
-        </noscript>
-        {/* <ImportantNotice /> */}
-        <TrustedShops />
-        <Providers>{children}</Providers>
+        <Providers>
+          <noscript>
+            <iframe
+              src="https://www.googletagmanager.com/ns.html?id=GTM-WKVQP2QH"
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+            ></iframe>
+          </noscript>
+          {/* <ImportantNotice /> */}
+          <TrustedShops />
+          <QueryProvider>{children}</QueryProvider>
+        </Providers>
         <Toaster
           expand
           richColors
