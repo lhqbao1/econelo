@@ -4,7 +4,7 @@ import { useCheckAppVersion } from "@/hooks/useCheckVersion";
 import { useEffect } from "react";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  useCheckAppVersion();
+  // useCheckAppVersion();
 
   useEffect(() => {
     const handler = (e: any) => {
