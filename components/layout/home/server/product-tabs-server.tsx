@@ -1,6 +1,7 @@
 // app/components/layout/home/ProductTabsServer.tsx
 import { getCategories } from "@/features/category/api";
 import { dehydrate, QueryClient, DehydratedState } from "@tanstack/react-query";
+import { QueryProvider } from "@/lib/query-provider";
 import ProductTabsClient from "../product-tabs";
 
 export default async function ProductTabsServer() {
