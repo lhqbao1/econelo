@@ -115,7 +115,7 @@ const MainFooter = () => {
               </p>
             </>
             {/* <div className="text-gray-400">+49 30 814 537 080</div> */}
-            <div className="text-gray-400">004368110327073</div>
+            {/* <div className="text-gray-400">004368110327073</div> */}
             <div className="text-gray-400">andreas.bachl@prestige-home.de</div>
             {/* <p className="text-gray-400">{t("feelFree")}</p> */}
           </div>
