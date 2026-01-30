@@ -75,19 +75,17 @@ export default function RootLayout({
     <html lang="de">
       <body className={`${quickSand.variable} font-quicksand antialiased`}>
         {/* Google Tag Manager (noscript) */}
-        <Providers>
-          <noscript>
-            <iframe
-              src="https://www.googletagmanager.com/ns.html?id=GTM-WKVQP2QH"
-              height="0"
-              width="0"
-              style={{ display: "none", visibility: "hidden" }}
-            ></iframe>
-          </noscript>
-          {/* <ImportantNotice /> */}
-          <TrustedShops />
-          <QueryProvider>{children}</QueryProvider>
-        </Providers>
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-WKVQP2QH"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          ></iframe>
+        </noscript>
+        {/* <ImportantNotice /> */}
+        <TrustedShops />
+        <QueryProvider>{children}</QueryProvider>
         <Toaster
           expand
           richColors
