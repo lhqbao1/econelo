@@ -25,7 +25,7 @@ export function QueryProvider({ children, state }: QueryProviderProps) {
             refetchOnWindowFocus: false,
           },
         },
-      })
+      }),
   );
 
   return (

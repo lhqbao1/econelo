@@ -5,9 +5,9 @@ import { Toaster } from "@/components/ui/sonner";
 import Script from "next/script";
 import SiteHeader from "@/components/header/header";
 import ImportantNotice from "@/components/shared/notice";
-import { QueryProvider } from "@/lib/query-provider";
 import { TrustedShops } from "@/components/shared/trusted-shop";
 import { Providers } from "./provider";
+import QueryProvider from "@/hooks/query-provider";
 
 const quickSand = Quicksand({
   subsets: ["latin"],
