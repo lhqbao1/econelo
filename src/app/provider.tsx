@@ -1,15 +1,44 @@
-// app/providers.tsx
 "use client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactNode, useEffect, useState } from "react";
-import { tokenStore } from "@/lib/token";
 
-export default function Providers({ children }: { children: ReactNode }) {
-  const [client] = useState(() => new QueryClient());
+import { useCheckAppVersion } from "@/hooks/useCheckVersion";
+import { useEffect } from "react";
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  useCheckAppVersion();
 
   useEffect(() => {
-    tokenStore.hydrateFromStorage();
+    const handler = (e: any) => {
+      const pathname = window.location.pathname;
+
+      // ❗ guard checkout / thank-you
+      if (pathname.startsWith("/kasse") || pathname.startsWith("/danke")) {
+        return;
+      }
+
+      const msg = e?.reason?.message || e?.message || "";
+
+      if (
+        msg.includes("ChunkLoadError") ||
+        msg.includes("Loading chunk") ||
+        msg.includes("missing chunk") ||
+        msg.includes("Failed to fetch dynamically imported module")
+      ) {
+        const key = "chunk-reloaded";
+        if (!sessionStorage.getItem(key)) {
+          sessionStorage.setItem(key, "1");
+          window.location.reload();
+        }
+      }
+    };
+
+    window.addEventListener("error", handler);
+    window.addEventListener("unhandledrejection", handler);
+
+    return () => {
+      window.removeEventListener("error", handler);
+      window.removeEventListener("unhandledrejection", handler);
+    };
   }, []);
 
-  return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+  return children as any;
 }
