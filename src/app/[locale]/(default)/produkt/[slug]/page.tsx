@@ -13,153 +13,155 @@ interface PageProps {
 export const revalidate = 3600;
 
 // 🏗️ Pre-render sản phẩm (SSG + ISR)
-export async function generateStaticParams() {
-  const products = await getProductsFeed();
-  const locales = ["de", "en"];
+// export async function generateStaticParams() {
+//   const products = await getProductsFeed({
 
-  return products
-    .filter((p) => typeof p.url_key === "string" && p.url_key.length > 0)
-    .flatMap((p) =>
-      locales.map((locale) => ({
-        locale,
-        slug: p.url_key,
-      })),
-    );
-}
+//   });
+//   const locales = ["de", "en"];
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
-  const { slug, locale } = await params;
-  const slugArr = Array.isArray(slug) ? slug : [slug];
-  const lastSlug = slugArr.at(-1);
+//   return products
+//     .filter((p) => typeof p.url_key === "string" && p.url_key.length > 0)
+//     .flatMap((p) =>
+//       locales.map((locale) => ({
+//         locale,
+//         slug: p.url_key ?? "",
+//       })),
+//     );
+// }
 
-  if (
-    !lastSlug ||
-    typeof lastSlug !== "string" ||
-    lastSlug.trim().length === 0
-  ) {
-    return notFound();
-  }
+// export async function generateMetadata({
+//   params,
+// }: PageProps): Promise<Metadata> {
+//   const { slug, locale } = await params;
+//   const slugArr = Array.isArray(slug) ? slug : [slug];
+//   const lastSlug = slugArr.at(-1);
 
-  try {
-    const product = await getProductBySlug(lastSlug);
-    if (!product) {
-      return {
-        title: "Produkt nicht gefunden",
-        description: "This page does not exist.",
-        robots: { index: false, follow: false },
-      };
-    }
-    // ✅ Tạo dữ liệu schema JSON-LD
-    const productSchema = {
-      "@context": "https://schema.org/",
-      "@type": "Product",
-      name: product.name,
-      description: product.description,
-      sku: product.sku ?? "",
-      mpn: product.id_provider ?? "",
-      gtin13: product.ean ?? "",
-      brand: {
-        "@type": "Brand",
-        name: product.brand?.name || "Prestige Home",
-      },
-      image:
-        product.static_files?.length > 0
-          ? product.static_files.map((f) => f.url)
-          : ["/placeholder-product.webp"],
+//   if (
+//     !lastSlug ||
+//     typeof lastSlug !== "string" ||
+//     lastSlug.trim().length === 0
+//   ) {
+//     return notFound();
+//   }
 
-      offers: {
-        "@type": "Offer",
-        url: `https://www.econelo.de/produkt/${product.url_key}`,
-        priceCurrency: "EUR",
-        price: product.final_price ?? product.price,
-        priceValidUntil: "2026-12-31",
-        availability:
-          product.stock > 0
-            ? "https://schema.org/InStock"
-            : "https://schema.org/OutOfStock",
-        itemCondition: "https://schema.org/NewCondition",
-        seller: {
-          "@type": "Organization",
-          name: "Prestige Home",
-        },
-        shippingDetails: {
-          "@type": "OfferShippingDetails",
-          shippingRate: {
-            "@type": "MonetaryAmount",
-            value:
-              product.carrier?.toLowerCase() === "spedition" ? "35.95" : "5.95",
-            currency: "EUR",
-          },
-          shippingDestination: {
-            "@type": "DefinedRegion",
-            addressCountry: "DE",
-          },
-          deliveryTime: {
-            "@type": "ShippingDeliveryTime",
-            handlingTime: {
-              "@type": "QuantitativeValue",
-              minValue: 1,
-              maxValue: 2,
-              unitCode: "d",
-            },
-            transitTime: {
-              "@type": "QuantitativeValue",
-              minValue: 0,
-              maxValue: 0,
-              unitCode: "d",
-            },
-          },
-        },
-        hasMerchantReturnPolicy: {
-          "@type": "MerchantReturnPolicy",
-          applicableCountry: "DE",
-          returnPolicyCategory:
-            "https://schema.org/MerchantReturnFiniteReturnWindow",
-          merchantReturnDays: 14,
-          returnMethod: "https://schema.org/ReturnByMail",
-          returnFees: "https://schema.org/FreeReturn",
-        },
-      },
-    };
+//   try {
+//     const product = await getProductBySlug(lastSlug);
+//     if (!product) {
+//       return {
+//         title: "Produkt nicht gefunden",
+//         description: "This page does not exist.",
+//         robots: { index: false, follow: false },
+//       };
+//     }
+//     // ✅ Tạo dữ liệu schema JSON-LD
+//     const productSchema = {
+//       "@context": "https://schema.org/",
+//       "@type": "Product",
+//       name: product.name ?? "",
+//       description: product.description ?? "",
+//       sku: product.sku ?? "",
+//       mpn: product.id_provider ?? "",
+//       gtin13: product.ean ?? "",
+//       brand: {
+//         "@type": "Brand",
+//         name: product.brand?.name || "Prestige Home",
+//       },
+//       image:
+//         product.static_files?.length > 0
+//           ? product.static_files.map((f) => f.url)
+//           : ["/placeholder-product.webp"],
 
-    return {
-      title: product.meta_title || product.name,
-      description:
-        product.meta_description || product.description?.slice(0, 150),
-      robots: { index: true, follow: true },
-      openGraph: {
-        title: product.meta_title || product.name,
-        description:
-          product.meta_description || product.description?.slice(0, 150),
-        url: `https://www.econelo.de/${locale}/produkt/${product.url_key}`,
-        images:
-          product.static_files?.map((img: StaticFile) => ({ url: img.url })) ??
-          [],
-      },
-      alternates: {
-        canonical: `https://www.econelo.de/${locale}/produkt/${product.url_key}`,
-        languages: {
-          de: `https://www.econelo.de/de/produkt/${product.url_key}`,
-          en: `https://www.econelo.de/en/produkt/${product.url_key}`,
-          "x-default": `https://www.econelo.de/produkt/${product.url_key}`,
-        },
-      },
-      other: {
-        // ✅ Inject schema JSON-LD
-        "application/ld+json": JSON.stringify(productSchema),
-      },
-    };
-  } catch (err) {
-    console.error("generateMetadata error:", err);
-    return {
-      title: "Not found",
-      description: "This page is not available",
-      robots: { index: false, follow: false },
-    };
-  }
-}
+//       offers: {
+//         "@type": "Offer",
+//         url: `https://www.econelo.de/produkt/${product.url_key}`,
+//         priceCurrency: "EUR",
+//         price: product.final_price ?? product.price,
+//         priceValidUntil: "2026-12-31",
+//         availability:
+//           product.stock > 0
+//             ? "https://schema.org/InStock"
+//             : "https://schema.org/OutOfStock",
+//         itemCondition: "https://schema.org/NewCondition",
+//         seller: {
+//           "@type": "Organization",
+//           name: "Prestige Home",
+//         },
+//         shippingDetails: {
+//           "@type": "OfferShippingDetails",
+//           shippingRate: {
+//             "@type": "MonetaryAmount",
+//             value:
+//               product.carrier?.toLowerCase() === "spedition" ? "35.95" : "5.95",
+//             currency: "EUR",
+//           },
+//           shippingDestination: {
+//             "@type": "DefinedRegion",
+//             addressCountry: "DE",
+//           },
+//           deliveryTime: {
+//             "@type": "ShippingDeliveryTime",
+//             handlingTime: {
+//               "@type": "QuantitativeValue",
+//               minValue: 1,
+//               maxValue: 2,
+//               unitCode: "d",
+//             },
+//             transitTime: {
+//               "@type": "QuantitativeValue",
+//               minValue: 0,
+//               maxValue: 0,
+//               unitCode: "d",
+//             },
+//           },
+//         },
+//         hasMerchantReturnPolicy: {
+//           "@type": "MerchantReturnPolicy",
+//           applicableCountry: "DE",
+//           returnPolicyCategory:
+//             "https://schema.org/MerchantReturnFiniteReturnWindow",
+//           merchantReturnDays: 14,
+//           returnMethod: "https://schema.org/ReturnByMail",
+//           returnFees: "https://schema.org/FreeReturn",
+//         },
+//       },
+//     };
+
+//     return {
+//       title: product.meta_title || product.name,
+//       description:
+//         product.meta_description || product.description?.slice(0, 150) ,
+//       robots: { index: true, follow: true },
+//       openGraph: {
+//         title: product.meta_title || product.name,
+//         description:
+//           product.meta_description || product.description?.slice(0, 150),
+//         url: `https://www.econelo.de/${locale}/produkt/${product.url_key}`,
+//         images:
+//           product.static_files?.map((img: StaticFile) => ({ url: img.url })) ??
+//           [],
+//       },
+//       alternates: {
+//         canonical: `https://www.econelo.de/${locale}/produkt/${product.url_key}`,
+//         languages: {
+//           de: `https://www.econelo.de/de/produkt/${product.url_key}`,
+//           en: `https://www.econelo.de/en/produkt/${product.url_key}`,
+//           "x-default": `https://www.econelo.de/produkt/${product.url_key}`,
+//         },
+//       },
+//       other: {
+//         // ✅ Inject schema JSON-LD
+//         "application/ld+json": JSON.stringify(productSchema),
+//       },
+//     };
+//   } catch (err) {
+//     console.error("generateMetadata error:", err);
+//     return {
+//       title: "Not found",
+//       description: "This page is not available",
+//       robots: { index: false, follow: false },
+//     };
+//   }
+// }
 
 export default async function Page({
   params,
