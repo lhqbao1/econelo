@@ -153,7 +153,7 @@ const MainFooter = () => {
         <div className="text-gray-500 text-sm text-center">
           Copyright © 2025{" "}
           <span className="text-white">Prestige Home Gmbh.</span> All Rights
-          Reserved.
+          Reserved
         </div>
 
         {/* SOCIALS */}
