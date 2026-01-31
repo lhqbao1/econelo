@@ -17,6 +17,8 @@ export const CreateOrderSchema = (t: (key: string) => string) =>
       first_name: z.string().optional(),
       last_name: z.string().optional(),
       company_name: z.string().optional().nullable(),
+      from_marketplace: z.string().optional().nullable(),
+
       tax_id: z.string().optional().nullable(),
 
       invoice_address_line: z

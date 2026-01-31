@@ -235,6 +235,7 @@ export function useCheckoutSubmit({
           supplier_carts: mapToSupplierCarts(
             userLoginId && cartItems ? cartItems : cartData,
           ),
+          from_marketplace: "econelo",
           note: data.note,
           total_shipping:
             shippingCostCurrent > 0 ? shippingCostCurrent : shippingCost,
