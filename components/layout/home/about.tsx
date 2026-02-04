@@ -109,7 +109,7 @@ const AdvantagesSection = () => {
       ref={sectionRef}
       className="w-full py-12 bg-white flex justify-center"
     >
-      <div className="w-11/12 xl:w-8/12 lg:w-10/12 flex flex-col justify-center items-center">
+      <div className="w-11/12 xl:w-9/12 lg:w-10/12 flex flex-col justify-center items-center">
         {/* Heading */}
         <div className="text-center mb-16">
           <div className="flex justify-center items-center gap-2 mb-3">

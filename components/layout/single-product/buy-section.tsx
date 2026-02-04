@@ -193,12 +193,20 @@ const BuySection = ({
 
             <div className="space-y-2 pb-4">
               <div className="flex justify-between items-center">
-                <label>{t("subTotalInclude")}</label>
-                <span>{formatEUR(currentProduct.final_price)}</span>
+                <label className="3xl:text-base text-sm">
+                  {t("subTotalInclude")}
+                </label>
+                <span className="3xl:text-base text-sm">
+                  {formatEUR(currentProduct.final_price)}
+                </span>
               </div>
               <div className="flex justify-between items-center">
-                <label>{t("shippingCost")}</label>
-                <span>{formatEUR(shippingCost)}</span>
+                <label className="3xl:text-base text-sm">
+                  {t("shippingCost")}
+                </label>
+                <span className="3xl:text-base text-sm">
+                  {formatEUR(shippingCost)}
+                </span>
               </div>
               <div className="flex justify-between items-center font-semibold text-black text-lg">
                 <label>{t("total")}</label>
@@ -221,23 +229,6 @@ const BuySection = ({
                 t("addToCart")
               )}
             </Button>
-
-            {/* optional wishlist button */}
-            {/* <div className="mt-3">
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full"
-                onClick={handleAddProductToWishlist}
-                disabled={addProductToWishlistMutation.isPending}
-              >
-                {addProductToWishlistMutation.isPending ? (
-                  <Loader2 className="animate-spin" />
-                ) : (
-                  t("addToWishlist")
-                )}
-              </Button>
-            </div> */}
           </CardContent>
         </Card>
       </form>

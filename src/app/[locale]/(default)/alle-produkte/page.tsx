@@ -1,7 +1,6 @@
 "use client";
 import CustomBreadCrumb from "@/components/shared/breadcrumb";
-import { SlidersHorizontal } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { useGetAllProducts } from "@/features/products/hook";
 import { ProductGridSkeleton } from "@/components/shared/product-grid-skeleton";
@@ -13,11 +12,20 @@ import { SortSelect } from "@/components/shared/sort-select";
 export default function ShopAllPage() {
   const t = useTranslations();
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(12);
+  const [pageSize, setPageSize] = useState(16);
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [page]);
+
   const {
     data: products,
     isLoading,
     isError,
+    isFetching,
   } = useGetAllProducts({
     page,
     page_size: pageSize,
@@ -25,27 +33,41 @@ export default function ShopAllPage() {
     all_products: true,
   });
 
+  const [lastTotalItems, setLastTotalItems] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (products?.pagination?.total_items != null) {
+      setLastTotalItems(products.pagination.total_items);
+    }
+  }, [products?.pagination?.total_items]);
+
+  const totalItems =
+    products?.pagination?.total_items ?? lastTotalItems ?? null;
+
+  const isInitialLoading = isLoading && !products;
+
   return (
     <div className="pt-[70px] xl:pb-16 pb-6 md:pt-[130px] flex flex-col items-center">
       <div className="w-11/12 md:w-8/12 space-y-4">
-        <CustomBreadCrumb currentPage={"Shop All"} />
+        <CustomBreadCrumb currentPage={t("shopAll")} />
         <div className="flex justify-between items-center lg:flex-row flex-col-reverse lg:gap-0 gap-4">
           <div className="flex gap-4">
             <div className="text-base text-primary font-semibold">
-              {products?.items.length} {t("productsFound")}
+              {totalItems == null ? (
+                <span className="inline-block h-4 w-10 rounded bg-gray-200 animate-pulse motion-reduce:animate-none align-middle" />
+              ) : (
+                totalItems
+              )}{" "}
+              {t("productsFound")}
             </div>
           </div>
 
           <div className="flex gap-8 items-center">
             <SortSelect />
-            <div className="flex gap-2">
-              <SlidersHorizontal />
-              Filter
-            </div>
           </div>
         </div>
         <div className="">
-          {!products || isLoading ? (
+          {isInitialLoading ? (
             <div className="flex justify-center items-center">
               <ProductGridSkeleton
                 length={16}
@@ -55,14 +77,17 @@ export default function ShopAllPage() {
               />
             </div>
           ) : (
-            <div className="filter-section">
+            <div
+              className={`filter-section ${isFetching ? "opacity-60" : ""}`}
+              aria-busy={isFetching}
+            >
               <div className="">
-                <ShopGridLyaout products={products.items} />
+                <ShopGridLyaout products={products?.items ?? []} />
               </div>
             </div>
           )}
         </div>
-        {products && products.items.length > 16 && (
+        {products && products.pagination.total_items > 16 && (
           <CustomPagination
             totalPages={products.pagination.total_pages}
             page={page}

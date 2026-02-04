@@ -48,20 +48,13 @@ export default async function HomePage() {
 function HomeContent() {
   return (
     <div className="flex flex-col items-center lg:gap-12 md:gap-8 gap-6 w-full">
-      <div className="xl:h-[100vh] h-fit w-full">
-        <HomeBanner />
-      </div>
       <MissionSection />
-      {/* chỉ bọc những cái thực sự async */}
-      {/* <NewArrivedSection /> */}
-      {/* <VideoSection /> */}
+
       <Suspense fallback={<SectionSkeleton />}>
         <ProductTabsServer />
       </Suspense>
       <AdvantagesSection />
-      {/* <Suspense fallback={<SectionSkeleton />}>
-        <CategorySectionServer />
-      </Suspense> */}
+
       <TestimonialsSection />
       {/* <LogoLoopSection /> */}
     </div>
@@ -71,7 +64,7 @@ function HomeContent() {
 /** ✅ Loading skeletons — có thể reuse từ shadcn */
 function HomeSkeleton() {
   return (
-    <div className="flex flex-col items-center gap-10 w-full animate-pulse">
+    <div className="flex flex-col items-center gap-10 w-full animate-pulse motion-reduce:animate-none">
       <div className="h-[80vh] w-full bg-gray-200 rounded-md" />
       <div className="h-10 w-1/3 bg-gray-300 rounded" />
       <div className="h-96 w-5/6 bg-gray-100 rounded-md" />
@@ -81,6 +74,6 @@ function HomeSkeleton() {
 
 function SectionSkeleton() {
   return (
-    <div className="w-full h-[400px] bg-gray-100 animate-pulse rounded-md" />
+    <div className="w-full h-[400px] bg-gray-100 animate-pulse motion-reduce:animate-none rounded-md" />
   );
 }

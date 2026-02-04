@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   CreateProduct,
   deleteProduct,
@@ -29,6 +34,7 @@ export function useGetAllProducts({
       getAllProducts({ page, page_size, all_products, search, is_econelo }),
     retry: false,
     staleTime: 1000 * 60 * 5,
+    placeholderData: keepPreviousData,
   });
 }
 
