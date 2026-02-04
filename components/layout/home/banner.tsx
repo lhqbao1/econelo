@@ -113,7 +113,8 @@ const HomeBanner = () => {
               className="
                 capitalize 
                 text-2xl xl:text-4xl
-                2xl:text-5xl 
+                2xl:text-5xl
+                3xl:text-5xl 
                 xl:font-semibold font-bold 
                 xl:max-w-xl max-w-xs 
                 xl:pt-40 pt-0 
@@ -172,10 +173,7 @@ const HomeBanner = () => {
             </div> */}
 
             {/* 3️⃣ Button */}
-            <div
-              ref={buttonRef}
-              className="opacity-0"
-            >
+            <div ref={buttonRef} className="opacity-0">
               <HoverButton
                 text={t("forThem")}
                 redirect_url="/produkt/seniorenmobil-j1000-lithium-akku-25-km-h-1000-watt-rot-1000014"
@@ -199,7 +197,7 @@ const HomeBanner = () => {
               width={1200}
               height={800}
               alt=""
-              className="3xl:h-[800px] 2xl:h-[700px] 2xl:w-auto xl:h-[600px] xl:w-auto lg:h-[500px] md:h-[450px] h-[300px] w-auto"
+              className="3xl:h-[800px] 2xl:w-auto xl:h-[600px] xl:w-auto lg:h-[500px] md:h-[450px] h-[300px] w-auto"
             />
           </div>
         </div>

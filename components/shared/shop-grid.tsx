@@ -236,7 +236,7 @@ export default function ShopGridLyaout({ products }: ShopGridLayoutProps) {
           className="group px-2 py-4 flex flex-col h-full bg-white relative overflow-hidden hover:shadow-[0_0_10px_rgba(0,0,0,0.1)] rounded-md"
           key={product.id}
         >
-          <div className="relative  overflow-hidden mb-12">
+          <div className="relative  overflow-hidden mb-4">
             <Link href={`/produkt/${product.url_key}`}>
               {/* Hình sản phẩm */}
               <Image
@@ -246,7 +246,7 @@ export default function ShopGridLyaout({ products }: ShopGridLayoutProps) {
                 alt={product.name}
                 width={300}
                 height={300}
-                className="w-full h-96 p-4 lg:p-10 object-contain transition-all duration-500 group-hover:scale-110"
+                className="w-full h-96 p-4 lg:p-4 object-contain transition-all duration-500 group-hover:scale-110"
               />
             </Link>
 
@@ -280,11 +280,7 @@ export default function ShopGridLyaout({ products }: ShopGridLayoutProps) {
               </h3>
               <div className="flex items-center gap-1">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <Star
-                    key={i}
-                    size={16}
-                    className="text-primary"
-                  />
+                  <Star key={i} size={16} className="text-primary" />
                 ))}
                 <span className="text-sm font-medium">(0)</span>
               </div>

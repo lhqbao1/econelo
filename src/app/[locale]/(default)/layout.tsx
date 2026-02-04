@@ -1,6 +1,7 @@
 import "../../globals.css";
 import MainHeader from "@/components/header/header";
 import Footer from "@/components/footer/footer";
+import HomeBanner from "@/components/layout/home/banner";
 
 export default function DefaultLayout({
   children,
@@ -10,12 +11,9 @@ export default function DefaultLayout({
   return (
     <>
       <MainHeader />
-      <main className="overflow-hidden">
-        <div className="relative w-full">
-          {/* <StickyIcon /> */}
-          <div className="overflow-x-hidden">
-            <div className="container-padding flex-1">{children}</div>
-          </div>
+      <main id="main-content" className="relative w-full min-h-screen">
+        <div className="overflow-x-hidden z-0 relative">
+          <div className="flex-1">{children}</div>
         </div>
       </main>
       <Footer />

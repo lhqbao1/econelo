@@ -80,8 +80,8 @@ const MainHeader = () => {
             ? "fixed top-0 left-0 bg-white text-black shadow-md opacity-100 translate-y-0"
             : "absolute top-10 bg-transparent text-white opacity-100 -translate-y-10"
           : isSticky
-          ? "fixed top-0 left-0 bg-white text-black shadow-md translate-y-0"
-          : "absolute top-0 left-0 bg-white text-black shadow-md -translate-y-0",
+            ? "fixed top-0 left-0 bg-white text-black shadow-md translate-y-0"
+            : "absolute top-0 left-0 bg-white text-black shadow-md -translate-y-0",
       )}
     >
       <div className="flex 3xl:gap-32 2xl:gap-12 gap-4 xl:px-20 md:px-6 px-4 lg:min-h-[100px] min-h-[60px] items-center">
@@ -92,19 +92,19 @@ const MainHeader = () => {
               !isHome
                 ? "/econelo-logo.png"
                 : isSticky
-                ? "/econelo-logo.png"
-                : "/econelo-logo-03.png"
+                  ? "/econelo-logo.png"
+                  : "/econelo-logo-03.png"
             }
             alt="Econelo Logo"
             width={200}
             height={70}
-            className="object-contain transition-all duration-300"
+            className="object-contain transition-all duration-300 cursor-pointer"
           />
         </Link>
 
         <div className="flex flex-1 3xl:justify-between justify-end gap-4 items-center">
           {/* Left side: Nav + Icons */}
-          <div className="items-center gap-8 hidden 3xl:flex">
+          <div className="items-center gap-8 hidden 2xl:flex">
             <NavBar />
           </div>
           <div className="lg:hidden flex flex-row gap-0 items-center">
@@ -119,10 +119,7 @@ const MainHeader = () => {
             <ListIcons isSticky={isSticky} />
 
             {/* Button (only after user loaded) */}
-            <div
-              ref={buttonRef}
-              className="opacity-0"
-            >
+            <div ref={buttonRef} className="opacity-0">
               <HoverButton
                 redirect_url="/einloggen"
                 isLogin={!!user}
@@ -137,9 +134,8 @@ const MainHeader = () => {
           </div>
         </div>
       </div>
-      <div className="items-center gap-8 lg:flex hidden justify-center 3xl:hidden">
+      <div className="items-center gap-8 lg:flex hidden justify-center 2xl:hidden">
         <NavBar />
-        {/* <ListIcons isSticky={isSticky} /> */}
       </div>
     </header>
   );

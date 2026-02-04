@@ -104,7 +104,7 @@ const MissionSection = () => {
   return (
     <section
       ref={sectionRef}
-      className="w-full lg:py-12 md:py-8 md:pt-24 lg:pt-32 xl:pt-6 py-6 bg-white flex flex-col justify-center items-center md:gap-32 gap-24"
+      className="w-full lg:py-12 md:py-8 md:pt-24 lg:pt-32 xl:pt-6 2xl:pt-26 py-6 bg-white flex flex-col justify-center items-center md:gap-32 gap-24"
     >
       <div className="w-11/12 xl:w-8/12 lg:w-10/12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {/* LEFT — IMAGES */}
@@ -159,10 +159,7 @@ const MissionSection = () => {
           <div className="grid grid-cols-2 gap-6 mt-6">
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
-                <Contact2
-                  className="text-primary size-10"
-                  strokeWidth={1}
-                />
+                <Contact2 className="text-primary size-10" strokeWidth={1} />
                 <span className="font-semibold">{t("rideConfidence")}</span>
               </div>
               <p className="text-gray-500 text-sm leading-snug">
@@ -172,10 +169,7 @@ const MissionSection = () => {
 
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
-                <CarFront
-                  className="text-primary size-10"
-                  strokeWidth={1}
-                />
+                <CarFront className="text-primary size-10" strokeWidth={1} />
                 <span className="font-semibold">{t("noLicense")}</span>
               </div>
               <p className="text-gray-500 text-sm leading-snug">
@@ -237,12 +231,7 @@ const MissionSection = () => {
           </p>
         </div>
         <div className="space-y-3 flex flex-col items-center justify-center">
-          <Image
-            src={"/service-primary.png"}
-            width={60}
-            height={60}
-            alt=""
-          />
+          <Image src={"/service-primary.png"} width={60} height={60} alt="" />
           <p className="text-black leading-snug max-w-[240px] text-lg font-semibold">
             Freundlicher After-Sales-Service
           </p>

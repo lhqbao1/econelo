@@ -278,7 +278,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
                 className={`xl:basis-1/4 lg:basis-1/3 basis-full lg:flex-shrink-0 border-b border-r border-gray-200`}
               >
                 <div className="group px-2 py-4 flex flex-col h-full bg-white relative overflow-hidden">
-                  <div className="relative  overflow-hidden mb-12">
+                  <div className="relative  overflow-hidden mb-4">
                     <Link href={`/produkt/${product.url_key}`}>
                       {/* Hình sản phẩm */}
                       <Image
@@ -327,11 +327,7 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
                       </h3>
                       <div className="flex items-center gap-1">
                         {[1, 2, 3, 4, 5].map((i) => (
-                          <Star
-                            key={i}
-                            size={16}
-                            className="text-primary"
-                          />
+                          <Star key={i} size={16} className="text-primary" />
                         ))}
                         <span className="text-sm font-medium">(0)</span>
                       </div>
