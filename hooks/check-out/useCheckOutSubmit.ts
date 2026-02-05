@@ -268,7 +268,7 @@ export function useCheckoutSubmit({
           const method = data.payment_method;
 
           if (method === "paypal") {
-            router.push(payment.approve_url);
+            window.location.href = payment.approve_url;
             return;
           }
 
