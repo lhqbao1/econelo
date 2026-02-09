@@ -67,27 +67,25 @@ export default function IncludedInPriceCard({ id }: IncludedInPriceCardProps) {
   const selected = items.find((item) => item.id === id);
 
   return (
-    <Card className="shadow-lg">
-      <CardContent>
-        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-black">
-          {selected?.data.map((text, index) => (
-            <li
-              key={index}
-              className="flex items-center gap-2 text-sm"
-            >
-              <BadgeCheck className="text-primary w-5 h-5" />
-              <span>{text}</span>
-            </li>
-          ))}
+    <div>
+      {selected && (
+        <Card className="shadow-lg">
+          <CardContent>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-black">
+              {selected?.data.map((text, index) => (
+                <li key={index} className="flex items-center gap-2 text-sm">
+                  <BadgeCheck className="text-primary w-5 h-5" />
+                  <span>{text}</span>
+                </li>
+              ))}
 
-          {/* Nếu không tìm thấy id */}
-          {!selected && (
-            <li className="text-sm text-gray-500">
-              Keine Informationen verfügbar.
-            </li>
-          )}
-        </ul>
-      </CardContent>
-    </Card>
+              <li className="text-sm text-gray-500">
+                Keine Informationen verfügbar.
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
+      )}
+    </div>
   );
 }

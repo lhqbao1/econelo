@@ -153,6 +153,7 @@ export type ProductItem = {
   tax: string;
   collection?: string | null;
   stock: number;
+  result_stock: number;
   sku: string;
   ean: string;
   carrier: string;
