@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -31,6 +31,7 @@ import { useLocale } from "next-intl";
 import { useAtom } from "jotai";
 import { userIdAtom } from "@/store/auth";
 import { formatEUR } from "@/lib/format-euro";
+import { useInventoryPoByProductId } from "@/features/inventory-incoming/hook";
 
 interface BuySectionProps {
   variant?: VariantOptionsResponse[];
@@ -77,22 +78,6 @@ const BuySection = ({
       );
     }
   }, [currentProduct, methods]);
-
-  // handle wishlist (optional)
-  const handleAddProductToWishlist = () => {
-    addProductToWishlistMutation.mutate(
-      { productId: currentProduct?.id ?? "", quantity: 1 },
-      {
-        onSuccess: () => {
-          toast.success(t("addToWishlistSuccess"));
-        },
-        onError: (error) => {
-          const { status, message } = HandleApiError(error, t);
-          toast.error(message);
-        },
-      },
-    );
-  };
 
   const onSubmit = (values: FormValues) => {
     if (!currentProduct) return;
@@ -175,6 +160,39 @@ const BuySection = ({
 
   const totalWithShipping = Number(currentProduct.final_price) + shippingCost;
 
+  const { data: inventoryPo } = useInventoryPoByProductId(currentProduct.id);
+
+  const incomingStock = useMemo(() => {
+    const items = Array.isArray(inventoryPo)
+      ? inventoryPo
+      : inventoryPo
+        ? [inventoryPo]
+        : [];
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return items.reduce((sum, item) => {
+      if (item.list_delivery_date) {
+        const deliveryDate = new Date(item.list_delivery_date);
+        if (!Number.isNaN(deliveryDate.getTime())) {
+          deliveryDate.setHours(0, 0, 0, 0);
+          if (deliveryDate < today) {
+            return sum;
+          }
+        }
+      }
+
+      return sum + (item.quantity ?? 0);
+    }, 0);
+  }, [inventoryPo]);
+
+  const maxStock = useMemo(() => {
+    const baseStock = currentProduct.stock ?? 0;
+    const usedStock = currentProduct.result_stock ?? 0;
+    return baseStock - usedStock + incomingStock;
+  }, [currentProduct.stock, currentProduct.result_stock, incomingStock]);
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -214,21 +232,30 @@ const BuySection = ({
               </div>
             </div>
 
-            <Button
-              type="submit"
-              className="bg-primary w-full rounded-md py-6"
-              disabled={
-                quantity <= 0 ||
-                quantity > currentProduct.stock ||
-                createCartMutation.isPending
-              }
-            >
-              {createCartMutation.isPending ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                t("addToCart")
-              )}
-            </Button>
+            {maxStock > 0 ? (
+              <Button
+                type="submit"
+                className="bg-primary w-full rounded-md py-6"
+              >
+                {createCartMutation.isPending ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  t("addToCart")
+                )}
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                className="bg-primary w-full rounded-md py-6 bg-gray-500 text-white cursor-not-allowed"
+                disabled
+              >
+                {createCartMutation.isPending ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  t("addToCart")
+                )}
+              </Button>
+            )}
           </CardContent>
         </Card>
       </form>
