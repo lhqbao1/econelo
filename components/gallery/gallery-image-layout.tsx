@@ -17,7 +17,7 @@ export default function ImageGallery() {
 
     ...Array.from({ length: 30 }, (_, i) => {
       const num = String(i + 1).padStart(2, "0");
-      return `/J1000/J4000_premium_${num}.jpg`;
+      return `/J1000/j4000_premium_${num}.jpg`;
     }),
   ];
 
@@ -63,25 +63,15 @@ export default function ImageGallery() {
 
       <div className="flex gap-4 w-full">
         {colArr.map((col, colIndex) => (
-          <div
-            key={colIndex}
-            className="flex flex-col gap-4 w-full"
-          >
+          <div key={colIndex} className="flex flex-col gap-4 w-full">
             {col.map((src, i) => (
-              <ImageItem
-                key={i}
-                src={src}
-                index={i}
-              />
+              <ImageItem key={i} src={src} index={i} />
             ))}
           </div>
         ))}
       </div>
 
-      <div
-        ref={loadMoreRef}
-        className="h-10"
-      ></div>
+      <div ref={loadMoreRef} className="h-10"></div>
     </section>
   );
 }

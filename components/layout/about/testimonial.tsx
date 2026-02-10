@@ -14,47 +14,49 @@ import Autoplay from "embla-carousel-autoplay";
 import { Card, CardContent } from "@/components/ui/card";
 import StatsSection from "./stat";
 import { EmblaCarouselType } from "embla-carousel";
+import { useTranslations } from "next-intl";
 
 const testimonials = [
   {
     id: 1,
-    text: "I appreciate your hospital really good environment and excellent patient care. You are continuously handle patient treatment wonderfully. Thanks for your great service. Please enjoy the chocolates.",
-    name: "Striven Porter",
-    role: "Financial Adviser",
+    text: "Ich schätze die angenehme Atmosphäre und den hervorragenden Service. Die Beratung war durchgehend freundlich und kompetent. Vielen Dank für die großartige Unterstützung!",
+    name: "Anna Fischer",
+    role: "Finanzberaterin",
   },
   {
     id: 2,
-    text: "Econelo scooters have completely changed my daily commute. Smooth, silent, and efficient — love it!",
+    text: "Econelo‑Scooter haben meinen täglichen Arbeitsweg komplett verändert. Leise, komfortabel und effizient – ich liebe es!",
     name: "Julia Weber",
-    role: "Marketing Expert",
+    role: "Marketing‑Expertin",
   },
   {
     id: 3,
-    text: "The delivery was fast and customer service was excellent. Highly recommend Econelo for anyone looking for an eco-friendly ride.",
+    text: "Die Lieferung war schnell und der Kundenservice hervorragend. Sehr zu empfehlen für alle, die eine umweltfreundliche Mobilitätslösung suchen.",
     name: "Lukas Meyer",
-    role: "Engineer",
+    role: "Ingenieur",
   },
   {
     id: 4,
-    text: "I appreciate your hospital really good environment and excellent patient care. You are continuously handle patient treatment wonderfully. Thanks for your great service. Please enjoy the chocolates.",
-    name: "Striven Porter",
-    role: "Financial Adviser",
+    text: "Ich schätze die angenehme Atmosphäre und den hervorragenden Service. Die Beratung war durchgehend freundlich und kompetent. Vielen Dank für die großartige Unterstützung!",
+    name: "Anna Fischer",
+    role: "Finanzberaterin",
   },
   {
     id: 5,
-    text: "Econelo scooters have completely changed my daily commute. Smooth, silent, and efficient — love it!",
+    text: "Econelo‑Scooter haben meinen täglichen Arbeitsweg komplett verändert. Leise, komfortabel und effizient – ich liebe es!",
     name: "Julia Weber",
-    role: "Marketing Expert",
+    role: "Marketing‑Expertin",
   },
   {
     id: 6,
-    text: "The delivery was fast and customer service was excellent. Highly recommend Econelo for anyone looking for an eco-friendly ride.",
+    text: "Die Lieferung war schnell und der Kundenservice hervorragend. Sehr zu empfehlen für alle, die eine umweltfreundliche Mobilitätslösung suchen.",
     name: "Lukas Meyer",
-    role: "Engineer",
+    role: "Ingenieur",
   },
 ];
 
 const TestimonialsSection = () => {
+  const t = useTranslations();
   const plugin = React.useRef(
     Autoplay({ delay: 4000, stopOnInteraction: false }),
   );
@@ -99,11 +101,11 @@ const TestimonialsSection = () => {
           <div className="flex justify-center items-center gap-2">
             <span className="w-2 h-2 bg-primary rounded-full"></span>
             <span className="uppercase text-sm font-semibold text-gray-600">
-              Our Customer Say
+              {t("testimonialsEyebrow")}
             </span>
           </div>
           <h2 className="text-4xl font-extrabold text-black">
-            Here are some of our most valuable comments.
+            {t("testimonialsTitle")}
           </h2>
         </div>
 
