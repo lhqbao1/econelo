@@ -14,6 +14,7 @@ import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import {
   Command,
   CommandInput,
@@ -25,7 +26,10 @@ import {
 import { useGetProductsSelect } from "@/features/product-group/hook";
 import { ProductItem } from "@/types/products";
 import Image from "next/image";
-import { useGetAllProducts } from "@/features/products/hook";
+import {
+  useGetAllProducts,
+  useProductsAlgoliaSearch,
+} from "@/features/products/hook";
 
 interface SearchDrawerProps {
   isSticky: boolean;
@@ -39,34 +43,56 @@ const SearchDrawer = ({ isSticky }: SearchDrawerProps) => {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations();
+  const searchParams = useSearchParams();
   const isHome = pathname === "/" || pathname.match(/^\/[a-z]{2}$/);
+  const isShopAllPage = pathname.includes("alle-produkte");
 
   // debounce query
   React.useEffect(() => {
     const timeout = setTimeout(() => {
-      setDebouncedQuery(query);
+      setDebouncedQuery(query.trim());
     }, 400);
     return () => clearTimeout(timeout);
   }, [query]);
 
-  const { data: products, isLoading } = useGetAllProducts({
-    search: debouncedQuery,
-    page: 1,
-    page_size: 20,
-    all_products: true,
-    is_econelo: true,
-  });
-  const results = products?.items ?? [];
+  const shouldFetch = open && debouncedQuery.length > 0;
+
+  const { data, isLoading } = useProductsAlgoliaSearch(
+    shouldFetch
+      ? {
+          query: debouncedQuery,
+          is_econelo: true,
+          is_active: true,
+          page_size: 10,
+        }
+      : undefined,
+  );
+
+  const results = data?.items ?? [];
 
   const baseColor = !isHome ? "primary" : isSticky ? "primary" : "white";
   const iconColor = `text-${baseColor}`;
 
+  function handleSubmit() {
+    const value = query.trim();
+    if (!value) return;
+
+    setOpen(false);
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("search", value);
+
+    const target = `/${locale}/alle-produkte?${params.toString()}`;
+
+    if (isShopAllPage) {
+      router.replace(target, { locale });
+    } else {
+      router.push(target, { locale });
+    }
+  }
+
   return (
-    <Drawer
-      open={open}
-      onOpenChange={setOpen}
-      direction="left"
-    >
+    <Drawer open={open} onOpenChange={setOpen} direction="left">
       <DrawerTrigger asChild>
         <button className="p-2 hover:scale-110 transition-transform duration-200">
           <Search
@@ -87,21 +113,24 @@ const SearchDrawer = ({ isSticky }: SearchDrawerProps) => {
             <X />
           </DrawerClose>
         </DrawerTitle>
-        <Command
-          className="h-full w-full"
-          shouldFilter={false}
-        >
+        <Command className="h-full w-full" shouldFilter={false}>
           <div className="p-2 border-b">
             <CommandInput
               placeholder={t("searchProduct")}
               value={query}
               onValueChange={setQuery}
               autoFocus
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleSubmit();
+                }
+              }}
             />
           </div>
           <CommandList className="flex-1 overflow-auto">
             {isLoading && <CommandEmpty>{t("loading")}...</CommandEmpty>}
-            {!isLoading && results.length === 0 && (
+            {!isLoading && results.length === 0 && query.trim().length > 0 && (
               <CommandEmpty>{t("noResult")}</CommandEmpty>
             )}
             {results.length > 0 && (

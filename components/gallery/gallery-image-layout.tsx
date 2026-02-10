@@ -5,7 +5,7 @@ import ImageItem from "./gallery-image-item";
 import { useTranslations } from "next-intl";
 
 export default function ImageGallery() {
-  const PAGE_SIZE = 20;
+  const PAGE_SIZE = 40;
   const [page, setPage] = useState(1);
   const t = useTranslations();
 

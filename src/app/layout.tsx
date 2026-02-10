@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Figtree, Libre_Caslon_Display, Quicksand } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import Script from "next/script";
 import SiteHeader from "@/components/header/header";
 import ImportantNotice from "@/components/shared/notice";
 import { TrustedShops } from "@/components/shared/trusted-shop";
@@ -66,6 +65,29 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.econelo.de/#organization",
+      name: "Econelo",
+      url: "https://www.econelo.de",
+      logo: "https://www.econelo.de/econelo-logo.png",
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.econelo.de/#website",
+      url: "https://www.econelo.de",
+      name: "Econelo",
+      publisher: {
+        "@id": "https://www.econelo.de/#organization",
+      },
+      inLanguage: "de-DE",
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -73,6 +95,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="de">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className={`${quickSand.variable} font-quicksand antialiased`}>
         {/* Google Tag Manager (noscript) */}
         <Providers>

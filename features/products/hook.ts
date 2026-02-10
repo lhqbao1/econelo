@@ -13,21 +13,27 @@ import {
   GetAllProductsParams,
   getProductById,
   getProductByTag,
+  getProductsAlgoliaSearch,
+  GetProductsSearchParams,
 } from "./api";
 import { ProductInput } from "@/lib/schema/product";
+import { ProductResponse } from "@/types/products";
 
 interface SEOInput {
   title: string;
   description: string;
 }
 
-export function useGetAllProducts({
-  page,
-  page_size,
-  all_products,
-  search,
-  is_econelo,
-}: GetAllProductsParams = {}) {
+export function useGetAllProducts(
+  {
+    page,
+    page_size,
+    all_products,
+    search,
+    is_econelo,
+  }: GetAllProductsParams = {},
+  options?: { enabled?: boolean },
+) {
   return useQuery({
     queryKey: ["products", page, page_size, all_products, search, is_econelo], // queryKey thay đổi khi page/page_size thay đổi
     queryFn: () =>
@@ -35,6 +41,31 @@ export function useGetAllProducts({
     retry: false,
     staleTime: 1000 * 60 * 5,
     placeholderData: keepPreviousData,
+    enabled: options?.enabled ?? true,
+  });
+}
+
+export function useProductsAlgoliaSearch(params?: GetProductsSearchParams) {
+  return useQuery<ProductResponse>({
+    queryKey: [
+      "products-algolia-search",
+      params?.page,
+      params?.page_size,
+      params?.query,
+      params?.brand,
+      params?.is_active,
+      params?.brandsKey,
+      params?.categoriesKey, // 👈 STRING
+      params?.brandsKey, // 👈 STRING
+      params?.color,
+      params?.colorsKey,
+      params?.materials,
+      params?.materialsKey,
+      params?.is_econelo,
+    ],
+    queryFn: () => getProductsAlgoliaSearch(params),
+    enabled: !!params, // không gọi khi params chưa sẵn sàng
+    refetchOnWindowFocus: false,
   });
 }
 
