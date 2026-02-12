@@ -14,7 +14,7 @@ export default function ImageItem({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
 
-  /** 🎯 GSAP DROP ANIMATION */
+  /** 🎯 GSAP DROP ANIMATION (soft + quick) */
   useEffect(() => {
     if (!loaded || !wrapperRef.current) return;
 
@@ -22,16 +22,16 @@ export default function ImageItem({
       wrapperRef.current,
       {
         opacity: 0,
-        y: -40,
-        scale: 0.95,
+        y: -12,
+        scale: 0.98,
       },
       {
         opacity: 1,
         y: 0,
         scale: 1,
-        duration: 0.6,
-        ease: "power3.out",
-        delay: index * 0.05, // nhẹ nhàng rơi xuống lần lượt
+        duration: 0.4,
+        ease: "power2.out",
+        delay: index * 0.02, // nhẹ nhàng, nhanh hơn
       },
     );
   }, [loaded]);

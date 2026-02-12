@@ -9,6 +9,8 @@ import { CartItemLocal } from "@/lib/utils/cart";
 import { useRouter } from "@/src/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { ProductItem } from "@/types/products";
+import { useInventoryPoByProductId } from "@/features/inventory-incoming/hook";
+import { useMemo } from "react";
 
 export function useBuySectionActions(currentProduct: ProductItem) {
   const t = useTranslations();
@@ -19,14 +21,46 @@ export function useBuySectionActions(currentProduct: ProductItem) {
   const addToCartMutation = useAddToCart();
   const addToWishlistMutation = useAddToWishList();
 
+  const { data: inventoryPo } = useInventoryPoByProductId(currentProduct.id);
+
+  const incomingStock = useMemo(() => {
+    const items = Array.isArray(inventoryPo)
+      ? inventoryPo
+      : inventoryPo
+        ? [inventoryPo]
+        : [];
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return items.reduce((sum, item) => {
+      if (item.list_delivery_date) {
+        const deliveryDate = new Date(item.list_delivery_date);
+        if (!Number.isNaN(deliveryDate.getTime())) {
+          deliveryDate.setHours(0, 0, 0, 0);
+          if (deliveryDate < today) {
+            return sum;
+          }
+        }
+      }
+
+      return sum + (item.quantity ?? 0);
+    }, 0);
+  }, [inventoryPo]);
+
+  const maxStock = useMemo(() => {
+    const baseStock = currentProduct.stock ?? 0;
+    const usedStock = currentProduct.result_stock ?? 0;
+    return baseStock - usedStock + incomingStock;
+  }, [currentProduct.stock, currentProduct.result_stock, incomingStock]);
+
   // ⭐ Add to Cart cho user chưa login (Local Cart)
   const addLocal = (quantity: number) => {
     const existingItem = cart.find(
       (item: CartItemLocal) => item.product_id === currentProduct.id,
     );
-    const totalQuantity = (existingItem?.quantity || 0) + quantity;
-
-    if (totalQuantity > currentProduct.stock) {
+    const totalQuantity = (existingItem?.quantity || 0) + 1;
+    if ((maxStock > 0 || maxStock === 0) && totalQuantity > maxStock) {
       toast.error(t("notEnoughStock"));
       return;
     }

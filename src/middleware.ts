@@ -44,7 +44,9 @@ export default function middleware(req: NextRequest) {
   // =========================
   if (pathname.startsWith("/de/")) {
     const cleanPath = pathname.replace(/^\/de/, "") || "/";
-    return NextResponse.redirect(new URL(cleanPath, req.url), 301);
+    const cleanUrl = new URL(cleanPath, req.url);
+    cleanUrl.search = searchParams.toString();
+    return NextResponse.redirect(cleanUrl, 301);
   }
 
   // =========================
