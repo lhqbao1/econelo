@@ -3,6 +3,7 @@ import { CartItem } from "@/types/cart";
 
 type NormalizedCartItem = {
   carrier: string;
+  id_provider?: string;
 };
 
 export function normalizeCartItems(
@@ -12,15 +13,25 @@ export function normalizeCartItems(
   if (isLoggedIn) {
     return (cartItems as CartItem[]).map((item) => ({
       carrier: item.products.carrier,
+      id_provider: item.products.id_provider,
     }));
   }
   return (cartItems as CartItemLocal[]).map((item) => ({
     carrier: item.carrier,
+    id_provider: item.id_provider,
   }));
 }
 
 export function calculateShipping(cartItems: NormalizedCartItem[]): number {
   if (cartItems.length === 0) return 0;
+
+  // ✅ Free shipping only if the cart has exactly this one item
+  if (
+    cartItems.length === 1 &&
+    String(cartItems[0].id_provider ?? "") === "1001935"
+  ) {
+    return 0;
+  }
 
   // ✅ Kiểm tra nếu có ít nhất 1 item có carrier là "amm"
   const hasAmmCarrier = cartItems.some(

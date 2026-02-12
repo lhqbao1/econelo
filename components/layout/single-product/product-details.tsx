@@ -2,7 +2,7 @@
 // import CustomBreadCrumb from "@/components/shared/breadcrumb";
 import { Eye } from "lucide-react";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { ProductItem } from "@/types/products";
 import { useLocale, useTranslations } from "next-intl";
 import { useSwipeable } from "react-swipeable";
@@ -32,13 +32,11 @@ const ProductDetails = ({
 }: ProductDetailsProps) => {
   const [mainImageIndex, setMainImageIndex] = useState(0);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }
+  useLayoutEffect(() => {
+    if (typeof window === "undefined") return;
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }, [productId]);
 
   const {
@@ -77,7 +75,7 @@ const ProductDetails = ({
 
   return (
     <>
-      <div className="py-3 lg:pt-3 space-y-4 xl:w-8/12 lg:w-10/12 w-full lg:px-0 px-4">
+      <div className="py-3 lg:pt-3 space-y-4 xl:w-8/12 lg:w-10/12 w-full lg:px-0 px-4 min-h-screen">
         <CustomBreadCrumb
           isProductPage
           currentPage={

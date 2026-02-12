@@ -79,6 +79,53 @@ const BuySection = ({
     }
   }, [currentProduct, methods]);
 
+  // optionally watch quantity to disable buy button if zero or > stock
+  const quantity = watch("quantity");
+
+  const carrier = currentProduct?.carrier ?? "default";
+
+  const shippingCostMap: Record<string, number> = {
+    amm: 35.95,
+    spedition: 35.95,
+  };
+
+  const shippingCost = shippingCostMap[carrier] ?? 5.95;
+
+  const totalWithShipping = Number(currentProduct.final_price) + shippingCost;
+
+  const { data: inventoryPo } = useInventoryPoByProductId(currentProduct.id);
+
+  const incomingStock = useMemo(() => {
+    const items = Array.isArray(inventoryPo)
+      ? inventoryPo
+      : inventoryPo
+        ? [inventoryPo]
+        : [];
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return items.reduce((sum, item) => {
+      if (item.list_delivery_date) {
+        const deliveryDate = new Date(item.list_delivery_date);
+        if (!Number.isNaN(deliveryDate.getTime())) {
+          deliveryDate.setHours(0, 0, 0, 0);
+          if (deliveryDate < today) {
+            return sum;
+          }
+        }
+      }
+
+      return sum + (item.quantity ?? 0);
+    }, 0);
+  }, [inventoryPo]);
+
+  const maxStock = useMemo(() => {
+    const baseStock = currentProduct.stock ?? 0;
+    const usedStock = currentProduct.result_stock ?? 0;
+    return baseStock - usedStock + incomingStock;
+  }, [currentProduct.stock, currentProduct.result_stock, incomingStock]);
+
   const onSubmit = (values: FormValues) => {
     if (!currentProduct) return;
 
@@ -86,9 +133,8 @@ const BuySection = ({
       const existingItem = cart.find(
         (item: CartItemLocal) => item.product_id === currentProduct.id,
       );
-      const totalQuantity = (existingItem?.quantity || 0) + values.quantity;
-
-      if (totalQuantity > currentProduct.stock) {
+      const totalQuantity = (existingItem?.quantity || 0) + 1;
+      if ((maxStock > 0 || maxStock === 0) && totalQuantity > maxStock) {
         toast.error(t("notEnoughStock"));
         return;
       }
@@ -145,53 +191,6 @@ const BuySection = ({
       );
     }
   };
-
-  // optionally watch quantity to disable buy button if zero or > stock
-  const quantity = watch("quantity");
-
-  const carrier = currentProduct?.carrier ?? "default";
-
-  const shippingCostMap: Record<string, number> = {
-    amm: 35.95,
-    spedition: 35.95,
-  };
-
-  const shippingCost = shippingCostMap[carrier] ?? 5.95;
-
-  const totalWithShipping = Number(currentProduct.final_price) + shippingCost;
-
-  const { data: inventoryPo } = useInventoryPoByProductId(currentProduct.id);
-
-  const incomingStock = useMemo(() => {
-    const items = Array.isArray(inventoryPo)
-      ? inventoryPo
-      : inventoryPo
-        ? [inventoryPo]
-        : [];
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    return items.reduce((sum, item) => {
-      if (item.list_delivery_date) {
-        const deliveryDate = new Date(item.list_delivery_date);
-        if (!Number.isNaN(deliveryDate.getTime())) {
-          deliveryDate.setHours(0, 0, 0, 0);
-          if (deliveryDate < today) {
-            return sum;
-          }
-        }
-      }
-
-      return sum + (item.quantity ?? 0);
-    }, 0);
-  }, [inventoryPo]);
-
-  const maxStock = useMemo(() => {
-    const baseStock = currentProduct.stock ?? 0;
-    const usedStock = currentProduct.result_stock ?? 0;
-    return baseStock - usedStock + incomingStock;
-  }, [currentProduct.stock, currentProduct.result_stock, incomingStock]);
 
   return (
     <FormProvider {...methods}>
