@@ -126,6 +126,7 @@ const MainFooter = () => {
             <p className="text-gray-400 leading-relaxed">Herr Frank Rafael</p>
             {/* <p className="text-gray-400">+49 1716 133971</p> */}
             <p className="text-gray-400">frank@frawa-aktiv.de</p>
+            <p className="text-gray-400">+49 172 8965573</p>
           </div>
         </div>
       </div>
