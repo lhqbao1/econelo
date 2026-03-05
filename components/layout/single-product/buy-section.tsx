@@ -83,13 +83,17 @@ const BuySection = ({
   const quantity = watch("quantity");
 
   const carrier = currentProduct?.carrier ?? "default";
+  const isFreeShippingProduct =
+    currentProduct?.id === "3c774b42-1778-4ac5-9c56-3ae6eaf8b19f";
 
   const shippingCostMap: Record<string, number> = {
     amm: 35.95,
     spedition: 35.95,
   };
 
-  const shippingCost = shippingCostMap[carrier] ?? 5.95;
+  const shippingCost = isFreeShippingProduct
+    ? 0
+    : shippingCostMap[carrier] ?? 5.95;
 
   const totalWithShipping = Number(currentProduct.final_price) + shippingCost;
 
