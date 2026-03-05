@@ -20,10 +20,17 @@ export const dynamicParams = true;
 
 // 🏗️ Pre-render sản phẩm (SSG + ISR)
 export async function generateStaticParams() {
-  const products = await getAllProductsSelect({
-    is_econelo: true,
-    all_products: true,
-  });
+  let products: Awaited<ReturnType<typeof getAllProductsSelect>> = [];
+
+  try {
+    products = await getAllProductsSelect({
+      is_econelo: true,
+      all_products: true,
+    });
+  } catch (error) {
+    console.error("❌ getAllProductsSelect failed in generateStaticParams:", error);
+    return [];
+  }
 
   const locales = ["de", "en"];
 
@@ -61,7 +68,12 @@ export async function generateMetadata({
   // SAFE JSON
   product = JSON.parse(JSON.stringify(product));
 
-  const reviews = await getReviewByProduct(product.id);
+  let reviews = [];
+  try {
+    reviews = await getReviewByProduct(product.id);
+  } catch (error) {
+    console.error("❌ getReviewByProduct failed in metadata:", error);
+  }
   const hasReviews = reviews && reviews.length > 0;
 
   const schema: any = {
