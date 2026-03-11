@@ -4,6 +4,7 @@ import { BlogByProductResponse, BlogItem, BlogsResponse } from "@/types/blog";
 export interface GetAllBlogsParams {
   page?: number;
   pageSize?: number;
+  is_econelo?: boolean;
 }
 
 export interface GetBlogsByProductSlugParams {
@@ -57,6 +58,9 @@ export async function getBlogs(params?: GetAllBlogsParams) {
     params: {
       ...(params?.page !== undefined && { page: params.page }),
       ...(params?.pageSize !== undefined && { page_size: params.pageSize }),
+      ...(params?.is_econelo !== undefined && {
+        is_econelo: params.is_econelo,
+      }),
     },
   });
   return data as BlogsResponse;
@@ -73,8 +77,7 @@ export async function getBlogDetailsBySlug(blog_slug: string) {
       typeof error === "object" &&
       error !== null &&
       "response" in error &&
-      typeof (error as { response?: { status?: number } }).response ===
-        "object"
+      typeof (error as { response?: { status?: number } }).response === "object"
         ? (error as { response?: { status?: number } }).response?.status
         : undefined;
 

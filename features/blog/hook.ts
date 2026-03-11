@@ -9,7 +9,11 @@ import {
 
 export function useGetBlogsByProduct(params?: GetBlogsByProductParams) {
   return useQuery({
-    queryKey: ["blogs-by-product", params?.page_size_product, params?.page_size_blog],
+    queryKey: [
+      "blogs-by-product",
+      params?.page_size_product,
+      params?.page_size_blog,
+    ],
     queryFn: () => getBlogsByProduct(params),
     retry: false,
   });
@@ -17,7 +21,7 @@ export function useGetBlogsByProduct(params?: GetBlogsByProductParams) {
 
 export function useGetBlogs(params?: GetAllBlogsParams) {
   return useQuery({
-    queryKey: ["blogs", params?.page, params?.pageSize],
+    queryKey: ["blogs", params?.page, params?.pageSize, params?.is_econelo],
     queryFn: () => getBlogs(params),
     retry: false,
     placeholderData: (prev) => prev, // giữ lại data trước khi trang thay đổi (optional)

@@ -67,15 +67,36 @@ const ProductGridCard = ({ product, idx }: ProductGridCard) => {
     return baseStock - usedStock + incomingStock;
   }, [product.stock, product.result_stock, incomingStock]);
 
+  const effectiveAvailableStock = useMemo(() => {
+    const availableFromApi = Number(
+      (product as ProductItem & { available?: number }).available,
+    );
+
+    if (Number.isFinite(availableFromApi)) {
+      return Math.min(availableFromApi, maxStock);
+    }
+
+    return maxStock;
+  }, [product, maxStock]);
+
+  const isOutOfStock = effectiveAvailableStock <= 0;
+
   const handleAddToCart = (currentProduct: ProductItem) => {
     if (!currentProduct) return;
+    if (isOutOfStock) {
+      toast.error(t("notEnoughStock"));
+      return;
+    }
 
     if (!userId) {
       const existingItem = cart.find(
         (item: CartItemLocal) => item.product_id === currentProduct.id,
       );
       const totalQuantity = (existingItem?.quantity || 0) + 1;
-      if ((maxStock > 0 || maxStock === 0) && totalQuantity > maxStock) {
+      if (
+        (effectiveAvailableStock > 0 || effectiveAvailableStock === 0) &&
+        totalQuantity > effectiveAvailableStock
+      ) {
         toast.error(t("notEnoughStock"));
         return;
       }
@@ -162,8 +183,9 @@ const ProductGridCard = ({ product, idx }: ProductGridCard) => {
               {t("learnMore")}
             </Button>
             <Button
-              className="bg-lime-400 text-black px-6 py-2 font-semibold rounded-full"
-              onClick={(e) => {
+              className="bg-lime-400 text-black px-6 py-2 font-semibold rounded-full disabled:opacity-60 disabled:cursor-not-allowed"
+              disabled={isOutOfStock || addToCartMutation.isPending}
+              onClick={() => {
                 handleAddToCart(product);
               }}
             >
@@ -207,6 +229,7 @@ const ProductGridCard = ({ product, idx }: ProductGridCard) => {
                 variant="outline"
                 size="icon"
                 className="rounded-full border-gray-300 text-primary cursor-pointer"
+                disabled={isOutOfStock || addToCartMutation.isPending}
                 onClick={() => handleAddToCart(product)}
               >
                 <ShoppingBasket className="size-5" />
