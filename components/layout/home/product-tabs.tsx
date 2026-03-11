@@ -44,6 +44,8 @@ export default function ProductTabsClient({
     ...categoriesList.filter((_, i) => i !== 1 && i !== 3),
   ];
 
+  console.log(reordered);
+
   return (
     <>
       <Head>
@@ -108,7 +110,7 @@ export default function ProductTabsClient({
                 {reordered.map((cat, i) => (
                   <Fragment key={cat.id}>
                     <TabsTrigger
-                      value={cat.slug}
+                      value={cat?.slug ?? ""}
                       className={cn(
                         "lg:px-5 px-2 lg:py-3 py-1 font-medium text-sm uppercase transition-all rounded-full border border-gray-200",
                         active === cat.slug
@@ -127,10 +129,7 @@ export default function ProductTabsClient({
                 ))}
               </TabsList>
 
-              <TabsContent
-                className="w-full"
-                value={active}
-              >
+              <TabsContent className="w-full" value={active}>
                 {isLoading ? (
                   <ProductGridSkeleton />
                 ) : (

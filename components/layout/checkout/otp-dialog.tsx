@@ -121,10 +121,7 @@ export function OtpDialog({
   };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={onOpenChange}
-    >
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[400px] gap-2">
         <DialogHeader>
           <DialogTitle className="text-center">OTP</DialogTitle>
@@ -135,10 +132,7 @@ export function OtpDialog({
         </p>
 
         {/* OTP SHADCN */}
-        <div
-          className="flex justify-center mb-4"
-          onPaste={handlePaste}
-        >
+        <div className="flex justify-center mb-4" onPaste={handlePaste}>
           <InputOTP
             maxLength={6}
             value={otpValues.join("")}
@@ -158,7 +152,7 @@ export function OtpDialog({
         </div>
 
         <Button
-          className="w-full bg-secondary/95 hover:bg-secondary"
+          className="w-full bg-primary/95 hover:bg-primary"
           onClick={handleSubmit}
           disabled={loginOtpMutation.isPending}
         >

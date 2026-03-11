@@ -135,3 +135,32 @@
 .clip-triangle-bottom-right {
   clip-path: polygon(100% 100%, 0 100%, 100% 0);
 }
+
+.blog-content hr {
+  @apply my-5;
+}
+
+.blog-content a {
+  @apply underline text-primary cursor-pointer font-semibold;
+}
+
+.blog-content strong {
+  @apply text-primary;
+}
+
+.blog-content img {
+  @apply my-6;
+}
+
+.blog-content ul {
+  @apply list-disc;
+}
+
+.blog-content li {
+  @apply ml-6;
+}
+
+.blog-content h2,
+.blog-content h3 {
+  @apply mt-6 mb-2;
+}

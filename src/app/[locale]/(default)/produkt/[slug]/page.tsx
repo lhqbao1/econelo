@@ -8,6 +8,7 @@ import {
 import { notFound } from "next/navigation";
 import ProductDetails from "@/components/layout/single-product/product-details";
 import { getReviewByProduct } from "@/features/review/api";
+import { ReviewResponse } from "@/types/review";
 
 interface PageProps {
   params: Promise<{ slug: string[]; locale: string }>;
@@ -68,7 +69,7 @@ export async function generateMetadata({
   // SAFE JSON
   product = JSON.parse(JSON.stringify(product));
 
-  let reviews = [];
+  let reviews: ReviewResponse[] = [];
   try {
     reviews = await getReviewByProduct(product.id);
   } catch (error) {
@@ -192,7 +193,7 @@ export default async function Page({
   /* ----------------------------------------------------
    * 2) PARALLEL REQUESTS (SAFE WRAPPED)
    * --------------------------------------------------*/
-  let reviews = [];
+  let reviews: ReviewResponse[] = [];
   let parentProduct = null;
 
   try {

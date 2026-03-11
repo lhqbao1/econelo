@@ -147,7 +147,7 @@ const ShippingSection = ({ productDetails }: ShippingSectionProps) => {
                             <TooltipTrigger asChild>
                               <Info className="inline-block w-3.5 h-3.5 text-gray-500 ml-1 mb-0.5" />
                             </TooltipTrigger>
-                            <TooltipContent className="bg-secondary">
+                            <TooltipContent className="bg-primary">
                               <p className="text-white text-sm">
                                 „Frei Bordsteinkante“ bedeutet: Lieferung bis
                                 zur Grundstücksgrenze – kein Transport ins Haus
