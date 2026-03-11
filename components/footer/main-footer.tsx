@@ -68,6 +68,9 @@ const MainFooter = () => {
             <li className="hover:pl-2 transition-all duration-500 hover:text-white">
               » <Link href="/kontakt">{t("contactUs")}</Link>
             </li>
+            <li className="hover:pl-2 transition-all duration-500 hover:text-white">
+              » <Link href="/blog">{t("blog")}</Link>
+            </li>
           </ul>
         </div>
 
