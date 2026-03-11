@@ -171,6 +171,7 @@ const ProductDetails = ({
                   <BentoGridLayout
                     productDetails={productDetails}
                     parentProduct={parentProduct}
+                    reviews={productReviews}
                   />
                 </div>
               </div>

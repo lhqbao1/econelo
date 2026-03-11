@@ -2,22 +2,29 @@
 
 import { ProductItem } from "@/types/products";
 import { ProductGroupDetailResponse } from "@/types/product-group";
+import { ReviewResponse } from "@/types/review";
 
 import IncludedInPriceCard from "./included-in-price";
 import ProductShortDescription from "./product-short-description";
 import ProductDetailsUserManual from "./product-details-user-manual";
 import QAInput from "./qa/qa-input";
 import ShippingSection from "./shipping-section";
+import { ProductReviewContent } from "./rating";
+import { useTranslations } from "next-intl";
 
 interface BentoGridLayoutSection {
   productDetails: ProductItem;
   parentProduct?: ProductGroupDetailResponse | null;
+  reviews?: ReviewResponse[] | null;
 }
 
 export default function BentoGridLayout({
   productDetails,
   parentProduct,
+  reviews,
 }: BentoGridLayoutSection) {
+  const t = useTranslations();
+
   return (
     <div
       className="
@@ -72,6 +79,23 @@ export default function BentoGridLayout({
         <div className="hidden lg:block">
           <QAInput productId={productDetails.id} />
         </div>
+      </div>
+
+      <div
+        className="
+          lg:col-span-12
+          order-3
+          rounded-lg
+          border
+          bg-white
+          shadow-lg
+          overflow-hidden
+        "
+      >
+        <div className="border-b px-6 py-4">
+          <h3 className="text-xl text-primary font-bold">{t("review")}</h3>
+        </div>
+        <ProductReviewContent reviews={reviews} />
       </div>
     </div>
   );

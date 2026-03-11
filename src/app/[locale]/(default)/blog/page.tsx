@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 export default async function BlogPage() {
   const getMainBlogsCached = unstable_cache(
     async () =>
-      safeRequest(getBlogs({ pageSize: 16 }), {
+      safeRequest(getBlogs({ pageSize: 16, is_econelo: true }), {
         items: [],
         pagination: {
           page: 1,
