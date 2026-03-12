@@ -202,12 +202,6 @@ const ProductGridCard = ({ product, idx }: ProductGridCard) => {
             <h3 className="text-base font-black line-clamp-2">
               {product.name}
             </h3>
-            <div className="flex items-center gap-1">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <Star key={i} size={16} className="text-primary" />
-              ))}
-              <span className="text-sm font-medium">(0)</span>
-            </div>
           </div>
 
           <div
