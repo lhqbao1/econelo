@@ -10,6 +10,7 @@ import ProductDetailsUserManual from "./product-details-user-manual";
 import QAInput from "./qa/qa-input";
 import ShippingSection from "./shipping-section";
 import { ProductReviewContent } from "./rating";
+import GiveCommentSection from "./review/give-comment-section";
 import { useTranslations } from "next-intl";
 
 interface BentoGridLayoutSection {
@@ -95,7 +96,14 @@ export default function BentoGridLayout({
         <div className="border-b px-6 py-4">
           <h3 className="text-xl text-primary font-bold">{t("review")}</h3>
         </div>
-        <ProductReviewContent reviews={reviews} />
+        <div className="grid grid-cols-1 xl:grid-cols-12">
+          <div className="xl:col-span-8 border-b xl:border-b-0 xl:border-r">
+            <ProductReviewContent reviews={reviews} />
+          </div>
+          <div className="xl:col-span-4 p-4 md:p-6">
+            <GiveCommentSection productId={productDetails.id} />
+          </div>
+        </div>
       </div>
     </div>
   );

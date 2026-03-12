@@ -28,6 +28,7 @@ export async function getBlogsByProduct({
       page_size_product,
       page_blog: 1,
       page_size_blog,
+      is_econelo: true,
     },
   });
   return data as BlogByProductResponse;
