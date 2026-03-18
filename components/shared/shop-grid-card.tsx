@@ -156,13 +156,15 @@ const ShopGridCard = ({ product, idx }: ShopGridCardProps) => {
       <div className="relative  overflow-hidden mb-4">
         <Link href={`/produkt/${product.url_key}`}>
           {/* Hình sản phẩm */}
-          <Image
-            src={product.static_files?.[0]?.url ?? "/placeholder-product.webp"}
-            alt={product.name}
-            width={300}
-            height={300}
-            className="w-full h-96 p-4 lg:p-4 object-contain transition-all duration-500 group-hover:scale-110"
-          />
+          <div className="relative w-full h-96 rounded-md bg-white overflow-hidden">
+            <Image
+              src={product.static_files?.[0]?.url ?? "/placeholder-product.webp"}
+              alt={product.name}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+              className="object-contain p-4 lg:p-6 transition-all duration-500 group-hover:scale-110"
+            />
+          </div>
         </Link>
 
         {/* Overlay ẩn (GSAP sẽ bật khi hover) */}
