@@ -1,8 +1,5 @@
 "use client";
-import {
-  getCheckOutByUserId,
-  getCheckOutMainByUserId,
-} from "@/features/checkout/api";
+import { getCheckOutMainByUserId } from "@/features/checkout/api";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import {
@@ -14,21 +11,16 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { formatDate } from "@/lib/date-formated";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontalIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAtom } from "jotai";
-import { contactOrderIdAtom } from "@/store/checkout";
 import { useRouter } from "@/src/i18n/navigation";
 import { userIdAtom } from "@/store/auth";
 
-import {
-  getInvoiceByCheckOut,
-  getInvoiceByUserId,
-} from "@/features/invoice/api";
+import { getInvoiceByUserId } from "@/features/invoice/api";
 import { useCancelMainCheckout } from "@/features/checkout/hook";
 import { useMyOrderTableColumns } from "./columns";
 import { MyOrderDataTable } from "./table";
-import { getStatusStyle } from "@/lib/get-status-styles";
+import { getStatusStyle, getStatusStyleDe } from "@/lib/get-status-styles";
 import OrderDetailsDrawer from "./details-drawer";
 import CancelOrderDialog from "./cancel-dialog";
 import { OrderListSkeleton } from "./skeleton";
@@ -86,14 +78,11 @@ const OrderList = () => {
                 className="w-full rounded-md border border-gray-300"
                 defaultValue={order[0].id}
               >
-                <AccordionItem
-                  value={item.id}
-                  className="border-b-0"
-                >
+                <AccordionItem value={item.id} className="border-b-0">
                   <div
                     className={cn(
                       "border-gray-300 rounded-tr-md rounded-tl-md",
-                      getStatusStyle(item.status.toLocaleLowerCase()).bg,
+                      getStatusStyleDe(item.status.toLocaleLowerCase()).bg,
                     )}
                   >
                     <div className="px-2 flex gap-2 items-center">
