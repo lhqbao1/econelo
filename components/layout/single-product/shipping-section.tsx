@@ -170,6 +170,15 @@ const ShippingSection = ({ productDetails }: ShippingSectionProps) => {
               </ul>
             </div>
           </div>
+
+          {productDetails.brand.name.toLowerCase() === "econelo" && (
+            <div className="border px-2.5 py-2 rounded-md border-black/40">
+              <p className="text-sm text-gray-700">
+                2 Jahre Gewährleistung auf das Fahrzeug. Die Batterie hat eine
+                Garantie von 6 Monaten ab dem Lieferdatum.
+              </p>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
