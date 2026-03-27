@@ -163,12 +163,22 @@ export default function CheckoutPageNew() {
           <div className="bg-gray-100 flex justify-start py-8 px-8 w-full lg:pt-36">
             <div className="lg:w-1/2 w-full">
               <CartSummary
+                form={form}
                 total={total}
                 cart={cartItems}
                 localCart={localCart}
                 hasOtherCarrier={hasOtherCarrier}
                 shippingCost={shippingCost}
                 userLoginId={userLoginId ?? null}
+                submitting={submitting}
+                open={openOtpDialog}
+                onOpenChange={setOpenOtpDialog}
+                email={otpEmail}
+                onSuccess={handleOtpSuccess}
+                verifyOtp={verifyOtp}
+                openBankDialog={openBankDialog}
+                setOpenBankDialog={setOpenBankDialog}
+                handleOTP={handleOTP}
               />
             </div>
           </div>
