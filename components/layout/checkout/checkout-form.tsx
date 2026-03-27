@@ -222,10 +222,7 @@ export const CheckoutFormSection = ({
                 <FormItem>
                   <FormLabel>{t("firstName")}</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder=""
-                    />
+                    <Input {...field} placeholder="" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -238,10 +235,7 @@ export const CheckoutFormSection = ({
                 <FormItem>
                   <FormLabel>{t("lastName")}</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder=""
-                    />
+                    <Input {...field} placeholder="" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -250,10 +244,7 @@ export const CheckoutFormSection = ({
           </div>
         </div>
         <Separator />
-        <CheckoutAddressSection
-          form={form}
-          t={t}
-        />
+        <CheckoutAddressSection form={form} t={t} />
         <Separator />
       </div>
 
@@ -342,10 +333,7 @@ export const CheckoutFormSection = ({
         verifyOtp={verifyOtp}
       />
 
-      <BankDialog
-        open={openBankDialog}
-        onOpenChange={setOpenBankDialog}
-      />
+      <BankDialog open={openBankDialog} onOpenChange={setOpenBankDialog} />
     </>
   );
 };

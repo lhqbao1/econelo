@@ -9,13 +9,32 @@ import { cn } from "@/lib/utils";
 import VoucherApply from "./voucher-apply";
 import { useAtom } from "jotai";
 import { currentVoucherAtom } from "@/store/voucher";
-import { useFormContext, useWatch } from "react-hook-form";
+import { useFormContext, UseFormReturn, useWatch } from "react-hook-form";
 import {
   useGetVoucherById,
   useGetVoucherProducts,
 } from "@/features/voucher/hook";
+import CheckoutPaymentUI from "../stripe/payment-ui";
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
+import AGBDialogTrigger from "../sign-up/agb-dialog";
+import WiderrufDialogTrigger from "../sign-up/widerruf-dialog";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import Link from "next/link";
+import { CreateOrderFormValues } from "@/lib/schema/checkout";
+import { OtpDialog } from "./otp-dialog";
+import BankDialog from "./bank-dialog";
 
 interface CartSummaryProps {
+  form: UseFormReturn<CreateOrderFormValues>;
+
   cart?: CartResponse | any[];
   localCart?: any[];
   shippingCost?: number;
@@ -25,9 +44,21 @@ interface CartSummaryProps {
   isLoading?: boolean;
   hasOtherCarrier: boolean;
   userLoginId: string | null;
+  submitting: boolean;
+
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  email: string;
+  onSuccess: (userId: string) => void;
+  verifyOtp: (otpInput: string) => void;
+
+  openBankDialog: boolean;
+  setOpenBankDialog: (openBankDialog: boolean) => void;
+  handleOTP: (values: CreateOrderFormValues) => void;
 }
 
 export function CartSummary({
+  form,
   cart = [],
   localCart = [],
   shippingCost = 0,
@@ -36,8 +67,19 @@ export function CartSummary({
   isLoading,
   hasOtherCarrier,
   userLoginId,
+  submitting,
+
+  open,
+  onOpenChange,
+  email,
+  onSuccess,
+  verifyOtp,
+
+  openBankDialog,
+  setOpenBankDialog,
+  handleOTP,
 }: CartSummaryProps) {
-  const form = useFormContext();
+  // const form = useFormContext();
 
   const [currentVoucher, setCurrentVoucher] = useAtom(currentVoucherAtom);
   const [voucherId, setVoucherId] = useState<string | null>(currentVoucher);
@@ -224,10 +266,7 @@ export function CartSummary({
         {isLoading ? (
           <div className="animate-pulse space-y-3">
             {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="flex justify-between py-2"
-              >
+              <div key={i} className="flex justify-between py-2">
                 <div className="flex gap-3">
                   <div className="bg-gray-200 w-16 h-16 rounded-md" />
                   <div className="flex flex-col gap-2 w-32">
@@ -288,10 +327,7 @@ export function CartSummary({
       <Separator />
 
       <div className="space-y-4 flex justify-end xl:mb-8">
-        <VoucherApply
-          voucherId={voucherId}
-          setVoucherId={setVoucherId}
-        />
+        <VoucherApply voucherId={voucherId} setVoucherId={setVoucherId} />
       </div>
 
       <Separator />

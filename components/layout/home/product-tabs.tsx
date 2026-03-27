@@ -42,9 +42,9 @@ export default function ProductTabsClient({
     categoriesList[1], // cat thứ 2
     categoriesList[3], // cat thứ 4
     ...categoriesList.filter((_, i) => i !== 1 && i !== 3),
-  ];
-
-  console.log(reordered);
+  ]
+    .filter(Boolean)
+    .slice(0, 4);
 
   return (
     <>
@@ -121,7 +121,7 @@ export default function ProductTabsClient({
                       {cat.name}
                     </TabsTrigger>
                     <div className="hidden lg:block">
-                      {i < categoriesList.length - 1 && (
+                      {i < reordered.length - 1 && (
                         <Separator orientation="vertical" />
                       )}
                     </div>
