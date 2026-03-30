@@ -16,13 +16,13 @@ export const metadata = {
   description:
     "Informationen zu Versand, Lieferung und Zustellbedingungen von Econelo. Erfahren Sie alles über Versandarten, Lieferzeiten und Kosten.",
   alternates: {
-    canonical: "https://www.econelo.de/versandbedingungen",
+    canonical: "https://econelo.de/versandbedingungen",
   },
   openGraph: {
     title: "Liefer- und Versandbedingungen - Econelo",
     description:
       "Alle wichtigen Informationen zu Versand, Lieferung und Zustellung bei Econelo.",
-    url: "https://www.econelo.de/versandbedingungen",
+    url: "https://econelo.de/versandbedingungen",
     siteName: "Econelo",
     locale: "de_DE",
     type: "article",
@@ -71,7 +71,7 @@ export default async function ShippingPolicyPage() {
             "@context": "https://schema.org",
             "@type": "ShippingDeliveryTime",
             name: "Liefer- und Versandbedingungen",
-            url: "https://www.econelo.de/versandbedingungen",
+            url: "https://econelo.de/versandbedingungen",
             transitTimeLabel: "Standardversand innerhalb Deutschlands",
             handlingTime: {
               "@type": "QuantitativeValue",
@@ -94,7 +94,7 @@ export default async function ShippingPolicyPage() {
             publisher: {
               "@type": "Organization",
               name: "Econelo",
-              url: "https://www.econelo.de",
+              url: "https://econelo.de",
             },
           }),
         }}

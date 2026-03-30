@@ -16,13 +16,13 @@ export const metadata = {
   description:
     "Alle Informationen zu Zahlungsarten, Zahlungsmethoden und Zahlungsbedingungen bei Econelo.",
   alternates: {
-    canonical: "https://www.econelo.de/zahlungsbedingungen",
+    canonical: "https://econelo.de/zahlungsbedingungen",
   },
   openGraph: {
     title: "Zahlungsbedingungen - Econelo",
     description:
       "Details zu allen Zahlungsarten und Zahlungsbedingungen bei Econelo.",
-    url: "https://www.econelo.de/zahlungsbedingungen",
+    url: "https://econelo.de/zahlungsbedingungen",
     siteName: "Econelo",
     locale: "de_DE",
     type: "article",
@@ -71,7 +71,7 @@ export default async function PaymentTermsPage() {
             "@context": "https://schema.org",
             "@type": "PaymentMethod",
             name: "Zahlungsbedingungen",
-            url: "https://www.econelo.de/zahlungsbedingungen",
+            url: "https://econelo.de/zahlungsbedingungen",
             description:
               "Übersicht der akzeptierten Zahlungsarten, Zahlungsbedingungen und Zahlungsabwicklung bei Econelo.",
             acceptedPaymentMethod: [
@@ -84,7 +84,7 @@ export default async function PaymentTermsPage() {
             provider: {
               "@type": "Organization",
               name: "Econelo",
-              url: "https://www.econelo.de",
+              url: "https://econelo.de",
             },
           }),
         }}

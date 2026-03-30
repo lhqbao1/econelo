@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-query";
 import { getAllProducts } from "@/features/products/api";
 import { Suspense } from "react";
+import type { Metadata } from "next";
 
 import HomeBanner from "@/components/layout/home/banner";
 import MissionSection from "@/components/layout/home/mission";
@@ -18,6 +19,37 @@ import { CART_QUERY_KEY } from "@/hooks/cart";
 import { getCartItems } from "@/features/cart/api";
 
 export const revalidate = 300;
+
+export const metadata: Metadata = {
+  title: "Econelo – Elektroroller, Elektromobile & E-Mobilität",
+  description:
+    "Entdecken Sie Elektroroller, Elektromobile und Seniorenfahrzeuge von Econelo für komfortable und nachhaltige Mobilität.",
+  alternates: {
+    canonical: "https://econelo.de",
+  },
+  openGraph: {
+    title: "Econelo – Elektroroller, Elektromobile & E-Mobilität",
+    description:
+      "Entdecken Sie Elektroroller, Elektromobile und Seniorenfahrzeuge von Econelo für komfortable und nachhaltige Mobilität.",
+    url: "https://econelo.de",
+    siteName: "Econelo",
+    type: "website",
+  },
+};
+
+const homeSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": "https://econelo.de/#homepage",
+  url: "https://econelo.de",
+  name: "Econelo – Elektroroller, Elektromobile & E-Mobilität",
+  description:
+    "Entdecken Sie Elektroroller, Elektromobile und Seniorenfahrzeuge von Econelo.",
+  isPartOf: {
+    "@id": "https://econelo.de/#website",
+  },
+  inLanguage: "de-DE",
+};
 
 export default async function HomePage() {
   const queryClient = new QueryClient();
@@ -35,12 +67,18 @@ export default async function HomePage() {
   const dehydratedState: DehydratedState = dehydrate(queryClient);
 
   return (
-    <HydrationBoundary state={dehydratedState}>
-      {/* ✅ Suspense cho loading mượt */}
-      <Suspense fallback={<HomeSkeleton />}>
-        <HomeContent />
-      </Suspense>
-    </HydrationBoundary>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema) }}
+      />
+      <HydrationBoundary state={dehydratedState}>
+        {/* ✅ Suspense cho loading mượt */}
+        <Suspense fallback={<HomeSkeleton />}>
+          <HomeContent />
+        </Suspense>
+      </HydrationBoundary>
+    </>
   );
 }
 

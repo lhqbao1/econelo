@@ -146,6 +146,8 @@ export type ProductItem = {
   name: string;
   description: string;
   price: number;
+  ds_price?: number;
+  delivery_charge?: number;
   id_provider: string;
   cost: number;
   discount_percent?: number;
@@ -153,7 +155,8 @@ export type ProductItem = {
   tax: string;
   collection?: string | null;
   stock: number;
-  result_stock: number;
+  result_stock?: number;
+  incomming_stock?: number;
   sku: string;
   ean: string;
   carrier: string;
@@ -194,8 +197,10 @@ export type ProductItem = {
   options: VariantOptionResponse[];
   categories: CategoryResponse[];
   brand: BrandResponse;
+  component: string;
 
   delivery_multiple: boolean;
+  return_cost: number;
   materials: string;
   color: string;
   number_of_packages: number;
@@ -213,6 +218,18 @@ export type ProductItem = {
   note: string | null;
 
   inventory: InventoryItem[];
+  log_stocks: ProductStockLog[];
+  inventory_pos: InventoryPosItem[];
+  vouchers: VoucherItem[];
+
+  faqs: ProductFAQ[];
+  bullet_point_1: string;
+  bullet_point_2: string;
+  bullet_point_3: string;
+  bullet_point_4: string;
+  bullet_point_5: string;
+
+  is_import_to_amm: boolean;
 };
 
 export type ProductResponse = {

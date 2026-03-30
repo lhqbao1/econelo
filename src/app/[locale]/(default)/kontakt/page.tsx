@@ -6,28 +6,29 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import Script from "next/script";
+import type { Metadata } from "next";
 import React from "react";
 
 // ✅ Metadata SEO cho trang Contact
-export const metadata = {
-  title: "Kontakt | Prestige Home – Kontaktieren Sie uns",
+export const metadata: Metadata = {
+  title: "Kontakt | Econelo – Kontaktieren Sie uns",
   description:
-    "Kontaktieren Sie Prestige Home für Fragen zu Produkten, Bestellungen, Versand oder Support. Wir helfen Ihnen gerne weiter.",
-  alternates: { canonical: "https://www.econelo.de/de/contact" },
+    "Kontaktieren Sie Econelo für Fragen zu Produkten, Bestellungen, Versand oder Support. Wir helfen Ihnen gerne weiter.",
+  alternates: { canonical: "https://econelo.de/kontakt" },
   openGraph: {
-    title: "Kontakt | Prestige Home",
+    title: "Kontakt | Econelo",
     description:
-      "Kontaktieren Sie Prestige Home für Fragen zu Produkten, Bestellungen, Versand oder Support.",
-    url: "https://www.econelo.de/de/contact",
-    siteName: "Prestige Home",
+      "Kontaktieren Sie Econelo für Fragen zu Produkten, Bestellungen, Versand oder Support.",
+    url: "https://econelo.de/kontakt",
+    siteName: "Econelo",
     type: "website",
     locale: "de_DE",
   },
   twitter: {
     card: "summary",
-    title: "Kontakt | Prestige Home",
+    title: "Kontakt | Econelo",
     description:
-      "Kontaktieren Sie Prestige Home für Fragen zu Produkten, Bestellungen, Versand oder Support.",
+      "Kontaktieren Sie Econelo für Fragen zu Produkten, Bestellungen, Versand oder Support.",
   },
 };
 
@@ -39,7 +40,7 @@ const ContactPage = () => {
       <div className="relative min-h-[400px] w-full">
         <Image
           src={"/econelo-banner1.webp"}
-          alt="Prestige Home Kontakt Banner"
+          alt="Econelo Kontakt Banner"
           fill
           className="absolute top-0 left-0 w-full h-full object-cover z-10"
           unoptimized
@@ -72,14 +73,14 @@ const ContactPage = () => {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "ContactPage",
-            name: "Kontakt Prestige Home",
-            url: "https://www.econelo.de/de/contact",
+            name: "Kontakt Econelo",
+            url: "https://econelo.de/kontakt",
             contactType: "customer support",
             areaServed: "DE",
             publisher: {
               "@type": "Organization",
-              name: "Prestige Home",
-              url: "https://www.econelo.de",
+              name: "Econelo",
+              url: "https://econelo.de",
             },
           }),
         }}

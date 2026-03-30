@@ -20,12 +20,12 @@ export const metadata: Metadata = {
   description:
     "Hier finden Sie die allgemeinen Geschäftsbedingungen (AGB) von Econelo. Transparente Regeln und faire Konditionen.",
   alternates: {
-    canonical: "http://econelo.de/agb",
+    canonical: "https://econelo.de/agb",
   },
   openGraph: {
     title: "AGB - Econelo",
     description: "Unsere Allgemeinen Geschäftsbedingungen (AGB) im Überblick.",
-    url: "https://www.econelo.de/agb",
+    url: "https://econelo.de/agb",
     siteName: "Econelo",
     locale: "de_DE",
     type: "article",
@@ -65,13 +65,13 @@ export default async function AGBPage() {
             "@context": "https://schema.org",
             "@type": "WebPage",
             name: "Allgemeine Geschäftsbedingungen (AGB)",
-            url: "https://www.econelo.de/agb",
+            url: "https://econelo.de/agb",
             about: { "@type": "Thing", name: "Terms and Conditions" },
             inLanguage: "de",
             publisher: {
               "@type": "Organization",
               name: "Econelo",
-              url: "https://www.econelo.de",
+              url: "https://econelo.de",
               logo: {
                 "@type": "ImageObject",
                 url: "https://pxjiuyvomonmptmmkglv.supabase.co/storage/v1/object/public/erp/uploads/5c38c322-bafc-4e6f-8d14-0c1ba4b7b8de_invoice-logo.png",

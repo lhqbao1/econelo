@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { useQueryClient } from "@tanstack/react-query";
 import { HandleApiError } from "@/lib/api-helper";
-import { Eye, ShoppingBasket, Star } from "lucide-react";
+import { Eye, ShoppingBasket } from "lucide-react";
 import { useInventoryPoByProductId } from "@/features/inventory-incoming/hook";
 
 interface ProductGridCard {
@@ -160,7 +160,7 @@ const ProductGridCard = ({ product, idx }: ProductGridCard) => {
         <div className="relative  overflow-hidden mb-4">
           <Link href={`/produkt/${product.url_key}`}>
             {/* Hình sản phẩm */}
-            <div className="relative w-full h-96 rounded-md bg-white overflow-hidden">
+            <div className="relative w-full lg:h-72 h-60 rounded-md bg-white overflow-hidden">
               <Image
                 src={
                   product.static_files?.[0]?.url ?? "/placeholder-product.webp"
@@ -168,7 +168,7 @@ const ProductGridCard = ({ product, idx }: ProductGridCard) => {
                 alt={product.name}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                className="object-contain p-4 lg:p-8 transition-all duration-500 group-hover:scale-110"
+                className="object-contain p-2 lg:p-2 transition-all duration-500 group-hover:scale-110"
               />
             </div>
           </Link>
@@ -185,9 +185,11 @@ const ProductGridCard = ({ product, idx }: ProductGridCard) => {
               {t("learnMore")}
             </Button>
             <Button
-              className="bg-lime-400 text-black px-6 py-2 font-semibold rounded-full disabled:opacity-60 disabled:cursor-not-allowed"
+              className="bg-lime-400 text-black px-6 py-2 font-semibold rounded-full disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-auto"
               disabled={isOutOfStock || addToCartMutation.isPending}
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 handleAddToCart(product);
               }}
             >

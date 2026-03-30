@@ -10,7 +10,7 @@ import type { Metadata } from "next";
 /* PPR */
 export const experimental_ppr = true;
 export const revalidate = 3600;
-const BLOG_BASE_URL = "https://www.econelo.de/blog";
+const BLOG_BASE_URL = "https://econelo.de/blog";
 
 interface PageProps {
   params: Promise<{ slug: string[] }>;
@@ -176,7 +176,7 @@ export default async function BlogCategoryPage({ params }: PageProps) {
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: "https://www.econelo.de",
+        item: "https://econelo.de",
       },
       {
         "@type": "ListItem",

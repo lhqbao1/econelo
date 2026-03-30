@@ -19,12 +19,12 @@ export const metadata: Metadata = {
   description:
     "Lesen Sie die Datenschutzerklärung von Econelo – Informationen zum Datenschutz, zur Verarbeitung personenbezogener Daten und zu Ihren Rechten.",
   alternates: {
-    canonical: "http://econelo.de/datenschutzerklaerung",
+    canonical: "https://econelo.de/datenschutzerklaerung",
   },
   openGraph: {
     title: "Datenschutzerklärung | Econelo",
     description: "Transparenz über Datenschutz und Ihre Rechte bei Econelo.",
-    url: "https://www.econelo.de/datenschutzerklaerung",
+    url: "https://econelo.de/datenschutzerklaerung",
     siteName: "Econelo",
     locale: "de_DE",
     type: "article",
@@ -64,7 +64,7 @@ export default async function DatenschutzerklarungPage() {
             "@context": "https://schema.org",
             "@type": "AboutPage",
             name: "Datenschutzerklärung – Econelo",
-            url: "https://www.econelo.de/datenschutzerklaerung",
+            url: "https://econelo.de/datenschutzerklaerung",
             about: {
               "@type": "Thing",
               name: "Privacy Policy / Data Protection",
@@ -73,7 +73,7 @@ export default async function DatenschutzerklarungPage() {
             publisher: {
               "@type": "Organization",
               name: "Econelo",
-              url: "https://www.econelo.de",
+              url: "https://econelo.de",
               logo: {
                 "@type": "ImageObject",
                 url: "https://pxjiuyvomonmptmmkglv.supabase.co/storage/v1/object/public/erp/uploads/5c38c322-bafc-4e6f-8d14-0c1ba4b7b8de_invoice-logo.png",

@@ -2,40 +2,36 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useMediaQuery } from "react-responsive";
 
 import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { useTranslations } from "next-intl";
-import {
-  useGetCategories,
-  useGetCategoriesWithChildren,
-} from "@/features/category/hook";
-import { flattenChildCategories } from "@/lib/flattern-categories";
+import { useGetCategoriesWithChildren } from "@/features/category/hook";
 
 export function NavBar() {
-  const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
   const t = useTranslations();
 
   const {
     data: categories,
-    isLoading,
-    isError,
   } = useGetCategoriesWithChildren({ is_econelo: true });
 
-  const childCategories = React.useMemo(
-    () => flattenChildCategories(categories ?? []),
+  const groupedCategories = React.useMemo(
+    () =>
+      (categories ?? []).filter(
+        (parent) =>
+          parent.name?.trim().length > 0 ||
+          (parent.children?.length ?? 0) > 0,
+      ),
     [categories],
   );
 
   return (
-    <NavigationMenu viewport={isMobile}>
+    <NavigationMenu viewport={false}>
       <NavigationMenuList className="flex-wrap">
         <NavigationMenuItem className="">
           <NavigationMenuTrigger
@@ -59,19 +55,37 @@ export function NavBar() {
           <NavigationMenuTrigger className="uppercase font-semibold bg-transparent text-sm hover:bg-transparent cursor-pointer data-[state=open]:hover:bg-transparent data-[state=open]:focus:bg-transparent data-[state=open]:bg-transparent">
             {t("categories")}
           </NavigationMenuTrigger>
-          <NavigationMenuContent className="rounded-xs">
-            <ul className="grid gap-2 md:w-[400px] lg:w-[300px]">
-              {childCategories?.map((item, index) => {
-                return (
-                  <ListItem
-                    key={item.id}
-                    href={`/kategorie/${item.slug}`}
-                    title={item.name}
-                    className="uppercase"
-                  ></ListItem>
-                );
-              })}
-            </ul>
+          <NavigationMenuContent className="left-0 mt-3 w-[94vw] max-w-[1180px] md:left-1/2 md:w-[calc(100vw-4rem)] md:max-w-[1100px] md:-translate-x-1/2 lg:w-[1040px] xl:w-[1180px] rounded-xl border border-border/80 bg-white shadow-[0_40px_90px_-26px_rgba(0,0,0,0.68),0_20px_40px_-18px_rgba(0,0,0,0.46)] group-data-[viewport=false]/navigation-menu:!rounded-xl group-data-[viewport=false]/navigation-menu:!shadow-[0_40px_90px_-26px_rgba(0,0,0,0.68),0_20px_40px_-18px_rgba(0,0,0,0.46)] before:hidden">
+            <div className="max-h-[70vh] overflow-y-auto overscroll-contain px-5 py-5 md:px-7 md:py-6">
+              <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                {groupedCategories.map((parent) => (
+                  <li
+                    key={parent.id}
+                    className="rounded-xl border border-border/70 bg-white p-4 transition-colors hover:border-primary/35"
+                  >
+                    <Link
+                      href={`/kategorie/${parent.slug}`}
+                      className="block text-base font-semibold text-black transition-colors hover:text-primary"
+                    >
+                      {parent.name}
+                    </Link>
+
+                    <ul className="mt-3 space-y-1.5">
+                      {(parent.children ?? []).map((child) => (
+                        <li key={child.id}>
+                          <Link
+                            href={`/kategorie/${child.slug}`}
+                            className="block rounded-md px-2 py-1.5 text-sm text-gray-700 transition-colors hover:bg-primary/10 hover:text-primary"
+                          >
+                            {child.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
 
@@ -94,33 +108,5 @@ export function NavBar() {
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
-  );
-}
-
-function ListItem({
-  title,
-  children,
-  href,
-  ...props
-}: React.ComponentPropsWithoutRef<"li"> & { href: string }) {
-  return (
-    <li {...props}>
-      <NavigationMenuLink
-        asChild
-        className="group/item block"
-      >
-        <Link
-          href={href}
-          className="pl-8 py-5 transition-all duration-300"
-        >
-          <div className="text-black text-md leading-none font-semibold transition-all duration-400 group-hover/item:pl-2 group-hover/item:text-primary">
-            {title}
-          </div>
-          <p className="text-muted-foreground line-clamp-2 text-md leading-snug">
-            {children}
-          </p>
-        </Link>
-      </NavigationMenuLink>
-    </li>
   );
 }

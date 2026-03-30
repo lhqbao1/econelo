@@ -3,18 +3,18 @@ import VideoGallery from "@/components/gallery/gallery-video-layout";
 import Script from "next/script";
 
 export const metadata = {
-  title: "Galerie | Prestige Home Deutschland",
+  title: "Galerie | Econelo Deutschland",
   description:
-    "Entdecken Sie die Prestige Home Galerie mit hochwertigen Bildern und Videos moderner Wohnräume, Einrichtungsideen und exklusiver Interior-Inspirationen.",
+    "Entdecken Sie die Econelo Galerie mit hochwertigen Bildern und Videos moderner Elektromobile und E-Roller.",
   alternates: {
-    canonical: "https://www.econelo.de/galerie",
+    canonical: "https://econelo.de/galerie",
   },
   openGraph: {
-    title: "Prestige Home Galerie – Bilder & Videos exklusiver Wohnideen",
+    title: "Econelo Galerie – Bilder & Videos moderner E-Mobilität",
     description:
-      "Durchstöbern Sie unsere Galerie mit hochwertigen Fotos und Videos. Inspirationen für modernes Wohnen, stilvolle Einrichtung und exklusive Interior-Konzepte.",
-    url: "https://www.econelo.de/galerie",
-    siteName: "Prestige Home",
+      "Durchstöbern Sie unsere Galerie mit hochwertigen Fotos und Videos rund um moderne E-Mobilität.",
+    url: "https://econelo.de/galerie",
+    siteName: "Econelo",
     type: "website",
     locale: "de_DE",
   },
@@ -30,7 +30,7 @@ export default function GalleryPage() {
     name: "Econelo Bilder- & Videogalerie",
     description:
       "Galerie mit Bildern und Videos der Econelo Elektrofahrzeuge – hochwertige Eindrücke von Design, Komfort und moderner E-Mobilität.",
-    url: "https://www.econelo.de/galerie",
+    url: "https://econelo.de/galerie",
     mainEntity: {
       "@type": "ItemList",
       itemListElement: [
@@ -38,13 +38,13 @@ export default function GalleryPage() {
           "@type": "MediaObject",
           name: "Econelo Video Galerie",
           description: "Videos verschiedener Econelo Elektrofahrzeuge.",
-          url: "https://www.econelo.de/galerie",
+          url: "https://econelo.de/galerie",
         },
         {
           "@type": "MediaObject",
           name: "Econelo Bildergalerie",
           description: "Bilder der Econelo Elektrofahrzeuge.",
-          url: "https://www.econelo.de/galerie",
+          url: "https://econelo.de/galerie",
         },
       ],
     },
