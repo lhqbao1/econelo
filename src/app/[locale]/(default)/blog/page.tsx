@@ -11,7 +11,7 @@ import { unstable_cache } from "next/cache";
 /* PPR */
 export const experimental_ppr = true;
 export const revalidate = 3600;
-const BLOG_BASE_URL = "https://www.econelo.de/blog";
+const BLOG_BASE_URL = "https://econelo.de/blog";
 
 /* Metadata */
 export const metadata: Metadata = {

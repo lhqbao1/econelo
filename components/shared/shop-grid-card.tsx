@@ -16,7 +16,7 @@ import { Button } from "../ui/button";
 import { CartItemLocal } from "@/lib/utils/cart";
 import { toast } from "sonner";
 import { HandleApiError } from "@/lib/api-helper";
-import { Eye, ShoppingBasket, Star } from "lucide-react";
+import { Eye, ShoppingBasket } from "lucide-react";
 
 interface ShopGridCardProps {
   product: ProductItem;
@@ -156,9 +156,11 @@ const ShopGridCard = ({ product, idx }: ShopGridCardProps) => {
       <div className="relative  overflow-hidden mb-4">
         <Link href={`/produkt/${product.url_key}`}>
           {/* Hình sản phẩm */}
-          <div className="relative w-full h-96 rounded-md bg-white overflow-hidden">
+          <div className="relative w-full lg:h-72 h-60 rounded-md bg-white overflow-hidden">
             <Image
-              src={product.static_files?.[0]?.url ?? "/placeholder-product.webp"}
+              src={
+                product.static_files?.[0]?.url ?? "/placeholder-product.webp"
+              }
               alt={product.name}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
@@ -179,9 +181,9 @@ const ShopGridCard = ({ product, idx }: ShopGridCardProps) => {
             {t("learnMore")}
           </Button>
           <Button
-            className="bg-lime-400 text-black px-6 py-2 font-semibold rounded-full disabled:opacity-60 disabled:cursor-not-allowed"
+            className="bg-lime-400 text-black px-6 py-2 font-semibold rounded-full disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-auto"
             disabled={isOutOfStock || addToCartMutation.isPending}
-            onClick={() => handleAddToCart(product)}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleAddToCart(product); }}
           >
             {t("addToCart")}
           </Button>
@@ -194,12 +196,6 @@ const ShopGridCard = ({ product, idx }: ShopGridCardProps) => {
             {product.categories[0].name}
           </p>
           <h3 className="text-base font-black line-clamp-2">{product.name}</h3>
-          <div className="flex items-center gap-1">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <Star key={i} size={16} className="text-primary" />
-            ))}
-            <span className="text-sm font-medium">(0)</span>
-          </div>
         </div>
 
         <div
@@ -222,7 +218,7 @@ const ShopGridCard = ({ product, idx }: ShopGridCardProps) => {
               size="icon"
               className="rounded-full border-gray-300 text-primary cursor-pointer disabled:cursor-not-allowed"
               disabled={isOutOfStock || addToCartMutation.isPending}
-              onClick={() => handleAddToCart(product)}
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleAddToCart(product); }}
             >
               <ShoppingBasket className="size-5" />
             </Button>

@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     title: "Impressum | Econelo",
     description:
       "Alle rechtlichen Informationen und Kontaktdaten von Econelo finden Sie hier.",
-    url: "https://www.econelo.de/impressum",
+    url: "https://econelo.de/impressum",
     siteName: "Econelo",
     locale: "de_DE",
     type: "article",
@@ -66,15 +66,15 @@ export default async function ImpressumPage() {
             "@context": "https://schema.org",
             "@type": "WebPage",
             name: "Impressum – Econelo",
-            url: "https://www.econelo.de/impressum",
+            url: "https://econelo.de/impressum",
             about: { "@type": "Thing", name: "Legal Notice / Impressum" },
             publisher: {
               "@type": "Organization",
               name: "Econelo",
-              url: "https://www.econelo.de",
+              url: "https://econelo.de",
               logo: {
                 "@type": "ImageObject",
-                url: "https://www.econelo.de/images/logo.png",
+                url: "https://econelo.de/econelo-logo.png",
               },
               contactPoint: {
                 "@type": "ContactPoint",

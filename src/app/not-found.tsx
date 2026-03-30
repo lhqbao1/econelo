@@ -13,11 +13,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "404 | Seite nicht gefunden",
     description: "Die gesuchte Seite wurde leider nicht gefunden.",
-    url: "https://www.econelo.de/404",
+    url: "https://econelo.de/404",
     type: "website",
     // images: [
     //   {
-    //     url: "https://www.econelo.de/og-image-404.png", // optional
+    //     url: "https://econelo.de/og-image-404.png", // optional
     //   },
     // ],
   },

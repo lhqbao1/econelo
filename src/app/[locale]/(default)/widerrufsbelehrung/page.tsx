@@ -16,13 +16,13 @@ export const metadata = {
   description:
     "Hier finden Sie die Widerrufsbelehrung (Rücktrittsrecht) von Econelo. Erfahren Sie, wie Sie Ihre Bestellung widerrufen können.",
   alternates: {
-    canonical: "http://econelo.de/widerrufsbelehrung",
+    canonical: "https://econelo.de/widerrufsbelehrung",
   },
   openGraph: {
     title: "Widerrufsbelehrung - Econelo",
     description:
       "Alles über Ihr Rücktrittsrecht bei Econelo. Informationen zum Widerruf von Bestellungen.",
-    url: "https://www.econelo.de/widerrufsbelehrung",
+    url: "https://econelo.de/widerrufsbelehrung",
     siteName: "Econelo",
     locale: "de_DE",
     type: "article",
@@ -70,7 +70,7 @@ export default async function WiderrufPage() {
             "@context": "https://schema.org",
             "@type": "MerchantReturnPolicy",
             name: "Widerrufsbelehrung – Rückgaberecht",
-            url: "https://www.econelo.de/de/widerrufsbelehrung",
+            url: "https://econelo.de/de/widerrufsbelehrung",
             applicableCountry: "DE",
             inLanguage: "de",
             returnPolicyCategory:
@@ -81,7 +81,7 @@ export default async function WiderrufPage() {
             publisher: {
               "@type": "Organization",
               name: "Econelo",
-              url: "https://www.econelo.de",
+              url: "https://econelo.de",
             },
           }),
         }}

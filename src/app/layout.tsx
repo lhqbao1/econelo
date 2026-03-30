@@ -14,7 +14,7 @@ const quickSand = Quicksand({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.econelo.de"),
+  metadataBase: new URL("https://econelo.de"),
   title: {
     default: "Econelo – Elektroroller, Elektromobile & E-Mobilität",
     template: "%s | Econelo",
@@ -38,19 +38,17 @@ export const metadata: Metadata = {
     apple: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://www.econelo.de",
+    canonical: "https://econelo.de",
   },
   openGraph: {
     title: "Econelo – Elektroroller & Elektromobile für moderne Mobilität",
     description:
       "Elektroroller, Elektromobile und Seniorenfahrzeuge für Alltag und Freizeit. Nachhaltige E-Mobilität mit Qualität und Komfort.",
-    url: "https://www.econelo.de",
+    url: "https://econelo.de",
     siteName: "Econelo",
     images: [
       {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
+        url: "/banner.jpeg",
       },
     ],
     locale: "de_DE",
@@ -61,7 +59,7 @@ export const metadata: Metadata = {
     title: "Econelo – Elektroroller & Elektromobile",
     description:
       "Elektroroller, Elektromobile und Seniorenfahrzeuge für nachhaltige Mobilität.",
-    images: ["/og-image.jpg"],
+    images: ["/banner.jpeg"],
   },
 };
 
@@ -70,18 +68,27 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://www.econelo.de/#organization",
+      "@id": "https://econelo.de/#organization",
       name: "Econelo",
-      url: "https://www.econelo.de",
-      logo: "https://www.econelo.de/econelo-logo.png",
+      url: "https://econelo.de",
+      logo: "https://econelo.de/econelo-logo.png",
     },
     {
       "@type": "WebSite",
-      "@id": "https://www.econelo.de/#website",
-      url: "https://www.econelo.de",
+      "@id": "https://econelo.de/#website",
+      url: "https://econelo.de",
       name: "Econelo",
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate:
+            "https://econelo.de/alle-produkte?search={search_term_string}",
+        },
+        "query-input": "required name=search_term_string",
+      },
       publisher: {
-        "@id": "https://www.econelo.de/#organization",
+        "@id": "https://econelo.de/#organization",
       },
       inLanguage: "de-DE",
     },

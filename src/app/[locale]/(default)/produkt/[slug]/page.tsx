@@ -1,6 +1,6 @@
-import { getProductBySlug, getProductsFeed } from "@/features/products/api";
+import { getProductBySlug } from "@/features/products/api";
 import type { Metadata } from "next";
-import { StaticFile } from "@/types/products";
+import { ProductItem } from "@/types/products";
 import {
   getAllProductsSelect,
   getProductGroupDetail,
@@ -12,6 +12,174 @@ import { ReviewResponse } from "@/types/review";
 
 interface PageProps {
   params: Promise<{ slug: string[]; locale: string }>;
+}
+
+const SITE_URL = "https://econelo.de";
+const DEFAULT_PRODUCT_IMAGE = `${SITE_URL}/product-placeholder.png`;
+const FALLBACK_PRODUCT_NAME = "Produkt";
+const FALLBACK_PRODUCT_DESCRIPTION =
+  "Entdecken Sie Produktinformationen bei Econelo.";
+
+function stripHtml(input?: string | null): string {
+  if (!input) return "";
+  return input.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function getProductUrl(urlKey?: string): string {
+  return `${SITE_URL}/produkt/${urlKey ?? ""}`;
+}
+
+function getProductImageUrls(product: ProductItem): string[] {
+  const urls =
+    product.static_files
+      ?.map((file) => file?.url)
+      .filter((url): url is string => typeof url === "string" && url.length > 0) ??
+    [];
+
+  return urls.length > 0 ? urls : [DEFAULT_PRODUCT_IMAGE];
+}
+
+function getProductMetaDescription(product: ProductItem): string {
+  const raw = product.meta_description || product.description || "";
+  return stripHtml(raw).slice(0, 160) || FALLBACK_PRODUCT_DESCRIPTION;
+}
+
+function buildProductSchemas(product: ProductItem, reviews: ReviewResponse[]) {
+  const productUrl = getProductUrl(product.url_key);
+  const category = product.categories?.[0];
+  const imageUrls = getProductImageUrls(product);
+  const description = getProductMetaDescription(product);
+  const price = product.final_price ?? product.price ?? 0;
+  const inStock = Number(product.stock ?? 0) > 0;
+  const safeName = product.name || FALLBACK_PRODUCT_NAME;
+  const safeReviews = Array.isArray(reviews) ? reviews : [];
+
+  const productSchema: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "@id": `${productUrl}#product`,
+    name: safeName,
+    url: productUrl,
+    image: imageUrls,
+    description,
+    sku: product.sku || undefined,
+    gtin13: product.ean || undefined,
+    brand: {
+      "@type": "Brand",
+      name: product.brand?.name ?? "Econelo",
+    },
+    offers: {
+      "@type": "Offer",
+      url: productUrl,
+      priceCurrency: "EUR",
+      price: String(price),
+      availability: inStock
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+    },
+  };
+
+  if (safeReviews.length > 0) {
+    const ratingValue =
+      safeReviews.reduce((sum, review) => sum + (review.rating || 0), 0) /
+      safeReviews.length;
+
+    productSchema.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: Number(ratingValue.toFixed(1)),
+      reviewCount: safeReviews.length,
+    };
+  }
+
+  const breadcrumbItems: Array<Record<string, unknown>> = [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: SITE_URL,
+    },
+  ];
+
+  if (category?.slug) {
+    breadcrumbItems.push({
+      "@type": "ListItem",
+      position: 2,
+      name: category.name || "Produkte",
+      item: `${SITE_URL}/kategorie/${category.slug}`,
+    });
+  }
+
+  breadcrumbItems.push({
+    "@type": "ListItem",
+    position: breadcrumbItems.length + 1,
+    name: safeName,
+    item: productUrl,
+  });
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: breadcrumbItems,
+  };
+
+  return {
+    productSchema,
+    breadcrumbSchema,
+    productUrl,
+    imageUrls,
+    description,
+  };
+}
+
+function normalizeProductForRender(product: ProductItem): ProductItem {
+  const plain = toPlain(product, {} as ProductItem);
+  const safeStock = Number(plain.stock);
+  const safePrice = Number(plain.price);
+  const safeFinalPrice = Number(plain.final_price);
+
+  return {
+    ...plain,
+    id: plain.id ?? "",
+    name: plain.name || FALLBACK_PRODUCT_NAME,
+    description: plain.description || "",
+    url_key: plain.url_key || "",
+    sku: plain.sku || "",
+    ean: plain.ean || "",
+    meta_title: plain.meta_title || plain.name || FALLBACK_PRODUCT_NAME,
+    meta_description: plain.meta_description || "",
+    stock: Number.isFinite(safeStock) ? safeStock : 0,
+    price: Number.isFinite(safePrice)
+      ? safePrice
+      : Number.isFinite(safeFinalPrice)
+        ? safeFinalPrice
+        : 0,
+    final_price: Number.isFinite(safeFinalPrice)
+      ? safeFinalPrice
+      : Number.isFinite(safePrice)
+        ? safePrice
+        : 0,
+    static_files: Array.isArray(plain.static_files) ? plain.static_files : [],
+    categories: Array.isArray(plain.categories)
+      ? plain.categories.map((category) => ({
+          ...category,
+          children: Array.isArray(category?.children) ? category.children : [],
+        }))
+      : [],
+    pdf_files: Array.isArray(plain.pdf_files) ? plain.pdf_files : [],
+    options: Array.isArray(plain.options) ? plain.options : [],
+    packages: Array.isArray(plain.packages) ? plain.packages : [],
+    marketplace_products: Array.isArray(plain.marketplace_products)
+      ? plain.marketplace_products
+      : [],
+    bundles: Array.isArray(plain.bundles) ? plain.bundles : [],
+    inventory: Array.isArray(plain.inventory) ? plain.inventory : [],
+    log_stocks: Array.isArray(plain.log_stocks) ? plain.log_stocks : [],
+    inventory_pos: Array.isArray(plain.inventory_pos) ? plain.inventory_pos : [],
+    vouchers: Array.isArray(plain.vouchers) ? plain.vouchers : [],
+    faqs: Array.isArray(plain.faqs) ? plain.faqs : [],
+    brand: plain.brand ?? ({ name: "Econelo" } as ProductItem["brand"]),
+    owner: plain.owner ?? ({} as ProductItem["owner"]),
+  } as ProductItem;
 }
 
 // 🕒 ISR: tái tạo lại mỗi 1 giờ (3600s)
@@ -56,7 +224,7 @@ export async function generateMetadata({
 
   if (!lastSlug) return {};
 
-  let product = null;
+  let product: ProductItem | null = null;
   try {
     product = await getProductBySlug(lastSlug);
   } catch (err) {
@@ -64,103 +232,40 @@ export async function generateMetadata({
     return {};
   }
 
-  if (!product) return notFound();
-
-  // SAFE JSON
-  product = JSON.parse(JSON.stringify(product));
-
-  let reviews: ReviewResponse[] = [];
+  if (!product) notFound();
+  let productData: ProductItem;
   try {
-    reviews = await getReviewByProduct(product.id);
-  } catch (error) {
-    console.error("❌ getReviewByProduct failed in metadata:", error);
-  }
-  const hasReviews = reviews && reviews.length > 0;
-
-  const schema: any = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    image: product.static_files?.map((f: StaticFile) => f.url),
-    description: product.description,
-    sku: product.sku,
-    gtin13: product.ean,
-    brand: {
-      "@type": "Brand",
-      name: product.brand?.name ?? "Econelo",
-    },
-    offers: {
-      "@type": "Offer",
-      url: `https://www.econelo.de/produkt/${product.url_key}`,
-      priceCurrency: "EUR",
-      price: String(product.final_price),
-      availability:
-        product.stock > 0
-          ? "https://schema.org/InStock"
-          : "https://schema.org/OutOfStock",
-      priceValidUntil: "2026-12-31",
-    },
-  };
-
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: "https://www.econelo.de",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: product.categories?.[0]?.name ?? "Produkte",
-        item: `https://www.econelo.de/kategorie/${product.categories?.[0]?.slug}`,
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: product.name,
-        item: `https://www.econelo.de/produkt/${product.url_key}`,
-      },
-    ],
-  };
-
-  if (hasReviews) {
-    const ratingValue =
-      reviews.reduce((s, r) => s + (r.rating || 0), 0) / reviews.length;
-
-    schema.aggregateRating = {
-      "@type": "AggregateRating",
-      ratingValue: ratingValue.toFixed(1),
-      reviewCount: reviews.length,
-    };
+    productData = normalizeProductForRender(product);
+  } catch (err) {
+    console.error("❌ normalizeProductForRender failed in metadata:", err);
+    return {};
   }
 
-  if (product.ean) {
-    schema.gtin13 = product.ean;
-  }
+  const { productUrl, imageUrls, description } = buildProductSchemas(productData, []);
 
   return {
-    title: product.meta_title || product.name,
-    description: product.meta_description || product.description?.slice(0, 150),
-    openGraph: {
-      title: product.meta_title || product.name,
-      description:
-        product.meta_description || product.description?.slice(0, 150),
-      url: `https://www.econelo.de/produkt/${product.url_key}`,
-      images:
-        product.static_files?.map((f: StaticFile) => ({ url: f.url })) ?? [],
+    title: productData.meta_title || productData.name,
+    description,
+    alternates: {
+      canonical: productUrl,
     },
-    other: {
-      "application/ld+json": JSON.stringify([schema, breadcrumbSchema]),
+    openGraph: {
+      title: productData.meta_title || productData.name,
+      description,
+      url: productUrl,
+      images: imageUrls.map((url) => ({ url })),
     },
   };
 }
 
-function toPlain<T>(data: T): T {
-  return JSON.parse(JSON.stringify(data));
+function toPlain<T>(data: T, fallback: T): T {
+  try {
+    const serialized = JSON.stringify(data);
+    if (serialized === undefined) return fallback;
+    return JSON.parse(serialized) as T;
+  } catch {
+    return fallback;
+  }
 }
 
 export default async function Page({
@@ -176,7 +281,7 @@ export default async function Page({
   /* ----------------------------------------------------
    * 1) GET PRODUCT (wrapped in try/catch to prevent 502 crash)
    * --------------------------------------------------*/
-  let product: any = null;
+  let product: ProductItem | null = null;
 
   try {
     product = await getProductBySlug(lastSlug);
@@ -185,10 +290,21 @@ export default async function Page({
     return notFound(); // ✔ SAFE FALLBACK
   }
 
-  if (!product) return notFound();
+  if (!product) notFound();
 
-  // ⭐ Convert to JSON to avoid "function passed to client component"
-  product = JSON.parse(JSON.stringify(product));
+  let productData: ProductItem;
+  try {
+    // ⭐ Convert to JSON to avoid "function passed to client component"
+    productData = normalizeProductForRender(product);
+  } catch (err) {
+    console.error("❌ normalizeProductForRender failed:", err);
+    return notFound();
+  }
+
+  if (!productData.id) {
+    console.error("❌ Missing product id:", { slug: lastSlug });
+    return notFound();
+  }
 
   /* ----------------------------------------------------
    * 2) PARALLEL REQUESTS (SAFE WRAPPED)
@@ -197,34 +313,51 @@ export default async function Page({
   let parentProduct = null;
 
   try {
-    const promises: Promise<any>[] = [getReviewByProduct(product.id)];
+    const [reviewsResult, parentResult] = await Promise.allSettled([
+      getReviewByProduct(productData.id),
+      productData.parent_id
+        ? getProductGroupDetail(productData.parent_id)
+        : Promise.resolve(null),
+    ]);
 
-    if (product.parent_id) {
-      promises.push(getProductGroupDetail(product.parent_id));
-    }
+    reviews =
+      reviewsResult.status === "fulfilled" && Array.isArray(reviewsResult.value)
+        ? reviewsResult.value
+        : [];
 
-    const results = await Promise.allSettled(promises);
-
-    reviews = results[0].status === "fulfilled" ? results[0].value : [];
-
-    parentProduct =
-      results[1]?.status === "fulfilled" ? results[1].value : null;
+    parentProduct = parentResult.status === "fulfilled" ? parentResult.value : null;
   } catch (err) {
     console.error("❌ Error fetching child data:", err);
   }
 
   // Convert to plain JSON
-  const plainProduct = toPlain(product);
-  const plainReviews = toPlain(reviews);
-  const plainParent = toPlain(parentProduct);
+  const plainProduct = toPlain(productData, productData);
+  const plainReviews = toPlain(reviews, []);
+  const plainParent = toPlain(parentProduct, null);
+  const { productSchema, breadcrumbSchema } = buildProductSchemas(
+    plainProduct,
+    plainReviews,
+  );
+  const schemaJson = toPlain(
+    JSON.stringify([productSchema, breadcrumbSchema]),
+    "[]",
+  );
 
   return (
-    <div className="w-full flex justify-center py-12 xl:pt-[120px] lg:pt-[160px] pt-[50px]">
-      <ProductDetails
-        parentProductData={plainParent}
-        productDetailsData={plainProduct}
-        productId={product.id}
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: schemaJson,
+        }}
       />
-    </div>
+      <div className="w-full flex justify-center py-12 xl:pt-[120px] lg:pt-[160px] pt-[50px]">
+        <ProductDetails
+          parentProductData={plainParent}
+          productDetailsData={plainProduct}
+          productId={productData.id}
+        />
+      </div>
+    </>
   );
 }

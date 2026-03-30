@@ -9,6 +9,8 @@ import {
   deleteProduct,
   editProduct,
   generateSEO,
+  getAllColor,
+  getAllMaterials,
   getAllProducts,
   GetAllProductsParams,
   getProductById,
@@ -61,6 +63,10 @@ export function useProductsAlgoliaSearch(params?: GetProductsSearchParams) {
       params?.colorsKey,
       params?.materials,
       params?.materialsKey,
+      params?.delivery_time,
+      params?.delivery_timeKey,
+      params?.price_min,
+      params?.price_max,
       params?.is_econelo,
     ],
     queryFn: () => getProductsAlgoliaSearch(params),
@@ -125,5 +131,21 @@ export function useGenerateSEO() {
     // onSuccess: (res) => {
     //   qc.invalidateQueries({ queryKey: ["products"] })
     // },
+  });
+}
+
+export function useGetAllColor(is_econelo?: boolean) {
+  return useQuery({
+    queryKey: ["colors", is_econelo],
+    queryFn: () => getAllColor(is_econelo),
+    staleTime: 1000 * 60 * 30,
+  });
+}
+
+export function useGetAllMaterials(is_econelo?: boolean) {
+  return useQuery({
+    queryKey: ["materials", is_econelo],
+    queryFn: () => getAllMaterials(is_econelo),
+    staleTime: 1000 * 60 * 30,
   });
 }

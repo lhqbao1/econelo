@@ -1,11 +1,15 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/src/i18n/navigation";
 import { useCartLocal } from "@/hooks/cart";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getCartItems } from "@/features/cart/api";
+import { useDeleteCartItem } from "@/features/cart/hook";
+import { getProductById } from "@/features/products/api";
+import { CartItem, CartResponseItem } from "@/types/cart";
+import { CartItemLocal } from "@/lib/utils/cart";
 import { toast } from "sonner";
 import CartTable from "@/components/layout/cart/cart-table";
 import CartLocalTable from "@/components/layout/cart/cart-local-table";
@@ -17,16 +21,22 @@ import { userIdAtom } from "@/store/auth";
 import CartTableSkeleton from "@/components/layout/cart/cart-table-skeleton";
 
 export default function CartPage() {
-  const [userId, setUserId] = useAtom(userIdAtom);
+  const [userId] = useAtom(userIdAtom);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const t = useTranslations();
   const router = useRouter();
   const locale = useLocale();
+  const queryClient = useQueryClient();
   const [localQuantities, setLocalQuantities] = useState<
     Record<string, number>
   >({});
 
-  const { cart: localCart } = useCartLocal();
+  const {
+    cart: localCart,
+    updateStatus,
+    removeItem: removeLocalCartItem,
+  } = useCartLocal();
+  const deleteCartItemMutation = useDeleteCartItem();
 
   const {
     data: cart,
@@ -71,8 +81,6 @@ export default function CartPage() {
     return cart ?? [];
   }, [userId, localCart, cart, isLoadingCart, isErrorCart]);
 
-  const { updateStatus } = useCartLocal();
-
   let total = 0;
 
   if (!userId) {
@@ -96,24 +104,198 @@ export default function CartPage() {
       }, 0);
   }
 
+  const getServerActiveItems = () => {
+    const groups = (Array.isArray(displayedCart) ? displayedCart : []).filter(
+      (item): item is CartResponseItem =>
+        !!item && Array.isArray((item as CartResponseItem).items),
+    );
+
+    return groups
+      .flatMap((group) => group.items ?? [])
+      .filter((item): item is CartItem => !!item && item.is_active);
+  };
+
+  const getLocalActiveItems = () => {
+    const items = (Array.isArray(displayedCart) ? displayedCart : []).filter(
+      (item): item is CartItemLocal =>
+        !!item && !Array.isArray((item as CartResponseItem).items),
+    );
+
+    return items.filter((item) => item.is_active);
+  };
+
+  const getRemovalReasonText = (reason: "inactive" | "stock") =>
+    reason === "inactive"
+      ? t("cartRemovedInactive")
+      : t("cartRemovedOutOfStock");
+
+  const getEffectiveAvailableStock = (product: {
+    stock?: number | null;
+    result_stock?: number | null;
+    incomming_stock?: number | null;
+    available?: number | null;
+  }) => {
+    const baseStock = Number(product.stock ?? 0);
+    const usedStock = Number(product.result_stock ?? 0);
+    const incomingStock = Number(product.incomming_stock ?? 0);
+    const maxStock = Math.max(0, baseStock - usedStock + incomingStock);
+    const apiAvailable = Number(product.available);
+
+    if (Number.isFinite(apiAvailable)) {
+      return Math.max(0, Math.min(apiAvailable, maxStock));
+    }
+
+    return maxStock;
+  };
+
   // Proceed checkout
-  const proceedToCart = () => {
+  const proceedToCart = async () => {
     if (!displayedCart) return;
+
     if (userId) {
-      if (displayedCart.length === 0) {
-        toast.error(t("chooseAtLeastCart"));
-      } else {
-        // Navigate checkout
-        router.push("/kasse", { locale });
-      }
-    } else {
-      if (displayedCart.length === 0) {
+      const activeItems = getServerActiveItems();
+
+      if (activeItems.length === 0) {
         toast.error(t("chooseAtLeastCart"));
         return;
       }
-      // Nếu chưa login → mở dialog
-      setIsLoginOpen(true);
+
+      const validationResults = await Promise.all(
+        activeItems.map(async (item) => {
+          const label = item.products?.name ?? item.products?.id_provider ?? "Produkt";
+
+          try {
+            const latestProduct = await getProductById(item.products.id);
+            const isProductActive = latestProduct?.is_active === true;
+            const availableStock = getEffectiveAvailableStock(latestProduct);
+
+            if (!isProductActive) {
+              return { item, label, isValid: false, reason: "inactive" as const };
+            }
+
+            if (
+              !Number.isFinite(availableStock) ||
+              availableStock <= 0 ||
+              item.quantity > availableStock
+            ) {
+              return { item, label, isValid: false, reason: "stock" as const };
+            }
+
+            return { item, label, isValid: true, reason: "ok" as const };
+          } catch {
+            const isProductActive = item.products?.is_active === true;
+            const availableStock = getEffectiveAvailableStock(item.products);
+
+            if (!isProductActive) {
+              return { item, label, isValid: false, reason: "inactive" as const };
+            }
+
+            if (
+              !Number.isFinite(availableStock) ||
+              availableStock <= 0 ||
+              item.quantity > availableStock
+            ) {
+              return { item, label, isValid: false, reason: "stock" as const };
+            }
+
+            return { item, label, isValid: true, reason: "ok" as const };
+          }
+        }),
+      );
+
+      const invalidItems = validationResults.filter(
+        (result) => !result.isValid && result.reason !== "check_failed",
+      );
+
+      if (invalidItems.length > 0) {
+        for (const result of invalidItems) {
+          try {
+            await deleteCartItemMutation.mutateAsync(result.item.id);
+            toast.error(
+              `${result.label}: ${getRemovalReasonText(result.reason as "inactive" | "stock")}`,
+            );
+          } catch {
+            toast.error(`${result.label}: ${t("cartRemoveFailed")}`);
+          }
+        }
+
+        await queryClient.invalidateQueries({
+          queryKey: ["cart-items", userId],
+        });
+        await queryClient.invalidateQueries({
+          queryKey: ["cart-items"],
+        });
+        return;
+      }
+
+      router.push("/kasse", { locale });
+      return;
     }
+
+    const activeItems = getLocalActiveItems();
+    if (activeItems.length === 0) {
+      toast.error(t("chooseAtLeastCart"));
+      return;
+    }
+
+    const localValidationResults = await Promise.all(
+      activeItems.map(async (item) => {
+        const fallbackLabel = item.product_name ?? item.id_provider ?? "Produkt";
+
+        try {
+          const latestProduct = await getProductById(item.product_id);
+          const isProductActive = latestProduct?.is_active === true;
+          const availableStock = getEffectiveAvailableStock(latestProduct);
+          const label = latestProduct?.name ?? fallbackLabel;
+
+          if (!isProductActive) {
+            return { item, label, isValid: false, reason: "inactive" as const };
+          }
+
+          if (
+            !Number.isFinite(availableStock) ||
+            availableStock <= 0 ||
+            item.quantity > availableStock
+          ) {
+            return { item, label, isValid: false, reason: "stock" as const };
+          }
+
+          return { item, label, isValid: true, reason: "ok" as const };
+        } catch {
+          return {
+            item,
+            label: fallbackLabel,
+            isValid: false,
+            reason: "check_failed" as const,
+          };
+        }
+      }),
+    );
+
+    if (
+      localValidationResults.some((result) => result.reason === "check_failed")
+    ) {
+      toast.error(t("cartValidationFailed"));
+      return;
+    }
+
+    const invalidLocalItems = localValidationResults.filter(
+      (result) => !result.isValid && result.reason !== "check_failed",
+    );
+
+    if (invalidLocalItems.length > 0) {
+      for (const result of invalidLocalItems) {
+        removeLocalCartItem(result.item.product_id);
+        toast.error(
+          `${result.label}: ${getRemovalReasonText(result.reason as "inactive" | "stock")}`,
+        );
+      }
+      await queryClient.invalidateQueries({ queryKey: ["cart"] });
+      return;
+    }
+
+    // Nếu chưa login → mở dialog
+    setIsLoginOpen(true);
   };
 
   return (

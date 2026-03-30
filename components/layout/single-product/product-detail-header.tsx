@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { useAddToWishList } from "@/features/wishlist/hook";
 import { HandleApiError } from "@/lib/api-helper";
@@ -45,11 +47,19 @@ const ProductDetailHeader = ({ productDetails }: ProductDetailHeaderProps) => {
           variant="outline"
           className="rounded-full flex items-center gap-2 hover:text-primary cursor-pointer"
           onClick={() => {
-            const url = encodeURIComponent(window.location.href);
-            const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+            const currentPath = window.location.pathname.replace(/\/$/, "");
+            const productPath = currentPath.includes("/produkt/")
+              ? currentPath
+              : `/produkt/${productDetails.url_key}`;
+            const productUrl = `${window.location.origin}${productPath}`;
+            const shareUrl = new URL("https://www.facebook.com/dialog/share");
+            shareUrl.searchParams.set("app_id", "966242223397117");
+            shareUrl.searchParams.set("display", "popup");
+            shareUrl.searchParams.set("href", productUrl);
+            shareUrl.searchParams.set("redirect_uri", productUrl);
 
             window.open(
-              shareUrl,
+              shareUrl.toString(),
               "_blank",
               "noopener,noreferrer,width=600,height=500",
             );

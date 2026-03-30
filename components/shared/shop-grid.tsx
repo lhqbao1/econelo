@@ -137,7 +137,7 @@ export default function ShopGridLyaout({ products }: ShopGridLayoutProps) {
   }, [products]);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:pt-6 pt-12">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:pt-6">
       {products.map((product, idx) => (
         <ShopGridCard idx={idx} product={product} />
       ))}

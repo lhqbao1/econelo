@@ -4,9 +4,9 @@ import { useTranslations } from "next-intl";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Meine Bestellungen – Prestige Home",
+  title: "Meine Bestellungen – Econelo",
   description:
-    "Sehen Sie Ihre Bestellhistorie sicher in Ihrem Prestige Home Konto ein.",
+    "Sehen Sie Ihre Bestellhistorie sicher in Ihrem Econelo Konto ein.",
   robots: {
     index: false,
     follow: false,
