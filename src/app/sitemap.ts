@@ -28,7 +28,7 @@ const STATIC_PATHS = [
 type SitemapEntry = MetadataRoute.Sitemap[number];
 type ChangeFrequency = NonNullable<SitemapEntry["changeFrequency"]>;
 
-export const revalidate = 60 * 60;
+export const revalidate = 3600;
 
 function normalizePath(path: string): string {
   if (!path || path === "/") return "/";
