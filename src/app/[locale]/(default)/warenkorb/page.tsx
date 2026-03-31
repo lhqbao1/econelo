@@ -203,9 +203,7 @@ export default function CartPage() {
         }),
       );
 
-      const invalidItems = validationResults.filter(
-        (result) => !result.isValid && result.reason !== "check_failed",
-      );
+      const invalidItems = validationResults.filter((result) => !result.isValid);
 
       if (invalidItems.length > 0) {
         for (const result of invalidItems) {

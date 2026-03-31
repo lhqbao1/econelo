@@ -86,15 +86,15 @@ export function CartSummary({
 
   const t = useTranslations();
 
-  const hasServerCart = !!userLoginId && Array.isArray(cart) && cart.length > 0;
+  const isServerCartMode = !!userLoginId;
+  const serverCart = Array.isArray(cart) ? cart : [];
 
   const { data: listValidProducts } = useGetVoucherProducts(voucherId ?? "");
 
   // Gộp items từ server hoặc local cart
-  const items =
-    userLoginId && cart && cart.length > 0
-      ? cart.flatMap((group) => group.items)
-      : (localCart ?? []);
+  const items = isServerCartMode
+    ? serverCart.flatMap((group) => group.items)
+    : (localCart ?? []);
 
   const validProductIdSet = React.useMemo<Set<string>>(() => {
     return new Set(listValidProducts?.map((p) => p.id) ?? []);
@@ -103,8 +103,8 @@ export function CartSummary({
   const productSubtotalForVoucher = React.useMemo(() => {
     if (validProductIdSet.size === 0) return 0;
 
-    if (hasServerCart) {
-      return cart
+    if (isServerCartMode) {
+      return serverCart
         .flatMap((g) => g.items)
         .filter(
           (i) =>
@@ -121,7 +121,7 @@ export function CartSummary({
         .reduce((sum, i) => sum + (i.item_price ?? 0) * (i.quantity ?? 1), 0) ??
       0
     );
-  }, [validProductIdSet, cart, localCart, hasServerCart]);
+  }, [validProductIdSet, serverCart, localCart, isServerCartMode]);
 
   const voucherAmount = useWatch({
     control: form.control,
@@ -134,8 +134,8 @@ export function CartSummary({
   });
 
   const orderValue = React.useMemo(() => {
-    if (hasServerCart) {
-      return cart
+    if (isServerCartMode) {
+      return serverCart
         .flatMap((g) => g.items)
         .filter((i) => i.is_active)
         .reduce((s, i) => s + (i.final_price ?? 0), 0);
@@ -146,7 +146,7 @@ export function CartSummary({
         ?.filter((i) => i.is_active)
         .reduce((s, i) => s + (i.item_price ?? 0) * (i.quantity ?? 1), 0) ?? 0
     );
-  }, [cart, localCart, hasServerCart]);
+  }, [serverCart, localCart, isServerCartMode]);
 
   // const carrier = React.useMemo<"dpd" | "amm" | undefined>(() => {
   //   if (shippingCost === 35.95) return "amm";
@@ -338,8 +338,8 @@ export function CartSummary({
           <span className="text-right">{t("subTotalInclude")}</span>
           <span className="text-right">
             €
-            {(userLoginId && cart && Array.isArray(cart) && cart.length > 0
-              ? cart
+            {(isServerCartMode
+              ? serverCart
                   .flatMap((group) => group.items) // gom tất cả items trong từng supplier cart
                   .filter((item) => item.is_active)
                   .reduce((total, item) => total + (item.final_price ?? 0), 0)
@@ -390,8 +390,8 @@ export function CartSummary({
         <span className="text-right col-span-2">
           €
           {(
-            (userLoginId && Array.isArray(cart) && cart.length > 0
-              ? cart
+            (isServerCartMode
+              ? serverCart
                   .flatMap((group) => group.items) // gộp tất cả CartItem từ các supplier
                   .filter((item) => item.is_active)
                   .reduce((total, item) => total + (item.final_price ?? 0), 0)
