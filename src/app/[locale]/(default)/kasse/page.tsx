@@ -1,19 +1,16 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { Loader2 } from "lucide-react";
 import { CheckoutFormSection } from "@/components/layout/checkout/checkout-form";
 import { CartSummary } from "@/components/layout/checkout/checkout-summary";
 import { useCheckoutSubmit } from "@/hooks/check-out/useCheckOutSubmit";
-import { CheckoutProvider } from "@/components/layout/checkout/context";
-import BankDialog from "@/components/layout/checkout/bank-dialog";
-import { OtpDialog } from "@/components/layout/checkout/otp-dialog";
 import { useCheckoutInit } from "@/hooks/check-out/useCheckoutInit";
 import {
   checkoutDefaultValues,
   CreateOrderFormValues,
   CreateOrderSchema,
 } from "@/lib/schema/checkout";
-import { FormProvider, useForm, useFormContext } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { useLocale, useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -39,14 +36,12 @@ export default function CheckoutPageNew() {
     cartItems,
     localCart,
     isLoadingCart,
-    hasServerCart,
+    isServerCartMode,
+    isCheckoutCartReady,
     shippingCost,
     hasOtherCarrier,
-    userGuestId,
     userLoginId,
-    setUserGuestId,
     setUserLoginId,
-    totalAmount,
     finalUserId,
   } = useCheckoutInit();
 
@@ -89,19 +84,17 @@ export default function CheckoutPageNew() {
   const voucherAmount = form.watch("voucher_amount");
 
   const totalEuro = useMemo(() => {
-    const productsTotal =
-      userLoginId && cartItems && cartItems.length > 0
-        ? cartItems
-            .flatMap((g) => g.items)
-            .filter((i) => i.is_active)
-            .reduce((sum, item) => sum + (item.final_price ?? 0), 0)
-        : (localCart ?? [])
-            .filter((i) => i.is_active)
-            .reduce(
-              (sum, item) =>
-                sum + (item.item_price ?? 0) * (item.quantity ?? 1),
-              0,
-            );
+    const productsTotal = isServerCartMode
+      ? (cartItems ?? [])
+          .flatMap((g) => g.items)
+          .filter((i) => i.is_active)
+          .reduce((sum, item) => sum + (item.final_price ?? 0), 0)
+      : (localCart ?? [])
+          .filter((i) => i.is_active)
+          .reduce(
+            (sum, item) => sum + (item.item_price ?? 0) * (item.quantity ?? 1),
+            0,
+          );
 
     return (
       productsTotal +
@@ -109,12 +102,30 @@ export default function CheckoutPageNew() {
       (couponAmount ?? 0) -
       (voucherAmount ?? 0)
     );
-  }, [cartItems, localCart, shippingCost, couponAmount, voucherAmount]);
+  }, [
+    isServerCartMode,
+    cartItems,
+    localCart,
+    shippingCost,
+    couponAmount,
+    voucherAmount,
+  ]);
 
   // Chuyển sang cents cho Stripe
   const totalCents = useMemo(() => {
     return Math.round(totalEuro * 100);
   }, [totalEuro]);
+
+  if (!isCheckoutCartReady) {
+    return (
+      <div className="min-h-screen section-padding md:pt-[140px] flex items-start justify-center">
+        <div className="flex items-center gap-2 text-muted-foreground py-8">
+          <Loader2 className="w-5 h-5 animate-spin" />
+          <span>{t("loading")}</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <FormProvider {...form}>
@@ -170,6 +181,7 @@ export default function CheckoutPageNew() {
                 hasOtherCarrier={hasOtherCarrier}
                 shippingCost={shippingCost}
                 userLoginId={userLoginId ?? null}
+                isLoading={isServerCartMode && isLoadingCart}
                 submitting={submitting}
                 open={openOtpDialog}
                 onOpenChange={setOpenOtpDialog}

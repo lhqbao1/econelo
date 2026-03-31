@@ -1,7 +1,6 @@
 // hooks/checkout/useCheckoutInit.ts
 "use client";
 
-import { useEffect, useState } from "react";
 import { useCartLocal } from "@/hooks/cart";
 import { useQuery } from "@tanstack/react-query";
 import { User } from "@/types/user";
@@ -17,13 +16,18 @@ import {
   normalizeCartItems,
 } from "@/hooks/caculate-shipping";
 import { useAtom } from "jotai";
-import { userIdAtom, userIdGuestAtom } from "@/store/auth";
+import { authHydratedAtom, userIdAtom, userIdGuestAtom } from "@/store/auth";
 
 export function useCheckoutInit() {
+  const [authHydrated] = useAtom(authHydratedAtom);
   const [userLoginId, setUserLoginId] = useAtom(userIdAtom);
   const [userGuestId, setUserGuestId] = useAtom(userIdGuestAtom);
 
-  const finalUserId = userLoginId || userGuestId;
+  const userLoginIdFromStorage =
+    typeof window !== "undefined" ? localStorage.getItem("user_id") : null;
+  const effectiveUserLoginId = userLoginId || userLoginIdFromStorage;
+  const finalUserId = effectiveUserLoginId || userGuestId;
+  const isServerCartMode = Boolean(effectiveUserLoginId);
 
   const { data: user } = useQuery<User>({
     queryKey: ["user", finalUserId],
@@ -33,16 +37,16 @@ export function useCheckoutInit() {
   });
 
   const { data: addresses } = useQuery({
-    queryKey: ["address-by-user", userLoginId],
-    queryFn: () => getAddressByUserId(userLoginId ?? ""),
-    enabled: !!userLoginId,
+    queryKey: ["address-by-user", effectiveUserLoginId],
+    queryFn: () => getAddressByUserId(effectiveUserLoginId ?? ""),
+    enabled: !!effectiveUserLoginId,
     retry: false,
   });
 
   const { data: invoiceAddress } = useQuery({
-    queryKey: ["invoice-address-by-user", userLoginId],
-    queryFn: () => getInvoiceAddressByUserId(userLoginId ?? ""),
-    enabled: !!userLoginId,
+    queryKey: ["invoice-address-by-user", effectiveUserLoginId],
+    queryFn: () => getInvoiceAddressByUserId(effectiveUserLoginId ?? ""),
+    enabled: !!effectiveUserLoginId,
     retry: false,
   });
 
@@ -50,7 +54,7 @@ export function useCheckoutInit() {
   const { cart: localCart } = useCartLocal();
 
   const { data: cartItems, isLoading: isLoadingCart } = useQuery({
-    queryKey: ["cart-items", userLoginId], // chỉ login user mới có cart server
+    queryKey: ["cart-items", effectiveUserLoginId], // chỉ login user mới có cart server
     queryFn: async () => {
       const response = await getCartItems();
       return [...response].sort((a, b) => {
@@ -65,19 +69,21 @@ export function useCheckoutInit() {
     },
 
     // ⭐ ONLY CALL WHEN REAL LOGIN EXISTS
-    enabled: !!finalUserId,
+    enabled: authHydrated && !!effectiveUserLoginId,
     retry: false,
   });
 
-  const hasServerCart = Array.isArray(cartItems) && cartItems.length > 0;
+  const hasServerCart = isServerCartMode;
+  const effectiveCartItems = isServerCartMode
+    ? (cartItems ?? []).flatMap((g) => g.items)
+    : localCart;
 
-  const normalized = normalizeCartItems(
-    hasServerCart ? cartItems.flatMap((g) => g.items) : localCart,
-    hasServerCart,
-  );
+  const normalized = normalizeCartItems(effectiveCartItems, isServerCartMode);
 
   const shippingCost = calculateShipping(normalized);
   const hasOtherCarrier = checkShippingType(normalized);
+  const isCheckoutCartReady =
+    authHydrated && (!isServerCartMode || !isLoadingCart);
   const totalAmount = 1;
 
   return {
@@ -92,7 +98,10 @@ export function useCheckoutInit() {
     hasOtherCarrier,
     userGuestId,
     setUserGuestId,
-    userLoginId,
+    userLoginId: effectiveUserLoginId,
+    authHydrated,
+    isServerCartMode,
+    isCheckoutCartReady,
     setUserLoginId,
     finalUserId,
     totalAmount,
