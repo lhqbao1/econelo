@@ -18,11 +18,17 @@ import { useTranslations } from "next-intl";
 interface MobileFilterProps {
   isShopAll?: boolean;
   isParentCategory?: boolean;
+  showCategoryFilter?: boolean;
+  categoryContextSlug?: string;
+  categoryFilterMode?: "none" | "flat" | "grouped";
 }
 
 const MobileFilter = ({
   isShopAll = true,
   isParentCategory = false,
+  showCategoryFilter,
+  categoryContextSlug,
+  categoryFilterMode = "flat",
 }: MobileFilterProps) => {
   const searchParams = useSearchParams();
   const t = useTranslations();
@@ -72,6 +78,9 @@ const MobileFilter = ({
             isMobileDrawer
             isShopAll={isShopAll}
             isParentCategory={isParentCategory}
+            showCategoryFilter={showCategoryFilter}
+            categoryContextSlug={categoryContextSlug}
+            categoryFilterMode={categoryFilterMode}
           />
         </div>
       </DrawerContent>

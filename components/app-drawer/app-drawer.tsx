@@ -27,6 +27,7 @@ import {
   CollapsibleContent,
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
+import { usePathname } from "@/src/i18n/navigation";
 
 interface AppDrawerProps {
   isSticky: boolean;
@@ -35,7 +36,9 @@ interface AppDrawerProps {
 export function AppDrawer({ isSticky }: AppDrawerProps) {
   const [open, setOpen] = useState(false);
   const [openSection, setOpenSection] = useState<string | null>(null);
+  const pathname = usePathname();
 
+  const isHome = pathname === "/" || pathname.match(/^\/[a-z]{2}$/);
   const pagesRef = useRef<HTMLDivElement | null>(null);
   const categoriesRef = useRef<HTMLDivElement | null>(null);
 
@@ -91,21 +94,17 @@ export function AppDrawer({ isSticky }: AppDrawerProps) {
     else animateClose(categoriesRef);
   }, [openSection]);
 
-  const baseColor = isSticky ? "primary" : "white";
+  const baseColor = !isHome ? "primary" : isSticky ? "primary" : "white";
   const iconColor = `text-${baseColor}`;
 
   return (
-    <Drawer
-      direction="right"
-      open={open}
-      onOpenChange={setOpen}
-    >
+    <Drawer direction="right" open={open} onOpenChange={setOpen}>
       {/* ICON TO OPEN */}
       <DrawerTrigger asChild>
         <button className="p-2 hover:scale-110 transition-transform duration-200">
           <AlignJustify
             className={cn(
-              "w-6 h-6 cursor-pointer transition-colors duration-200 text-white",
+              "w-6 h-6 cursor-pointer transition-colors duration-200",
               iconColor,
             )}
             strokeWidth={2}
@@ -146,10 +145,7 @@ export function AppDrawer({ isSticky }: AppDrawerProps) {
               />
             </CollapsibleTrigger>
 
-            <CollapsibleContent
-              ref={pagesRef}
-              className="pl-3 mt-2 space-y-2"
-            >
+            <CollapsibleContent ref={pagesRef} className="pl-3 mt-2 space-y-2">
               {pages.map((p) => (
                 <Link
                   key={p.title}

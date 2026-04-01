@@ -6,18 +6,58 @@ import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import FilterSection from "./skeleton";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
+import { CategoryResponse } from "@/types/categories";
 
 interface FilterListCategoriesProps {
   isParentCategory?: boolean;
+  categoryContextSlug?: string;
+  categoryFilterMode?: "none" | "flat" | "grouped";
 }
+
+type GroupCategory = {
+  id: string;
+  name: string;
+  options: CategoryResponse[];
+};
+
+const findCategoryBySlug = (
+  categories: CategoryResponse[],
+  targetSlug: string,
+): CategoryResponse | null => {
+  for (const category of categories) {
+    if (category.slug === targetSlug) return category;
+    if (Array.isArray(category.children) && category.children.length > 0) {
+      const childMatch = findCategoryBySlug(category.children, targetSlug);
+      if (childMatch) return childMatch;
+    }
+  }
+  return null;
+};
+
+const getCategorySlugFromPathname = (pathname: string): string | null => {
+  const cleanPath = pathname.split("?")[0];
+  const segments = cleanPath.split("/").filter(Boolean);
+  const markerIndex = segments.findIndex(
+    (segment) => segment === "kategorie" || segment === "category",
+  );
+
+  if (markerIndex === -1) return null;
+  const slugSegments = segments.slice(markerIndex + 1);
+  if (slugSegments.length === 0) return null;
+
+  return decodeURIComponent(slugSegments[slugSegments.length - 1]);
+};
 
 const FilterListCategories = ({
   isParentCategory = false,
+  categoryContextSlug,
+  categoryFilterMode = "flat",
 }: FilterListCategoriesProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const slug = pathname.split("/kategorie/")[1] ?? pathname.split("/category/")[1];
+  const slugFromPath = getCategorySlugFromPathname(pathname);
+  const activeCategorySlug = categoryContextSlug ?? slugFromPath;
 
   const {
     data: parentCategories,
@@ -25,13 +65,67 @@ const FilterListCategories = ({
     isError,
   } = useGetCategoriesWithChildren({ is_econelo: true });
 
-  const categories = useMemo(() => {
-    if (!parentCategories) return [];
-    if (isParentCategory && slug)
-      return parentCategories.find((p) => p.name.toLowerCase().includes(slug))
-        ?.children;
-    return parentCategories.flatMap((parent) => parent.children ?? []);
-  }, [isParentCategory, parentCategories, slug]);
+  const { flatCategories, groupedCategories } = useMemo(() => {
+    if (!parentCategories) {
+      return {
+        flatCategories: [] as CategoryResponse[],
+        groupedCategories: [] as GroupCategory[],
+      };
+    }
+
+    if (categoryFilterMode === "none") {
+      return {
+        flatCategories: [] as CategoryResponse[],
+        groupedCategories: [] as GroupCategory[],
+      };
+    }
+
+    if (!activeCategorySlug && !isParentCategory) {
+      return {
+        flatCategories: parentCategories.flatMap((parent) => parent.children ?? []),
+        groupedCategories: [] as GroupCategory[],
+      };
+    }
+
+    const currentCategory = activeCategorySlug
+      ? findCategoryBySlug(parentCategories, activeCategorySlug)
+      : null;
+
+    const currentChildren = Array.isArray(currentCategory?.children)
+      ? currentCategory.children
+      : [];
+
+    if (currentChildren.length === 0) {
+      return {
+        flatCategories: [] as CategoryResponse[],
+        groupedCategories: [] as GroupCategory[],
+      };
+    }
+
+    if (categoryFilterMode === "grouped") {
+      const groups = currentChildren
+        .map((child) => ({
+          id: child.id,
+          name: child.name,
+          options: (child.children ?? []).filter(
+            (option) =>
+              typeof option?.name === "string" &&
+              option.name.trim().length > 0,
+          ),
+        }))
+        .filter((group) => group.options.length > 0);
+
+      return {
+        flatCategories: [] as CategoryResponse[],
+        groupedCategories: groups,
+      };
+    }
+
+    return {
+      flatCategories: currentChildren,
+      groupedCategories: [] as GroupCategory[],
+    };
+  }, [activeCategorySlug, categoryFilterMode, isParentCategory, parentCategories]);
 
   const selectedCategories = searchParams.getAll("categories");
 
@@ -69,7 +163,31 @@ const FilterListCategories = ({
 
   return (
     <div className="space-y-3">
-      {categories?.map((item) => {
+      {groupedCategories.map((group) => (
+        <div key={group.id} className="space-y-2">
+          <p className="text-sm font-semibold text-[#111827]">{group.name}</p>
+          <div className="space-y-2 pl-2">
+            {group.options.map((item) => {
+              const checked = selectedCategories.includes(item.name);
+
+              return (
+                <label
+                  key={item.id}
+                  className="flex cursor-pointer items-center gap-2"
+                >
+                  <Checkbox
+                    checked={checked}
+                    onCheckedChange={() => toggleCategory(item.name)}
+                  />
+                  <span className="text-base font-light">{item.name}</span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+
+      {flatCategories.map((item) => {
         const checked = selectedCategories.includes(item.name);
 
         return (
