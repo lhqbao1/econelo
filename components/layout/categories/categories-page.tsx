@@ -22,6 +22,8 @@ interface ProductCategoryProps {
   category?: CategoryBySlugResponse;
 }
 
+type CategoryFilterMode = "none" | "flat" | "grouped";
+
 const SHOP_CATEGORY_PAGE_SIZE = 18;
 const DEFAULT_PRICE_MIN = 0;
 const DEFAULT_PRICE_MAX = 5000;
@@ -47,6 +49,39 @@ const findCategoryBySlug = (
     }
   }
   return null;
+};
+
+const getLeafCategoryNames = (
+  category: CategoryResponse | null | undefined,
+): string[] => {
+  if (!category) return [];
+
+  const children = Array.isArray(category.children) ? category.children : [];
+  if (children.length === 0) {
+    return category.name ? [category.name] : [];
+  }
+
+  const leafNames = children.flatMap((child) => getLeafCategoryNames(child));
+  const cleaned = leafNames.filter(
+    (name): name is string => typeof name === "string" && name.trim().length > 0,
+  );
+
+  return [...new Set(cleaned)];
+};
+
+const resolveCategoryFilterMode = (
+  category: CategoryResponse | null | undefined,
+): CategoryFilterMode => {
+  if (!category) return "none";
+
+  const children = Array.isArray(category.children) ? category.children : [];
+  if (children.length === 0) return "none";
+
+  const hasGrandChildren = children.some(
+    (child) => Array.isArray(child.children) && child.children.length > 0,
+  );
+
+  return hasGrandChildren ? "grouped" : "flat";
 };
 
 const ProductCategory = ({ categorySlugs, category }: ProductCategoryProps) => {
@@ -123,15 +158,23 @@ const ProductCategory = ({ categorySlugs, category }: ProductCategoryProps) => {
     [categoriesWithChildren, currentCategorySlug],
   );
 
+  const defaultDeepestCategoryNames = useMemo(
+    () => getLeafCategoryNames(currentCategory),
+    [currentCategory],
+  );
+
+  const categoryFilterMode = useMemo(
+    () => resolveCategoryFilterMode(currentCategory),
+    [currentCategory],
+  );
+
   const effectiveCategories = useMemo(() => {
     if (categoriesFromUrl.length > 0) return categoriesFromUrl;
-    if (currentCategory?.children?.length) {
-      return currentCategory.children.map((child) => child.name);
-    }
+    if (defaultDeepestCategoryNames.length > 0) return defaultDeepestCategoryNames;
     if (currentCategory?.name) return [currentCategory.name];
     if (category?.name) return [category.name];
     return [];
-  }, [categoriesFromUrl, currentCategory, category?.name]);
+  }, [categoriesFromUrl, defaultDeepestCategoryNames, currentCategory, category?.name]);
 
   const categoriesKey =
     effectiveCategories.length > 0
@@ -199,6 +242,7 @@ const ProductCategory = ({ categorySlugs, category }: ProductCategoryProps) => {
   const totalItems = data?.pagination.total_items ?? 0;
   const isInitialLoading = isLoading && !hasLoadedData;
   const showEmptyState = hasLoadedData && totalItems === 0;
+  const shouldShowCategoryFilter = categoryFilterMode !== "none";
 
   return (
     <div className="pt-[70px] xl:pb-16 pb-6 md:pt-[130px]">
@@ -208,7 +252,13 @@ const ProductCategory = ({ categorySlugs, category }: ProductCategoryProps) => {
         <div className="grid grid-cols-12 gap-6 items-start">
           <div className="hidden lg:block lg:col-span-3">
             <div className="sticky top-36 max-h-[calc(100vh-9rem)] overflow-y-auto pr-1 no-scrollbar">
-              <ShopAllFilterSection isShopAll={false} isParentCategory={false} />
+              <ShopAllFilterSection
+                isShopAll={false}
+                isParentCategory={false}
+                showCategoryFilter={shouldShowCategoryFilter}
+                categoryContextSlug={currentCategorySlug}
+                categoryFilterMode={categoryFilterMode}
+              />
             </div>
           </div>
 
@@ -234,7 +284,13 @@ const ProductCategory = ({ categorySlugs, category }: ProductCategoryProps) => {
               </div>
 
               <div className="lg:hidden">
-                <MobileFilter isShopAll={false} isParentCategory={false} />
+                <MobileFilter
+                  isShopAll={false}
+                  isParentCategory={false}
+                  showCategoryFilter={shouldShowCategoryFilter}
+                  categoryContextSlug={currentCategorySlug}
+                  categoryFilterMode={categoryFilterMode}
+                />
               </div>
             </div>
 

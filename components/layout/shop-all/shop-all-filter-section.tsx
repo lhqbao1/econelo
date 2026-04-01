@@ -23,12 +23,18 @@ interface ShopAllFilterSectionProps {
   isShopAll?: boolean;
   isParentCategory?: boolean;
   isMobileDrawer?: boolean;
+  showCategoryFilter?: boolean;
+  categoryContextSlug?: string;
+  categoryFilterMode?: "none" | "flat" | "grouped";
 }
 
 const ShopAllFilterSection = ({
   isShopAll = true,
   isParentCategory = false,
   isMobileDrawer = false,
+  showCategoryFilter,
+  categoryContextSlug,
+  categoryFilterMode = "flat",
 }: ShopAllFilterSectionProps) => {
   const t = useTranslations();
   const router = useRouter();
@@ -42,6 +48,11 @@ const ShopAllFilterSection = ({
     searchParams.getAll("delivery_time").length +
     (searchParams.get("price_min") ? 1 : 0) +
     (searchParams.get("price_max") ? 1 : 0);
+
+  const shouldShowCategoryFilter =
+    typeof showCategoryFilter === "boolean"
+      ? showCategoryFilter
+      : isShopAll || isParentCategory;
 
   const handleResetFilters = () => {
     const params = new URLSearchParams(searchParams.toString());
@@ -102,7 +113,7 @@ const ShopAllFilterSection = ({
         className="w-full space-y-3"
         defaultValue={["category"]} // ✅
       >
-        {isShopAll || isParentCategory ? (
+        {shouldShowCategoryFilter ? (
           <AccordionItem
             value="category"
             className="rounded-xl border border-[#e6eaf0] bg-white px-4"
@@ -113,7 +124,11 @@ const ShopAllFilterSection = ({
               </span>
             </AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 text-balance pt-1">
-              <FilterListCategories isParentCategory={isParentCategory} />
+              <FilterListCategories
+                isParentCategory={isParentCategory}
+                categoryContextSlug={categoryContextSlug}
+                categoryFilterMode={categoryFilterMode}
+              />
             </AccordionContent>
           </AccordionItem>
         ) : null}
