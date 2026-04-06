@@ -135,42 +135,57 @@ const SearchDrawer = ({ isSticky }: SearchDrawerProps) => {
             )}
             {results.length > 0 && (
               <CommandGroup>
-                {results.map((product: ProductItem) => (
-                  <CommandItem
-                    key={product.id}
-                    value={product.name}
-                    onSelect={() => {
-                      router.push(`/produkt/${product.url_key}`, { locale });
-                      setQuery("");
-                      setOpen(false);
-                    }}
-                    className="cursor-pointer"
-                  >
-                    <div className="flex justify-between items-center w-full">
-                      <div className="flex gap-3 flex-1 items-center">
-                        <Image
-                          src={
-                            product.static_files &&
-                            product.static_files.length > 0
-                              ? product.static_files[0].url
-                              : "/placeholder-product.webp"
-                          }
-                          height={50}
-                          width={50}
-                          alt=""
-                          className="h-12 w-12"
-                          unoptimized
-                        />
-                        <div className="font-semibold line-clamp-2">
-                          {product.name}
+                {results.map((product: ProductItem, index) => {
+                  const safeStaticFiles = Array.isArray(product?.static_files)
+                    ? product.static_files
+                    : [];
+                  const imageUrl =
+                    safeStaticFiles[0]?.url ?? "/placeholder-product.webp";
+                  const productName =
+                    typeof product?.name === "string" &&
+                    product.name.trim().length > 0
+                      ? product.name
+                      : "Produkt";
+                  const safeUrlKey =
+                    typeof product?.url_key === "string"
+                      ? product.url_key.trim()
+                      : "";
+                  const detailPath = safeUrlKey
+                    ? `/produkt/${safeUrlKey}`
+                    : "/alle-produkte";
+
+                  return (
+                    <CommandItem
+                      key={product.id ?? `search-drawer-product-${index}`}
+                      value={productName}
+                      onSelect={() => {
+                        router.push(detailPath, { locale });
+                        setQuery("");
+                        setOpen(false);
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <div className="flex justify-between items-center w-full">
+                        <div className="flex gap-3 flex-1 items-center">
+                          <Image
+                            src={imageUrl}
+                            height={50}
+                            width={50}
+                            alt={productName}
+                            className="h-12 w-12"
+                            unoptimized
+                          />
+                          <div className="font-semibold line-clamp-2">
+                            {productName}
+                          </div>
+                        </div>
+                        <div className="text-[#666666]">
+                          {product.id_provider}
                         </div>
                       </div>
-                      <div className="text-[#666666]">
-                        {product.id_provider}
-                      </div>
-                    </div>
-                  </CommandItem>
-                ))}
+                    </CommandItem>
+                  );
+                })}
               </CommandGroup>
             )}
           </CommandList>

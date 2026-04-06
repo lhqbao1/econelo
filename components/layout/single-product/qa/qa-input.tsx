@@ -216,7 +216,10 @@ const QAInput = ({ productId }: QAInputProps) => {
                     </div>
                     <div>{item.comment}</div>
                     <div className="flex gap-2 mt-2">
-                      {item.static_files.map(
+                      {(Array.isArray(item.static_files)
+                        ? item.static_files
+                        : []
+                      ).map(
                         (image: string, imageIndex: number) => {
                           return (
                             <div key={imageIndex}>
@@ -307,7 +310,10 @@ const QAInput = ({ productId }: QAInputProps) => {
                                 </div>
                               </div>
                               <div>{reply.comment}</div>
-                              {reply.static_files.map((image, imageIndex) => {
+                              {(Array.isArray(reply.static_files)
+                                ? reply.static_files
+                                : []
+                              ).map((image, imageIndex) => {
                                 return (
                                   <div key={imageIndex}>
                                     <Image

@@ -12,6 +12,15 @@ interface ProductOverviewProps {
 }
 
 export default function ProductOverview({ productDetailsData, productId, parentProductData }: ProductOverviewProps) {
+    const safeStaticFiles = Array.isArray(productDetailsData?.static_files)
+        ? productDetailsData.static_files
+        : []
+    const primaryImage = safeStaticFiles[0]?.url || '/placeholder-image.png'
+    const safeProductName =
+        (typeof productDetailsData?.name === "string" && productDetailsData.name.trim().length > 0)
+            ? productDetailsData.name
+            : "Produkt"
+
     return (
         <section className="w-full flex justify-center py-20 bg-gradient-to-b from-gray-50 to-white">
             <div className="w-11/12 lg:w-9/12 grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -20,7 +29,7 @@ export default function ProductOverview({ productDetailsData, productId, parentP
                 <div className="lg:col-span-2 bg-black/90 rounded-3xl overflow-hidden relative flex flex-col justify-end">
                     <div className="absolute inset-0">
                         <Image
-                            src={productDetailsData.static_files[0].url || '/placeholder-image.png'}
+                            src={primaryImage}
                             alt="E-scooter"
                             fill
                             className="object-cover opacity-90"
@@ -32,7 +41,7 @@ export default function ProductOverview({ productDetailsData, productId, parentP
 
                     <div className="relative z-10 p-8">
                         <h1 className="text-xl md:text-4xl font-bold text-white leading-tight max-w-xl">
-                            {parentProductData ? parentProductData.name : productDetailsData.name}
+                            {parentProductData?.name || safeProductName}
                         </h1>
                     </div>
                 </div>

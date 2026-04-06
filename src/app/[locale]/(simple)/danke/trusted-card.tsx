@@ -34,6 +34,14 @@ export function TrustedShopsCheckout({
         <span id="tsCheckoutOrderEstDeliveryDate">{estimatedDeliveryDate}</span>
 
         {products.map((item, index) => {
+          const safeStaticFiles = Array.isArray(item?.static_files)
+            ? item.static_files
+            : [];
+          const safeBrandName =
+            typeof item?.brand?.name === "string" && item.brand.name.trim().length > 0
+              ? item.brand.name
+              : "Econelo";
+
           return (
             <span
               className="tsCheckoutProductItem"
@@ -45,9 +53,7 @@ export function TrustedShopsCheckout({
                   : ""}
               </span>
               <span className="tsCheckoutProductImageUrl">
-                {item.static_files && item.static_files.length > 0
-                  ? item.static_files[0].url
-                  : ""}
+                {safeStaticFiles[0]?.url ?? ""}
               </span>
               <span className="tsCheckoutProductName">{item.name}</span>
               <span className="tsCheckoutProductSKU">{item.id_provider}</span>
@@ -56,7 +62,7 @@ export function TrustedShopsCheckout({
               )}
               {/* <span className="tsCheckoutProductMPN">0123456789</span> */}
               <span className="tsCheckoutProductBrand">
-                {item.brand ? item.brand.name : "Econelo"}
+                {safeBrandName}
               </span>
             </span>
           );

@@ -42,6 +42,16 @@ export function ProductImageCarousel({
     api?.scrollTo(index);
   };
 
+  const safeImages = Array.isArray(productDetails?.static_files)
+    ? productDetails.static_files.filter(
+        (item) => typeof item?.url === "string" && item.url.trim().length > 0,
+      )
+    : [];
+  const images =
+    safeImages.length > 0
+      ? safeImages
+      : ([{ url: "/placeholder-product.webp" }] as StaticFile[]);
+
   return (
     <>
       <Carousel
@@ -56,7 +66,7 @@ export function ProductImageCarousel({
               : "flex-row"
           }`}
         >
-          {productDetails.static_files.map(
+          {images.map(
             (item: StaticFile, index: number) => (
               <CarouselItem
                 key={index}

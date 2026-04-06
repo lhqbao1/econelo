@@ -137,6 +137,11 @@ function normalizeProductForRender(product: ProductItem): ProductItem {
   const safePrice = Number(plain.price);
   const safeFinalPrice = Number(plain.final_price);
 
+  const safeBrandName =
+    typeof plain?.brand?.name === "string" && plain.brand.name.trim().length > 0
+      ? plain.brand.name
+      : "Econelo";
+
   return {
     ...plain,
     id: plain.id ?? "",
@@ -162,6 +167,12 @@ function normalizeProductForRender(product: ProductItem): ProductItem {
     categories: Array.isArray(plain.categories)
       ? plain.categories.map((category) => ({
           ...category,
+          name:
+            typeof category?.name === "string" && category.name.trim().length > 0
+              ? category.name
+              : "Kategorie",
+          slug:
+            typeof category?.slug === "string" ? category.slug : "",
           children: Array.isArray(category?.children) ? category.children : [],
         }))
       : [],
@@ -177,7 +188,10 @@ function normalizeProductForRender(product: ProductItem): ProductItem {
     inventory_pos: Array.isArray(plain.inventory_pos) ? plain.inventory_pos : [],
     vouchers: Array.isArray(plain.vouchers) ? plain.vouchers : [],
     faqs: Array.isArray(plain.faqs) ? plain.faqs : [],
-    brand: plain.brand ?? ({ name: "Econelo" } as ProductItem["brand"]),
+    brand: {
+      ...(plain.brand ?? ({} as ProductItem["brand"])),
+      name: safeBrandName,
+    } as ProductItem["brand"],
     owner: plain.owner ?? ({} as ProductItem["owner"]),
   } as ProductItem;
 }
