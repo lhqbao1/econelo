@@ -2,7 +2,7 @@
 // import CustomBreadCrumb from "@/components/shared/breadcrumb";
 import { Eye } from "lucide-react";
 import Image from "next/image";
-import React, { useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useMemo, useState } from "react";
 import { ProductItem } from "@/types/products";
 import { useLocale, useTranslations } from "next-intl";
 import { useSwipeable } from "react-swipeable";
@@ -37,6 +37,7 @@ const ProductDetails = ({
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
+    setMainImageIndex(0);
   }, [productId]);
 
   const {
@@ -57,37 +58,56 @@ const ProductDetails = ({
     setPosition({ x, y });
   };
 
+  const safeImages = useMemo(() => {
+    const files = Array.isArray(productDetails?.static_files)
+      ? productDetails.static_files
+      : [];
+
+    const validFiles = files.filter(
+      (file) => typeof file?.url === "string" && file.url.trim().length > 0,
+    );
+
+    return validFiles.length > 0
+      ? validFiles
+      : [{ url: "/placeholder-product.webp" }];
+  }, [productDetails?.static_files]);
+
   const handlers = useSwipeable({
     onSwipedLeft: () => {
-      if (!productDetails?.static_files?.length) return;
-      setMainImageIndex(
-        (prev) => (prev + 1) % productDetails.static_files.length,
-      );
+      if (!safeImages.length) return;
+      setMainImageIndex((prev) => (prev + 1) % safeImages.length);
     },
     onSwipedRight: () => {
-      if (!productDetails?.static_files?.length) return;
+      if (!safeImages.length) return;
       setMainImageIndex((prev) =>
-        prev === 0 ? productDetails.static_files.length - 1 : prev - 1,
+        prev === 0 ? safeImages.length - 1 : prev - 1,
       );
     },
     trackTouch: true,
   });
+
+  const primaryCategory = productDetails?.categories?.[0];
+  const firstChildCategory = primaryCategory?.children?.[0];
+  const breadcrumbName =
+    firstChildCategory?.name?.trim() ||
+    primaryCategory?.name?.trim() ||
+    productDetails?.name?.trim() ||
+    "Produkt";
+  const breadcrumbSlug =
+    firstChildCategory?.slug?.trim() || primaryCategory?.slug?.trim() || "";
+  const breadcrumbLink = breadcrumbSlug ? `category/${breadcrumbSlug}` : undefined;
+  const productName =
+    typeof productDetails?.name === "string" && productDetails.name.trim().length > 0
+      ? productDetails.name
+      : "Produkt";
 
   return (
     <>
       <div className="py-3 lg:pt-3 space-y-4 xl:w-8/12 lg:w-10/12 w-full lg:px-0 px-4 min-h-screen">
         <CustomBreadCrumb
           isProductPage
-          currentPage={
-            productDetails?.categories[0]?.children?.length
-              ? productDetails.categories[0].children[0].name
-              : productDetails?.categories[0]?.name
-          }
-          currentPageLink={
-            productDetails?.categories[0]?.children?.length
-              ? `category/${productDetails.categories[0].children[0].slug}`
-              : `category/${productDetails?.categories[0]?.slug}`
-          }
+          currentPage={breadcrumbName}
+          currentPageLink={breadcrumbLink}
         />
         {!isLoadingProduct && productDetails ? (
           <>
@@ -107,14 +127,13 @@ const ProductDetails = ({
                         >
                           <Image
                             src={
-                              productDetails.static_files.length > 0
-                                ? productDetails.static_files[mainImageIndex]
-                                    .url
-                                : "/placeholder-product.webp"
+                              safeImages[mainImageIndex]?.url ??
+                              safeImages[0]?.url ??
+                              "/placeholder-product.webp"
                             }
                             width={500}
                             height={300}
-                            alt={`${productDetails.name}`}
+                            alt={productName}
                             className="transition-transform duration-300 lg:h-[400px] h-[300px] w-auto object-cover cursor-pointer rounded-md"
                             style={{
                               transformOrigin: `${position.x}% ${position.y}%`,
@@ -140,7 +159,7 @@ const ProductDetails = ({
 
                       <div className="space-y-2">
                         <h1 className="lg:text-3xl lg:w-2/3 w-full text-xl font-bold text-black">
-                          {productDetails.name}
+                          {productName}
                         </h1>
 
                         <ProductDetailHeader productDetails={productDetails} />
@@ -161,7 +180,7 @@ const ProductDetails = ({
 
                     <div className="space-y-2">
                       <h1 className="lg:text-3xl lg:w-2/3 w-full text-xl font-bold text-black">
-                        {productDetails.name}
+                        {productName}
                       </h1>
 
                       <ProductDetailHeader productDetails={productDetails} />

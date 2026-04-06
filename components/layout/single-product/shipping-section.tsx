@@ -59,6 +59,13 @@ const ShippingSection = ({ productDetails }: ShippingSectionProps) => {
       to: addBusinessDays(latestDeliveryDate, deliveryRange.max),
     };
   }, [latestDeliveryDate, productDetails.delivery_time]);
+
+  const safeStock = Number(productDetails?.stock ?? 0);
+  const brandName =
+    typeof productDetails?.brand?.name === "string"
+      ? productDetails.brand.name.trim()
+      : "";
+
   return (
     <Card className="shadow-lg">
       <CardHeader>
@@ -74,11 +81,11 @@ const ShippingSection = ({ productDetails }: ShippingSectionProps) => {
             <div className="grid grid-cols-3 w-1/3 gap-1">
               <span
                 className={`w-full h-2 rounded-xs ${
-                  productDetails.stock === 0
+                  safeStock === 0
                     ? "bg-gray-300"
-                    : productDetails.stock < 10
+                    : safeStock < 10
                       ? "bg-red-500"
-                      : productDetails.stock <= 20
+                      : safeStock <= 20
                         ? "bg-primary"
                         : "bg-primary"
                 }`}
@@ -86,11 +93,11 @@ const ShippingSection = ({ productDetails }: ShippingSectionProps) => {
 
               <span
                 className={`w-full h-2 rounded-xs ${
-                  productDetails.stock === 0
+                  safeStock === 0
                     ? "bg-gray-300"
-                    : productDetails.stock < 10
+                    : safeStock < 10
                       ? "bg-gray-300"
-                      : productDetails.stock <= 20
+                      : safeStock <= 20
                         ? "bg-primary"
                         : "bg-primary"
                 }`}
@@ -98,11 +105,11 @@ const ShippingSection = ({ productDetails }: ShippingSectionProps) => {
 
               <span
                 className={`w-full h-2 rounded-xs ${
-                  productDetails.stock === 0
+                  safeStock === 0
                     ? "bg-gray-300"
-                    : productDetails.stock < 10
+                    : safeStock < 10
                       ? "bg-gray-300"
-                      : productDetails.stock <= 20
+                      : safeStock <= 20
                         ? "bg-gray-400"
                         : "bg-primary"
                 }`}
@@ -171,9 +178,7 @@ const ShippingSection = ({ productDetails }: ShippingSectionProps) => {
             </div>
           </div>
 
-          {productDetails.brand &&
-            productDetails.brand.name &&
-            productDetails.brand.name.toLowerCase() === "econelo" && (
+          {brandName.toLowerCase() === "econelo" && (
               <div className="border px-2.5 py-2 rounded-md border-black/40">
                 <p className="text-sm text-gray-700">
                   2 Jahre Gewährleistung auf das Fahrzeug. Die Batterie hat eine

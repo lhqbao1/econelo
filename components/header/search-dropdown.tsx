@@ -19,10 +19,12 @@ export default function SearchDropdown() {
     const locale = useLocale()
 
     const { data: products, isLoading, isError } = useGetProductsSelect()
+    const safeProducts = Array.isArray(products) ? products : []
 
-    const filteredProducts = products?.filter((p) =>
-        p.name.toLowerCase().includes(query.toLowerCase())
-    )
+    const filteredProducts = safeProducts.filter((p) => {
+        const safeName = typeof p?.name === "string" ? p.name : ""
+        return safeName.toLowerCase().includes(query.toLowerCase())
+    })
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -46,58 +48,83 @@ export default function SearchDropdown() {
                 <ScrollArea className='h-150 overflow-y-scroll'>
                     <Command>
                         <CommandList className='max-h-none'>
-                            {isLoading || !filteredProducts && <Loader2 className='animate-spin' />}
+                            {isLoading && <Loader2 className='animate-spin' />}
 
-                            {query.length > 0 && filteredProducts?.length === 0 && (
+                            {query.length > 0 && filteredProducts.length === 0 && (
                                 <CommandEmpty>{t('noResult')}</CommandEmpty>
                             )}
 
-                            {filteredProducts && filteredProducts?.length > 0 && (
+                            {filteredProducts.length > 0 && (
                                 <CommandGroup className='h-full'>
-                                    {filteredProducts?.map((product) => (
-                                        <CommandItem
-                                            key={product.id}
-                                            onSelect={() => {
-                                                setOpen(false)
-                                                router.push(`/produkt/${product.url_key}`, { locale: locale })
-                                            }}
-                                            className='cursor-pointer'
-                                        >
-                                            <div className='flex gap-4 items-start py-2'>
-                                                <Image
-                                                    src={product.static_files.length > 0 ? product.static_files[0].url : '/placeholder.png'}
-                                                    alt={product.name}
-                                                    width={70}
-                                                    height={70}
-                                                    className='object-cover rounded-md'
-                                                />
-                                                <div className='space-y-1.5'>
-                                                    <div className='text-[#0073aa] text-lg font-medium'>{product.name}</div>
+                                    {filteredProducts.map((product, index) => {
+                                        const productName =
+                                            typeof product?.name === "string" && product.name.trim().length > 0
+                                                ? product.name
+                                                : "Produkt"
+                                        const safeStaticFiles = Array.isArray(product?.static_files)
+                                            ? product.static_files
+                                            : []
+                                        const imageUrl = safeStaticFiles[0]?.url ?? '/placeholder.png'
+                                        const listPrice = Number(product?.price)
+                                        const salePrice = Number(product?.final_price)
+                                        const displayPrice = Number.isFinite(salePrice)
+                                            ? salePrice
+                                            : Number.isFinite(listPrice)
+                                                ? listPrice
+                                                : 0
+                                        const productDescription =
+                                            typeof product?.description === "string" ? product.description : ""
+                                        const safeUrlKey =
+                                            typeof product?.url_key === "string" ? product.url_key.trim() : ""
+                                        const detailPath = safeUrlKey ? `/produkt/${safeUrlKey}` : "/alle-produkte"
 
-                                                    <div className='flex items-center gap-2'>
-                                                        <div className='text-gray-300 text-base line-through'>
-                                                            {(product.price ?? product.final_price)?.toLocaleString('de-DE', {
-                                                                minimumFractionDigits: 2,
-                                                                maximumFractionDigits: 2,
-                                                            })} €
-                                                        </div>
-
-                                                        <div className='font-black text-black text-base'>
-                                                            {product.final_price.toLocaleString('de-DE', {
-                                                                minimumFractionDigits: 2,
-                                                                maximumFractionDigits: 2,
-                                                            })}€
-                                                        </div>
-                                                    </div>
-
-                                                    <div
-                                                        className="line-clamp-3 text-black text-base"
-                                                        dangerouslySetInnerHTML={{ __html: product.description }}
+                                        return (
+                                            <CommandItem
+                                                key={product.id ?? `search-product-${index}`}
+                                                onSelect={() => {
+                                                    setOpen(false)
+                                                    router.push(detailPath, { locale: locale })
+                                                }}
+                                                className='cursor-pointer'
+                                            >
+                                                <div className='flex gap-4 items-start py-2'>
+                                                    <Image
+                                                        src={imageUrl}
+                                                        alt={productName}
+                                                        width={70}
+                                                        height={70}
+                                                        className='object-cover rounded-md'
                                                     />
+                                                    <div className='space-y-1.5'>
+                                                        <div className='text-[#0073aa] text-lg font-medium'>{productName}</div>
+
+                                                        <div className='flex items-center gap-2'>
+                                                            {Number.isFinite(listPrice) && Number.isFinite(salePrice) && listPrice > salePrice ? (
+                                                                <div className='text-gray-300 text-base line-through'>
+                                                                    {listPrice.toLocaleString('de-DE', {
+                                                                        minimumFractionDigits: 2,
+                                                                        maximumFractionDigits: 2,
+                                                                    })} €
+                                                                </div>
+                                                            ) : null}
+
+                                                            <div className='font-black text-black text-base'>
+                                                                {displayPrice.toLocaleString('de-DE', {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2,
+                                                                })}€
+                                                            </div>
+                                                        </div>
+
+                                                        <div
+                                                            className="line-clamp-3 text-black text-base"
+                                                            dangerouslySetInnerHTML={{ __html: productDescription }}
+                                                        />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </CommandItem>
-                                    ))}
+                                            </CommandItem>
+                                        )
+                                    })}
                                 </CommandGroup>
                             )}
                         </CommandList>

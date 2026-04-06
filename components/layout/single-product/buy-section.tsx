@@ -69,15 +69,31 @@ const BuySection = ({
   const createCartMutation = useAddToCart();
   const addProductToWishlistMutation = useAddToWishList();
 
+  const currentProductId =
+    typeof currentProduct?.id === "string" ? currentProduct.id : "";
+  const currentProductOptions = Array.isArray(currentProduct?.options)
+    ? currentProduct.options
+    : [];
+  const currentProductStaticFiles = Array.isArray(currentProduct?.static_files)
+    ? currentProduct.static_files
+    : [];
+  const currentFinalPrice = Number(currentProduct?.final_price);
+  const currentListPrice = Number(currentProduct?.price);
+  const safeCurrentPrice = Number.isFinite(currentFinalPrice)
+    ? currentFinalPrice
+    : Number.isFinite(currentListPrice)
+      ? currentListPrice
+      : 0;
+
   useEffect(() => {
-    if (currentProduct?.id) {
-      methods.setValue("productId", currentProduct.id);
+    if (currentProductId) {
+      methods.setValue("productId", currentProductId);
       methods.setValue(
         "option_id",
-        currentProduct.options.map((o: VariantOptionResponse) => o.id), // auto select option mặc định
+        currentProductOptions.map((o: VariantOptionResponse) => o.id), // auto select option mặc định
       );
     }
-  }, [currentProduct, methods]);
+  }, [currentProductId, currentProductOptions, methods]);
 
   // optionally watch quantity to disable buy button if zero or > stock
   const quantity = watch("quantity");
@@ -95,9 +111,9 @@ const BuySection = ({
     ? 0
     : shippingCostMap[carrier] ?? 5.95;
 
-  const totalWithShipping = Number(currentProduct.final_price) + shippingCost;
+  const totalWithShipping = safeCurrentPrice + shippingCost;
 
-  const { data: inventoryPo } = useInventoryPoByProductId(currentProduct.id);
+  const { data: inventoryPo } = useInventoryPoByProductId(currentProductId);
 
   const incomingStock = useMemo(() => {
     const items = Array.isArray(inventoryPo)
@@ -132,10 +148,14 @@ const BuySection = ({
 
   const onSubmit = (values: FormValues) => {
     if (!currentProduct) return;
+    if (!currentProductId) {
+      toast.error(t("addToCartFail"));
+      return;
+    }
 
     if (!userId) {
       const existingItem = cart.find(
-        (item: CartItemLocal) => item.product_id === currentProduct.id,
+        (item: CartItemLocal) => item.product_id === currentProductId,
       );
       const totalQuantity = (existingItem?.quantity || 0) + 1;
       if ((maxStock > 0 || maxStock === 0) && totalQuantity > maxStock) {
@@ -146,17 +166,18 @@ const BuySection = ({
       addToCartLocal(
         {
           item: {
-            product_id: currentProduct.id ?? "",
+            product_id: currentProductId,
             quantity: values.quantity,
             is_active: true,
-            item_price: currentProduct.final_price,
-            final_price: currentProduct.final_price,
-            img_url:
-              currentProduct.static_files.length > 0
-                ? currentProduct.static_files[0].url
-                : "",
-            product_name: currentProduct.name,
-            stock: currentProduct.stock,
+            item_price: safeCurrentPrice,
+            final_price: safeCurrentPrice,
+            img_url: currentProductStaticFiles[0]?.url ?? "",
+            product_name:
+              typeof currentProduct.name === "string" &&
+              currentProduct.name.trim().length > 0
+                ? currentProduct.name
+                : "Produkt",
+            stock: currentProduct.stock ?? 0,
             carrier: currentProduct.carrier ? currentProduct.carrier : "amm",
             id_provider: currentProduct.id_provider
               ? currentProduct.id_provider
@@ -177,7 +198,7 @@ const BuySection = ({
       );
     } else {
       createCartMutation.mutate(
-        { productId: currentProduct?.id ?? "", quantity: values.quantity },
+        { productId: currentProductId, quantity: values.quantity },
         {
           onSuccess(data, variables, context) {
             toast.success(t("addToCartSuccess"));
@@ -218,7 +239,7 @@ const BuySection = ({
                   {t("subTotalInclude")}
                 </label>
                 <span className="3xl:text-base text-sm">
-                  {formatEUR(currentProduct.final_price)}
+                  {formatEUR(safeCurrentPrice)}
                 </span>
               </div>
               <div className="flex justify-between items-center">
