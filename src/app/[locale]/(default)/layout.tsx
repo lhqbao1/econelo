@@ -12,7 +12,7 @@ export default function DefaultLayout({
     <>
       <MainHeader />
       <main id="main-content" className="relative w-full min-h-screen">
-        <div className="overflow-x-hidden z-0 relative">
+        <div className="relative overflow-x-hidden">
           <div className="flex-1">{children}</div>
         </div>
       </main>
