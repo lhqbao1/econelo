@@ -10,66 +10,82 @@ import { useTranslations } from "next-intl";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const SOCIAL_LINKS = [
+  {
+    label: "FB",
+    href: "https://www.facebook.com/econelo.de",
+    ariaLabel: "Econelo on Facebook",
+  },
+  {
+    label: "INS",
+    href: "https://www.instagram.com/econelo.de",
+    ariaLabel: "Econelo on Instagram",
+  },
+  {
+    label: "YT",
+    href: "https://www.youtube.com/@econelo",
+    ariaLabel: "Econelo on YouTube",
+  },
+];
+
 const HomeBanner = () => {
   const t = useTranslations();
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLDivElement>(null);
+  const socialRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!sectionRef.current) return;
+
     const ctx = gsap.context(() => {
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      if (prefersReducedMotion) {
+        gsap.set([contentRef.current, imageRef.current, socialRef.current], {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          scale: 1,
+        });
+        return;
+      }
+
       const tl = gsap.timeline({
+        defaults: { ease: "power3.out" },
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 80%", // bắt đầu khi 80% màn hình chạm section
+          start: "top 75%",
+          once: true,
         },
       });
 
-      // 🖼️ 1️⃣ Ảnh banner — từ phải sang trái, bounce
+      tl.fromTo(
+        contentRef.current,
+        { x: -48, y: 12, opacity: 0 },
+        { x: 0, y: 0, opacity: 1, duration: 0.78 },
+      );
+
       tl.fromTo(
         imageRef.current,
-        { x: 100, opacity: 0 },
+        { x: 110, opacity: 0, scale: 0.9 },
         {
           x: 0,
           opacity: 1,
-          duration: 0.8,
-          ease: "circ.out",
+          scale: 1,
+          duration: 1.05,
+          ease: "power4.out",
         },
+        "-=0.42",
       );
 
-      // 🟢 2️⃣ Tiêu đề — từ phải sang trái
       tl.fromTo(
-        titleRef.current,
-        { x: 100, opacity: 0 },
-        { x: 0, opacity: 1, duration: 1, ease: "power3.out" },
-        "-=0.6", // xuất hiện gần đồng thời
-      );
-
-      // 2️⃣ Stats (3 icon) — từng cái từ dưới lên
-      const icons = statsRef.current?.querySelectorAll(".stat-item");
-      if (icons) {
-        tl.fromTo(
-          icons,
-          { y: 50, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            ease: "power2.out",
-            stagger: 0.2, // từng cái cách nhau 0.2s
-          },
-          "-=0.4", // overlap 1 chút cho mượt
-        );
-      }
-
-      // 3️⃣ Nút Book Now — từ phải qua trái
-      tl.fromTo(
-        buttonRef.current,
-        { x: 100, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
-        "-=0.3",
+        socialRef.current,
+        { x: -22, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.55 },
+        "-=0.65",
       );
     }, sectionRef);
 
@@ -79,126 +95,86 @@ const HomeBanner = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative xl:min-h-[80vh] lg:min-h-[70vh] md:min-h-[70vh] min-h-[60vh] bg-primary bg-center z-10 md:px-20 px-4"
+      className="relative isolate z-10 w-full min-h-[56vh] overflow-hidden bg-primary sm:min-h-[58vh] lg:min-h-[62vh] xl:min-h-[68vh]"
     >
-      <div className="grid grid-cols-2 gap-4">
-        <div className="col-span-1">
-          <div className="absolute left-20 top-2/5 lg:top-6/12 -translate-y-1/2 lg:flex hidden flex-col items-center gap-12 text-black z-40">
-            <div className="flex flex-col items-center gap-2 group">
-              <span className="text-sm font-bold tracking-widest [writing-mode:vertical-rl] cursor-pointer rotate-180">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[linear-gradient(128deg,rgba(255,255,255,0.22)_0%,rgba(255,255,255,0)_44%)]" />
+        <div className="absolute -left-24 top-10 h-64 w-64 rounded-full bg-white/18 blur-3xl md:-left-14 md:h-80 md:w-80" />
+        <div className="absolute -right-20 bottom-10 h-[24rem] w-[24rem] rounded-full bg-white/12 blur-3xl xl:h-[28rem] xl:w-[28rem]" />
+        <div className="absolute inset-y-0 right-0 hidden w-[72%] bg-white/8 [clip-path:polygon(20%_0,100%_0,100%_100%,0_100%)] xl:block" />
+      </div>
+
+      <div className="relative mx-auto w-full max-w-[1680px] px-4 pb-8 pt-16 sm:px-6 sm:pt-20 md:px-10 md:pb-10 md:pt-24 lg:px-12 lg:pb-12 lg:pt-28 xl:px-20 xl:pb-14 xl:pt-32">
+        <div className="relative">
+          <div
+            ref={socialRef}
+            className="absolute left-0 top-1/2 z-30 hidden -translate-y-1/2 lg:flex lg:flex-col lg:items-center lg:gap-10"
+          >
+            <div className="flex flex-col items-center gap-2 text-black/90">
+              <span className="rotate-180 text-xs font-semibold uppercase tracking-[0.34em] [writing-mode:vertical-rl]">
                 {t("followUs")}
               </span>
-              <div className="relative h-24 w-px bg-black overflow-hidden group cursor-pointer">
-                <span className="absolute inset-x-0 -bottom-4 h-0 bg-primary transition-all duration-500 ease-in-out group-hover:h-full" />
-              </div>
+              <span className="h-24 w-px bg-black/70" />
             </div>
 
-            <ul className="flex flex-row items-center gap-8 text-sm font-semibold [writing-mode:vertical-rl] rotate-180">
-              <li>
-                <Link href="https://facebook.com">FB</Link>
-              </li>
-              <li>
-                <Link href="https://instagram.com">INS</Link>
-              </li>
-              <li>
-                <Link href="https://youtube.com">YT</Link>
-              </li>
-            </ul>
+            <nav aria-label="Social media">
+              <ul className="flex rotate-180 flex-row items-center gap-8 text-xs font-semibold tracking-[0.2em] text-black/85 [writing-mode:vertical-rl]">
+                {SOCIAL_LINKS.map((social) => (
+                  <li key={social.label}>
+                    <Link
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={social.ariaLabel}
+                      className="transition-colors hover:text-white focus-visible:text-white focus-visible:underline focus-visible:outline-none"
+                    >
+                      {social.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
 
-          <div className="absolute lg:left-1/5 left-1/2 xl:top-2/5 lg:top-2/5 md:top-1/3 top-2/5 -translate-y-1/2 lg:-translate-x-0 -translate-x-1/2 space-y-8 w-full flex flex-col items-center justify-center lg:block">
-            {/* 1️⃣ Tiêu đề */}
-            <h1
-              ref={titleRef}
-              className="
-                capitalize 
-                text-2xl xl:text-4xl
-                2xl:text-5xl
-                3xl:text-5xl 
-                xl:font-semibold font-bold 
-                xl:max-w-xl max-w-xs 
-                xl:pt-40 pt-0 
-                md:text-4xl md:max-w-lg
-                text-white opacity-0 
-                lg:text-left text-center
-                leading-tight md:leading-snug lg:leading-normal
-              "
-            >
-              {t("bannerSlogan")}
-            </h1>
-
-            {/* 2️⃣ Stats */}
-            {/* <div
-              ref={statsRef}
-              className="lg:flex hidden gap-12"
-            >
-              <div className="stat-item space-y-2 flex flex-col items-center opacity-0">
-                <Weight
-                  className="text-white size-12"
-                  strokeWidth={1}
-                />
-                <div>
-                  <div className="text-md font-semibold text-center">
-                    {t("maxWeight")}
-                  </div>
-                  <div className="text-base font-bold text-center">190kg</div>
-                </div>
-              </div>
-
-              <div className="stat-item space-y-2 flex flex-col items-center opacity-0">
-                <ClockFading
-                  className="text-white size-12"
-                  strokeWidth={1}
-                />
-                <div>
-                  <div className="text-md font-semibold text-center">
-                    0-40 km/hr in
-                  </div>
-                  <div className="text-base font-bold text-center">3.3 sec</div>
-                </div>
-              </div>
-
-              <div className="stat-item space-y-2 flex flex-col items-center opacity-0">
-                <ShieldCheck
-                  className="text-white size-12"
-                  strokeWidth={1}
-                />
-                <div>
-                  <div className="text-md font-semibold text-center">
-                    {t("range")}
-                  </div>
-                  <div className="text-base font-bold text-center">40 km</div>
-                </div>
-              </div>
-            </div> */}
-
-            {/* 3️⃣ Button */}
-            <div ref={buttonRef} className="opacity-0">
-              <HoverButton
-                text={t("forThem")}
-                redirect_url="/produkt/seniorenmobil-j1000-lithium-akku-25-km-h-1000-watt-rot-1000014"
-              />
-            </div>
-          </div>
-
-          {/* 🖼️ 1️⃣ Image */}
           <div
             ref={imageRef}
-            className="
-              absolute right-0 xl:-right-30 2xl:-right-20 md:right-10 lg:-right-20
-              xl:top-9/12 lg:top-10/12 md:top-10/12 top-10/12
-              -translate-y-1/2
-              
-              space-y-8 opacity-0 z-40 block
-            "
+            className="relative z-10 mx-auto w-full max-w-[1040px] opacity-0 xl:-mt-10 xl:max-w-none xl:-mr-4 2xl:-mt-14 2xl:-mr-10"
           >
+            <div className="pointer-events-none absolute inset-x-[4%] bottom-[8%] top-[10%] rounded-[46%] bg-gradient-to-br from-white/70 via-white/18 to-transparent blur-[80px] xl:inset-x-[12%] xl:bottom-[12%] xl:top-[12%] xl:blur-[100px]" />
+            <div className="pointer-events-none absolute inset-x-[12%] bottom-[7%] h-[20%] rounded-full bg-black/35 blur-3xl xl:inset-x-[22%]" />
             <Image
-              src={"/J1000-banner.png"}
-              width={1200}
-              height={800}
-              alt=""
-              className="3xl:h-[800px] 2xl:w-auto xl:h-[600px] xl:w-auto lg:h-[500px] md:h-[450px] h-[300px] w-auto"
+              src={"/econelo-banner.png"}
+              width={1250}
+              height={820}
+              alt={t("bannerSlogan")}
+              priority
+              // quality={100}
+              unoptimized
+              sizes="(max-width: 768px) 94vw, (max-width: 1280px) 82vw, 62vw"
+              className="relative z-10 h-auto w-full object-contain drop-shadow-[0_28px_40px_rgba(0,0,0,0.38)] xl:origin-bottom 2xl:scale-[1.04]"
             />
+          </div>
+
+          <div
+            ref={contentRef}
+            className="relative z-20 mx-auto mt-4 w-full max-w-[470px] opacity-0 sm:mt-6 md:max-w-[560px] lg:max-w-[620px] xl:absolute xl:bottom-[2%] xl:left-0 xl:right-0 xl:mt-0 xl:max-w-[500px] 2xl:max-w-[540px]"
+          >
+            <div className="rounded-[26px] border border-white/55 bg-white/16 p-4 shadow-[0_18px_56px_rgba(0,0,0,0.2)] backdrop-blur-md sm:p-6 xl:p-7">
+              <div className="mb-4 flex items-center justify-center gap-3">
+                <span className="h-px w-10 bg-white/55" />
+                <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-white/90">
+                  Econelo
+                </span>
+                <span className="h-px w-10 bg-white/55" />
+              </div>
+
+              <div className="flex justify-center">
+                <HoverButton
+                  text={t("forThem")}
+                  redirect_url="/produkt/seniorenmobil-j1000-lithium-akku-25-km-h-1000-watt-rot-1000014"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
