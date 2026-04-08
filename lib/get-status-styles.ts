@@ -171,20 +171,20 @@ export function getStatusStyleDe(raw: string) {
 
     case "tock_reserved":
       return {
-        text: "Wird vorbereitet",
+        text: "In Bearbeitung",
         bg: "bg-[#ffe4e9]",
         color: "text-[#ff4f7b]",
       };
     case "reserved":
       return {
-        text: "Wird vorbereitet",
+        text: "In Bearbeitung",
         bg: "bg-[#ffe4e9]",
         color: "text-[#ff4f7b]",
       };
 
     case "preparation_shipping":
       return {
-        text: "Wird vorbereitet",
+        text: "In Bearbeitung",
         bg: "bg-[#D4EEF9]",
         color: "text-[#29ABE2]",
       };
@@ -205,14 +205,14 @@ export function getStatusStyleDe(raw: string) {
 
     case "shipped":
       return {
-        text: "Zugestellt",
+        text: "Versandt",
         bg: "bg-[#dcfce7]",
         color: "text-[#22c55e]",
       };
 
     case "completed":
       return {
-        text: "Versendet",
+        text: "Zugestellt",
         bg: "bg-[#dcfce7]",
         color: "text-[#39B54A]",
       };
@@ -220,49 +220,69 @@ export function getStatusStyleDe(raw: string) {
     case "items_are_checked":
       return {
         text: "Artikel geprüft",
-        bg: "bg-[#fee2e2]",
-        color: "text-[#dc2626]",
+        bg: "bg-[#dbeafe]",
+        color: "text-[#2563eb]",
       };
 
     case "waiting_for_return":
       return {
         text: "Warten auf Rücksendung",
-        bg: "bg-[#fee2e2]",
-        color: "text-[#dc2626]",
+        bg: "bg-[#fff7ed]",
+        color: "text-[#ea580c]",
       };
 
     case "warranty_initiated":
       return {
         text: "Garantie gestartet",
-        bg: "bg-[#fee2e2]",
-        color: "text-[#dc2626]",
+        bg: "bg-[#eef2ff]",
+        color: "text-[#4f46e5]",
       };
 
     case "exchange_initiated":
       return {
         text: "Umtausch gestartet",
-        bg: "bg-[#fee2e2]",
-        color: "text-[#dc2626]",
+        bg: "bg-[#ecfeff]",
+        color: "text-[#0891b2]",
       };
 
     case "credit_note_created":
       return {
         text: "Gutschrift erstellt",
-        bg: "bg-[#fee2e2]",
-        color: "text-[#dc2626]",
+        bg: "bg-[#dcfce7]",
+        color: "text-[#16a34a]",
       };
 
     case "return":
       return {
-        text: "Zurückgesendet",
+        text: "Rücksendung",
         bg: "bg-[#FDE9D2]",
         color: "text-[#F7931E]",
       };
     case "return_issue":
       return {
-        text: "Rückerstattung veranlassen",
+        text: "Erstattet",
         bg: "bg-[#FDE9D2]",
         color: "text-[#F7931E]",
+      };
+    case "canceled_no_stock":
+      return {
+        text: "Storniert",
+        bg: "bg-[#FFD2D3]",
+        color: "text-[#FF0000]",
+      };
+
+    case "canceled_wrong_price":
+      return {
+        text: "Storniert",
+        bg: "bg-[#FFD2D3]",
+        color: "text-[#FF0000]",
+      };
+
+    case "canceled":
+      return {
+        text: "Storniert",
+        bg: "bg-[#FFD2D3]",
+        color: "text-[#FF0000]",
       };
 
     default:
