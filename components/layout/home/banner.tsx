@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import HoverButton from "../../shared/hover-button";
@@ -95,7 +96,7 @@ const HomeBanner = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative isolate z-10 flex w-full items-center overflow-hidden bg-primary min-h-[56vh] sm:min-h-[58vh] lg:min-h-[70vh] xl:min-h-[80vh]"
+      className="relative isolate z-10 w-full overflow-hidden bg-primary min-h-[56vh] sm:min-h-[58vh] lg:min-h-[70vh] xl:min-h-[80vh]"
     >
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-[linear-gradient(128deg,rgba(255,255,255,0.22)_0%,rgba(255,255,255,0)_44%)]" />
@@ -104,11 +105,11 @@ const HomeBanner = () => {
         <div className="absolute inset-y-0 right-0 hidden w-[72%] bg-white/8 [clip-path:polygon(20%_0,100%_0,100%_100%,0_100%)] xl:block" />
       </div>
 
-      <div className="relative mx-auto flex w-full max-w-[1680px] items-center px-4 py-8 sm:px-6 sm:py-9 md:px-10 md:py-10 lg:px-12 lg:py-10 xl:px-20 xl:py-12">
+      <div className="relative mx-auto flex w-full max-w-[1680px] min-h-[56vh] flex-col justify-center px-4 py-8 sm:min-h-[58vh] sm:px-6 sm:py-9 md:px-10 md:py-10 lg:min-h-[70vh] lg:px-12 lg:py-10 xl:min-h-[80vh] xl:px-20 xl:py-12">
         <div className="relative">
           <div
             ref={socialRef}
-            className="absolute left-0 top-1/2 z-30 hidden -translate-y-1/2 lg:flex lg:flex-col lg:items-center lg:gap-10"
+            className="absolute left-0 top-1/2 z-30 hidden -translate-y-1/2 xl:flex xl:flex-col xl:items-center xl:gap-10"
           >
             <div className="flex flex-col items-center gap-2 text-black/90">
               <span className="rotate-180 text-xs font-semibold uppercase tracking-[0.34em] [writing-mode:vertical-rl]">
@@ -138,42 +139,52 @@ const HomeBanner = () => {
 
           <div
             ref={imageRef}
-            className="relative z-10 mx-auto w-full max-w-[1040px] opacity-0 xl:max-w-none xl:-mr-4 2xl:-mr-10"
+            className="relative z-10 mx-auto w-full max-w-[1120px] opacity-0 xl:max-w-none xl:-mr-4 2xl:-mr-10"
           >
             <div className="pointer-events-none absolute inset-x-[4%] bottom-[8%] top-[10%] rounded-[46%] bg-gradient-to-br from-white/70 via-white/18 to-transparent blur-[80px] xl:inset-x-[12%] xl:bottom-[12%] xl:top-[12%] xl:blur-[100px]" />
             <div className="pointer-events-none absolute inset-x-[12%] bottom-[7%] h-[20%] rounded-full bg-black/35 blur-3xl xl:inset-x-[22%]" />
             <Image
-              src={"/new-banner-1.png"}
+              src={"/banner-3.png"}
               width={1250}
               height={820}
               alt={t("bannerSlogan")}
               priority
-              // quality={100}
-              unoptimized
-              sizes="(max-width: 768px) 94vw, (max-width: 1280px) 82vw, 62vw"
-              className="relative z-10 h-auto w-full object-contain drop-shadow-[0_28px_40px_rgba(0,0,0,0.38)] xl:origin-bottom 2xl:scale-[1.04]"
+              sizes="(max-width: 640px) 96vw, (max-width: 1024px) 90vw, (max-width: 1280px) 82vw, 62vw"
+              className="relative z-10 h-auto w-full scale-[1.12] object-contain object-center drop-shadow-[0_28px_40px_rgba(0,0,0,0.38)] sm:scale-[1.1] md:scale-[1.06] lg:scale-[1.04] xl:scale-100 xl:origin-bottom 2xl:scale-[1.04]"
             />
           </div>
         </div>
-      </div>
 
-      <div
-        ref={contentRef}
-        className="relative z-20 mx-auto mt-4 w-full max-w-[470px] opacity-0 sm:mt-6 md:max-w-[560px] lg:max-w-[620px] xl:absolute xl:bottom-5 xl:left-1/2 xl:mt-0 xl:max-w-[500px] xl:-translate-x-1/2 2xl:bottom-6 2xl:max-w-[540px]"
-      >
-        <div className="rounded-[26px] border border-white/55 bg-white/16 p-4 shadow-[0_18px_56px_rgba(0,0,0,0.2)] backdrop-blur-md sm:p-6 xl:p-7">
-          <div className="mb-4 flex items-center justify-center gap-3">
-            <span className="h-px w-10 bg-white/55" />
-            <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-white/90">
-              Econelo
-            </span>
-            <span className="h-px w-10 bg-white/55" />
+        <div
+          ref={contentRef}
+          className="relative z-20 mx-auto mt-4 w-full max-w-[320px] opacity-0 sm:mt-6 sm:max-w-[360px] md:max-w-[430px] lg:max-w-[520px] xl:absolute xl:bottom-5 xl:left-1/2 xl:mt-0 xl:max-w-[500px] xl:-translate-x-1/2 2xl:bottom-6 2xl:max-w-[540px]"
+        >
+          <div className="rounded-[22px] border border-white/55 bg-white/16 p-3 shadow-[0_18px_56px_rgba(0,0,0,0.2)] backdrop-blur-md sm:rounded-[24px] sm:p-5 xl:rounded-[26px] xl:p-7">
+            <div className="mb-4 flex items-center justify-center gap-3">
+              <span className="h-px w-10 bg-white/55" />
+              <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-white/90">
+                Econelo
+              </span>
+              <span className="h-px w-10 bg-white/55" />
+            </div>
+
+          <div className="flex justify-center xl:hidden">
+            <Link
+              href="/alle-produkte"
+              className="flex w-fit items-center gap-2 rounded-tl-3xl rounded-br-3xl bg-black px-8 py-3 transition-all duration-500 hover:rounded-tl-none hover:rounded-br-none hover:rounded-tr-3xl"
+            >
+              <span className="whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.08em] text-white sm:text-xs">
+                {t("forThem")}
+              </span>
+              <ArrowRight className="size-4 text-white" />
+            </Link>
           </div>
 
-          <div className="flex justify-center">
+          <div className="hidden justify-center xl:flex">
             <HoverButton text={t("forThem")} redirect_url="/alle-produkte" />
           </div>
         </div>
+      </div>
       </div>
     </section>
   );
