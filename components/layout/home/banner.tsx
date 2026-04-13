@@ -149,6 +149,7 @@ const HomeBanner = () => {
               height={820}
               alt={t("bannerSlogan")}
               priority
+              unoptimized
               sizes="(max-width: 640px) 96vw, (max-width: 1024px) 90vw, (max-width: 1280px) 82vw, 62vw"
               className="relative z-10 h-auto w-full scale-[1.12] object-contain object-center drop-shadow-[0_28px_40px_rgba(0,0,0,0.38)] sm:scale-[1.1] md:scale-[1.06] lg:scale-[1.04] xl:scale-100 xl:origin-bottom 2xl:scale-[1.04]"
             />
@@ -168,23 +169,23 @@ const HomeBanner = () => {
               <span className="h-px w-10 bg-white/55" />
             </div>
 
-          <div className="flex justify-center xl:hidden">
-            <Link
-              href="/alle-produkte"
-              className="flex w-fit items-center gap-2 rounded-tl-3xl rounded-br-3xl bg-black px-8 py-3 transition-all duration-500 hover:rounded-tl-none hover:rounded-br-none hover:rounded-tr-3xl"
-            >
-              <span className="whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.08em] text-white sm:text-xs">
-                {t("forThem")}
-              </span>
-              <ArrowRight className="size-4 text-white" />
-            </Link>
-          </div>
+            <div className="flex justify-center xl:hidden">
+              <Link
+                href="/alle-produkte"
+                className="flex w-fit items-center gap-2 rounded-tl-3xl rounded-br-3xl bg-black px-8 py-3 transition-all duration-500 hover:rounded-tl-none hover:rounded-br-none hover:rounded-tr-3xl"
+              >
+                <span className="whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.08em] text-white sm:text-xs">
+                  {t("forThem")}
+                </span>
+                <ArrowRight className="size-4 text-white" />
+              </Link>
+            </div>
 
-          <div className="hidden justify-center xl:flex">
-            <HoverButton text={t("forThem")} redirect_url="/alle-produkte" />
+            <div className="hidden justify-center xl:flex">
+              <HoverButton text={t("forThem")} redirect_url="/alle-produkte" />
+            </div>
           </div>
         </div>
-      </div>
       </div>
     </section>
   );
