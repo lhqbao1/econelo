@@ -61,6 +61,9 @@ export const metadata: Metadata = {
       "Elektroroller, Elektromobile und Seniorenfahrzeuge für nachhaltige Mobilität.",
     images: ["/banner.jpeg"],
   },
+  verification: {
+    google: "YoswpUfQvsm7CswB52jjf5u7yT41ygfW3bjYtb172Fg",
+  },
 };
 
 const jsonLd = {
