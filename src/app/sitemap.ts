@@ -5,7 +5,7 @@ import { getAllProductsSelect } from "@/features/product-group/api";
 import type { CategoryResponse } from "@/types/categories";
 import type { BlogItem } from "@/types/blog";
 
-const SITE_URL = "https://econelo.de";
+const SITE_URL = "https://www.econelo.de";
 const DEFAULT_LOCALE = "de";
 const SECONDARY_LOCALE = "en";
 

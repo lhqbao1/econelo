@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const SITE_URL = "https://econelo.de";
+const SITE_URL = "https://www.econelo.de";
 
 function withEnglishPrefix(paths: string[]): string[] {
   const full = new Set<string>();

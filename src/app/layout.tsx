@@ -14,7 +14,7 @@ const quickSand = Quicksand({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://econelo.de"),
+  metadataBase: new URL("https://www.econelo.de"),
   title: {
     default: "Econelo – Elektroroller, Elektromobile & E-Mobilität",
     template: "%s | Econelo",
@@ -38,13 +38,13 @@ export const metadata: Metadata = {
     apple: "/favicon.ico",
   },
   alternates: {
-    canonical: "https://econelo.de",
+    canonical: "https://www.econelo.de",
   },
   openGraph: {
     title: "Econelo – Elektroroller & Elektromobile für moderne Mobilität",
     description:
       "Elektroroller, Elektromobile und Seniorenfahrzeuge für Alltag und Freizeit. Nachhaltige E-Mobilität mit Qualität und Komfort.",
-    url: "https://econelo.de",
+    url: "https://www.econelo.de",
     siteName: "Econelo",
     images: [
       {
@@ -71,27 +71,27 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://econelo.de/#organization",
+      "@id": "https://www.econelo.de/#organization",
       name: "Econelo",
-      url: "https://econelo.de",
-      logo: "https://econelo.de/econelo-logo.png",
+      url: "https://www.econelo.de",
+      logo: "https://www.econelo.de/econelo-logo.png",
     },
     {
       "@type": "WebSite",
-      "@id": "https://econelo.de/#website",
-      url: "https://econelo.de",
+      "@id": "https://www.econelo.de/#website",
+      url: "https://www.econelo.de",
       name: "Econelo",
       potentialAction: {
         "@type": "SearchAction",
         target: {
           "@type": "EntryPoint",
           urlTemplate:
-            "https://econelo.de/alle-produkte?search={search_term_string}",
+            "https://www.econelo.de/alle-produkte?search={search_term_string}",
         },
         "query-input": "required name=search_term_string",
       },
       publisher: {
-        "@id": "https://econelo.de/#organization",
+        "@id": "https://www.econelo.de/#organization",
       },
       inLanguage: "de-DE",
     },
