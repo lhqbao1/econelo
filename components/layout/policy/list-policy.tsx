@@ -11,7 +11,7 @@ import { getPolicyItemsByVersion } from "@/features/policy/api";
 import { ChevronsRight, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { PolicyVersion } from "@/types/policy";
+import type { PolicyResponse, PolicyVersion } from "@/types/policy";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "@/src/i18n/navigation";
@@ -27,6 +27,8 @@ interface ListPolicyProps {
   versionName?: string;
   isAdmin?: boolean;
   currentPage?: string;
+  staticPolicyResponse?: PolicyResponse;
+  hideVersionSection?: boolean;
 }
 
 const ListPolicy = ({
@@ -36,6 +38,8 @@ const ListPolicy = ({
   versionName,
   isAdmin = false,
   currentPage,
+  staticPolicyResponse,
+  hideVersionSection = false,
 }: ListPolicyProps) => {
   const t = useTranslations();
   const [openAccordion, setOpenAccordion] = useState<string>("");
@@ -54,10 +58,11 @@ const ListPolicy = ({
   const { data: policy, isLoading } = useQuery({
     queryKey: ["policy-items", currentVersion],
     queryFn: () => getPolicyItemsByVersion(currentVersion),
-    enabled: !!currentVersion,
+    enabled: !!currentVersion && !staticPolicyResponse,
   });
 
-  const filteredPolicies = policy?.legal_policies ?? [];
+  const policySource = staticPolicyResponse ?? policy;
+  const filteredPolicies = policySource?.legal_policies ?? [];
 
   useEffect(() => {
     const path = pathname?.toLowerCase();
@@ -87,13 +92,14 @@ const ListPolicy = ({
   const currentPolicy =
     filteredPolicies.find((p) => p.id === openAccordion) || filteredPolicies[0];
 
-  if (isLoading)
+  if (!staticPolicyResponse && isLoading)
     return (
       <div className="">
         <Loader2 className="animate-spin" />
       </div>
     );
-  if (!versionId) return <></>;
+  if (!versionId && !staticPolicyResponse) return <></>;
+  const firstVersion = versionData?.[0];
 
   return (
     <div className="min-h-screen  flex flex-col items-center relative md:pt-[100px]">
@@ -309,17 +315,18 @@ const ListPolicy = ({
             )}
           </div>
 
-          {/* Version section */}
-          <div className="flex flex-col items-end col-span-12 lg:mt-12 mt-4 mb-3 lg:mb-0">
-            <div
-              className={`text-primary cursor-pointer ${
-                versionData[0].id === currentVersion ? "font-bold" : ""
-              }`}
-              onClick={() => setCurrentVersion(versionData[0].id)}
-            >
-              Stand: {formatDate(versionData[0].created_at)}
+          {!hideVersionSection && firstVersion && (
+            <div className="flex flex-col items-end col-span-12 lg:mt-12 mt-4 mb-3 lg:mb-0">
+              <div
+                className={`text-primary cursor-pointer ${
+                  firstVersion.id === currentVersion ? "font-bold" : ""
+                }`}
+                onClick={() => setCurrentVersion(firstVersion.id)}
+              >
+                Stand: {formatDate(firstVersion.created_at)}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
