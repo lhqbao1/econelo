@@ -61,9 +61,6 @@ export const metadata: Metadata = {
       "Elektroroller, Elektromobile und Seniorenfahrzeuge für nachhaltige Mobilität.",
     images: ["/banner.jpeg"],
   },
-  verification: {
-    google: "YoswpUfQvsm7CswB52jjf5u7yT41ygfW3bjYtb172Fg",
-  },
 };
 
 const jsonLd = {
@@ -106,6 +103,10 @@ export default function RootLayout({
   return (
     <html lang="de">
       <head>
+        <meta
+          name="google-site-verification"
+          content="YoswpUfQvsm7CswB52jjf5u7yT4lygfW3bjYtbl72Fg"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
