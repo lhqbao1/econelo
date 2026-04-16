@@ -25,13 +25,13 @@ export const metadata: Metadata = {
   description:
     "Entdecken Sie Elektroroller, Elektromobile und Seniorenfahrzeuge von Econelo für komfortable und nachhaltige Mobilität.",
   alternates: {
-    canonical: "https://econelo.de",
+    canonical: "https://www.econelo.de",
   },
   openGraph: {
     title: "Econelo – Elektroroller, Elektromobile & E-Mobilität",
     description:
       "Entdecken Sie Elektroroller, Elektromobile und Seniorenfahrzeuge von Econelo für komfortable und nachhaltige Mobilität.",
-    url: "https://econelo.de",
+    url: "https://www.econelo.de",
     siteName: "Econelo",
     type: "website",
   },
@@ -40,13 +40,13 @@ export const metadata: Metadata = {
 const homeSchema = {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "@id": "https://econelo.de/#homepage",
-  url: "https://econelo.de",
+  "@id": "https://www.econelo.de/#homepage",
+  url: "https://www.econelo.de",
   name: "Econelo – Elektroroller, Elektromobile & E-Mobilität",
   description:
     "Entdecken Sie Elektroroller, Elektromobile und Seniorenfahrzeuge von Econelo.",
   isPartOf: {
-    "@id": "https://econelo.de/#website",
+    "@id": "https://www.econelo.de/#website",
   },
   inLanguage: "de-DE",
 };
