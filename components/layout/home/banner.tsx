@@ -144,7 +144,7 @@ const HomeBanner = () => {
             <div className="pointer-events-none absolute inset-x-[4%] bottom-[8%] top-[10%] rounded-[46%] bg-gradient-to-br from-white/70 via-white/18 to-transparent blur-[80px] xl:inset-x-[12%] xl:bottom-[12%] xl:top-[12%] xl:blur-[100px]" />
             <div className="pointer-events-none absolute inset-x-[12%] bottom-[7%] h-[20%] rounded-full bg-black/35 blur-3xl xl:inset-x-[22%]" />
             <Image
-              src={"/banner-3.png"}
+              src={"/banner-4.png"}
               width={1250}
               height={820}
               alt={t("bannerSlogan")}
