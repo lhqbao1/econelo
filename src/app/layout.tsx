@@ -101,7 +101,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="de">
+    <html lang="de" translate="no">
       <head>
         <meta
           name="google-site-verification"
