@@ -15,6 +15,7 @@ const STATIC_PATHS = [
   "/ueber-uns",
   "/galerie",
   "/kontakt",
+  "/servicestellen",
   "/faq",
   "/blog",
   "/agb",

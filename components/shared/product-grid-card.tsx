@@ -21,9 +21,14 @@ import { useInventoryPoByProductId } from "@/features/inventory-incoming/hook";
 interface ProductGridCard {
   product: ProductItem;
   idx: number;
+  showCategoryLabel?: boolean;
 }
 
-const ProductGridCard = ({ product, idx }: ProductGridCard) => {
+const ProductGridCard = ({
+  product,
+  idx,
+  showCategoryLabel = true,
+}: ProductGridCard) => {
   const router = useRouter();
   const [userId, setUserId] = useAtom(userIdAtom);
   const t = useTranslations();
@@ -242,9 +247,11 @@ const ProductGridCard = ({ product, idx }: ProductGridCard) => {
 
         <div className="flex-1 flex flex-col justify-between gap-6">
           <div className="space-y-1">
-            <p className="text-primary uppercase text-sm font-semibold">
-              {productCategoryName}
-            </p>
+            {showCategoryLabel && (
+              <p className="text-primary uppercase text-sm font-semibold">
+                {productCategoryName}
+              </p>
+            )}
             <h3 className="text-base font-black line-clamp-2">
               {productName}
             </h3>

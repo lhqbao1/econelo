@@ -32,11 +32,17 @@ export function NavBar() {
       href: "/rechtliches",
       label: "Rechtliches",
     },
+    {
+      href: "/servicestellen",
+      label: "Servicestellen",
+    },
   ];
 
   const { data: categories } = useGetCategoriesWithChildren({
     is_econelo: true,
   });
+
+  console.log(categories);
 
   const groupedCategories = React.useMemo(
     () =>

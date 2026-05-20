@@ -34,9 +34,13 @@ interface ProductsGridLayoutProps {
   hasBadge?: boolean;
   hasPagination?: boolean;
   data: ProductItem[];
+  showCategoryLabel?: boolean;
 }
 
-const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
+const ProductsGridLayout = ({
+  data,
+  showCategoryLabel = true,
+}: ProductsGridLayoutProps) => {
   const t = useTranslations();
   const router = useRouter();
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -229,7 +233,13 @@ const ProductsGridLayout = ({ data }: ProductsGridLayoutProps) => {
           {data.map((product, idx) => {
             // Mỗi viewport hiển thị 4 item
 
-            return <ProductGridCard product={product} idx={idx} />;
+            return (
+              <ProductGridCard
+                product={product}
+                idx={idx}
+                showCategoryLabel={showCategoryLabel}
+              />
+            );
           })}
         </CarouselContent>
 
