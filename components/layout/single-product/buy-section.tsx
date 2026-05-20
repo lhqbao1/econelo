@@ -109,7 +109,7 @@ const BuySection = ({
 
   const shippingCost = isFreeShippingProduct
     ? 0
-    : shippingCostMap[carrier] ?? 5.95;
+    : (shippingCostMap[carrier] ?? 5.95);
 
   const totalWithShipping = safeCurrentPrice + shippingCost;
 

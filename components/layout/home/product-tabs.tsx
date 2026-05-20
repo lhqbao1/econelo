@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, Fragment } from "react";
+import { useState, Fragment, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getCategoryBySlug } from "@/features/category/api";
+import { getAllProducts } from "@/features/products/api";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
@@ -10,6 +11,63 @@ import Head from "next/head";
 import ProductsGridLayout from "@/components/shared/product-grid-layout";
 import { ProductGridSkeleton } from "@/components/shared/product-grid-skeleton";
 import { useTranslations } from "next-intl";
+import { ProductItem } from "@/types/products";
+
+const HOMEPAGE_PINNED_PRODUCT_KEY = "coc";
+
+const normalizeValue = (value?: string | null) =>
+  typeof value === "string" ? value.trim().toLowerCase() : "";
+
+const shouldPinProduct = (product: ProductItem, pinnedKey: string) => {
+  const normalizedPinnedKey = normalizeValue(pinnedKey);
+
+  if (!normalizedPinnedKey) return false;
+
+  const isExactMatch = [product.url_key, product.sku].some(
+    (field) => normalizeValue(field) === normalizedPinnedKey,
+  );
+
+  if (isExactMatch) return true;
+
+  return normalizeValue(product.name).includes(normalizedPinnedKey);
+};
+
+const movePinnedProductToFront = (products: ProductItem[], pinnedKey: string) => {
+  const index = products.findIndex((product) =>
+    shouldPinProduct(product, pinnedKey),
+  );
+
+  if (index <= 0) return products;
+
+  const orderedProducts = [...products];
+  const pinnedProduct = orderedProducts[index];
+
+  if (!pinnedProduct) return products;
+
+  orderedProducts.splice(index, 1);
+  orderedProducts.unshift(pinnedProduct);
+
+  return orderedProducts;
+};
+
+const mergeProductsWithPinnedFirst = (
+  products: ProductItem[],
+  pinnedProduct: ProductItem | undefined,
+  pinnedKey: string,
+) => {
+  const mergedProducts = pinnedProduct ? [pinnedProduct, ...products] : products;
+  const uniqueProducts = mergedProducts.filter((product, index, list) => {
+    const productIdentity = product.id || product.url_key;
+    return (
+      list.findIndex((item) => {
+        const itemIdentity = item.id || item.url_key;
+        return itemIdentity === productIdentity;
+      }) === index
+    );
+  });
+
+  return movePinnedProductToFront(uniqueProducts, pinnedKey);
+};
 
 interface CategoryTab {
   id: string;
@@ -36,7 +94,34 @@ export default function ProductTabsClient({
     enabled: !!active,
   });
 
-  const products = data?.products ?? [];
+  const { data: pinnedProductSearchData } = useQuery({
+    queryKey: ["homepagePinnedProduct", HOMEPAGE_PINNED_PRODUCT_KEY],
+    queryFn: () =>
+      getAllProducts({
+        is_econelo: true,
+        all_products: true,
+        search: HOMEPAGE_PINNED_PRODUCT_KEY,
+      }),
+  });
+
+  const products = useMemo(
+    () => {
+      const pinnedProduct = pinnedProductSearchData?.items?.find((product) => {
+        const inActiveCategory = Array.isArray(product.categories)
+          ? product.categories.some((category) => category.slug === active)
+          : false;
+
+        return inActiveCategory && shouldPinProduct(product, HOMEPAGE_PINNED_PRODUCT_KEY);
+      });
+
+      return mergeProductsWithPinnedFirst(
+        data?.products ?? [],
+        pinnedProduct,
+        HOMEPAGE_PINNED_PRODUCT_KEY,
+      );
+    },
+    [active, data?.products, pinnedProductSearchData?.items],
+  );
 
   const reordered = [
     categoriesList[1], // cat thứ 2
@@ -133,7 +218,7 @@ export default function ProductTabsClient({
                 {isLoading ? (
                   <ProductGridSkeleton />
                 ) : (
-                  <ProductsGridLayout data={products} />
+                  <ProductsGridLayout data={products} showCategoryLabel={false} />
                 )}
               </TabsContent>
             </Tabs>

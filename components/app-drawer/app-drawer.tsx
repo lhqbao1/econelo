@@ -54,6 +54,7 @@ export function AppDrawer({ isSticky }: AppDrawerProps) {
 
   const pages = [
     { title: "ABOUT US", href: "/ueber-uns" },
+    { title: "SERVICESTELLEN", href: "/servicestellen" },
     { title: "OUR HISTORY", href: "/" },
     { title: "FAQ", href: "/" },
     { title: "SHOP", href: "/" },

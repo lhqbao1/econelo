@@ -101,8 +101,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="de" translate="no">
+    <html
+      lang="de"
+      translate="no"
+      className="notranslate"
+    >
       <head>
+        <meta
+          name="google"
+          content="notranslate"
+        />
         <meta
           name="google-site-verification"
           content="YoswpUfQvsm7CswB52jjf5u7yT4lygfW3bjYtbl72Fg"
@@ -112,7 +120,9 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${quickSand.variable} font-quicksand antialiased`}>
+      <body
+        className={`${quickSand.variable} notranslate font-quicksand antialiased`}
+      >
         {/* Google Tag Manager (noscript) */}
         <Providers>
           <noscript>

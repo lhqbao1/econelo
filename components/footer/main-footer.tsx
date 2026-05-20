@@ -130,6 +130,12 @@ const MainFooter = () => {
             {/* <p className="text-gray-400">+49 1716 133971</p> */}
             <p className="text-gray-400">frank@frawa-aktiv.de</p>
             <p className="text-gray-400">+49 172 8965573</p>
+            <Link
+              href="/servicestellen"
+              className="inline-block text-gray-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              » Servicestellen ansehen
+            </Link>
           </div>
         </div>
       </div>
