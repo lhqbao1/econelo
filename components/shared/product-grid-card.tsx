@@ -8,7 +8,7 @@ import { Button } from "../ui/button";
 import { useAddToCart } from "@/features/cart/hook";
 import { useAddToWishList } from "@/features/wishlist/hook";
 import { CART_QUERY_KEY, useCartLocal } from "@/hooks/cart";
-import { CartItemLocal } from "@/lib/utils/cart";
+import { CartItemLocal, mapCartIncomingInventory } from "@/lib/utils/cart";
 import { useAtom } from "jotai";
 import { userIdAtom } from "@/store/auth";
 import { toast } from "sonner";
@@ -167,6 +167,12 @@ const ProductGridCard = ({
             carrier: currentProduct.carrier ?? "amm",
             id_provider: currentProduct.id_provider ?? "",
             delivery_time: currentProduct.delivery_time ?? "",
+            result_stock: currentProduct.result_stock ?? 0,
+            inventory_pos: mapCartIncomingInventory(
+              Array.isArray(inventoryPo) && inventoryPo.length > 0
+                ? inventoryPo
+                : currentProduct.inventory_pos,
+            ),
           },
         },
         {

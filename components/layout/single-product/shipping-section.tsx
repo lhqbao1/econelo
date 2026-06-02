@@ -1,12 +1,8 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useInventoryPoByProductId } from "@/features/inventory-incoming/hook";
-import {
-  addBusinessDays,
-  getDeliveryDayRange,
-} from "@/hooks/get-shipping-date";
-import { ProductItem } from "@/types/products";
+import { calculateProductDeliveryRange } from "@/hooks/get-shipping-date";
+import type { ProductItem } from "@/types/products";
 import { Info, Truck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React from "react";
@@ -29,36 +25,18 @@ export function formatDateDE(date: Date) {
 
 const ShippingSection = ({ productDetails }: ShippingSectionProps) => {
   const t = useTranslations();
-  const { data, isLoading, isError } = useInventoryPoByProductId(
-    productDetails.id,
-  );
+  const { data } = useInventoryPoByProductId(productDetails.id);
 
-  const latestDeliveryDate = React.useMemo(() => {
-    const items = Array.isArray(data) ? data : data ? [data] : [];
-    let latest: Date | null = null;
-
-    for (const item of items) {
-      if (!item.list_delivery_date) continue;
-      const date = new Date(item.list_delivery_date);
-      if (Number.isNaN(date.getTime())) continue;
-
-      if (!latest || date > latest) {
-        latest = date;
-      }
-    }
-
-    return latest;
-  }, [data]);
+  const incomingInventorySource = React.useMemo(() => {
+    if (Array.isArray(data) && data.length > 0) return data;
+    return productDetails.inventory_pos ?? [];
+  }, [data, productDetails.inventory_pos]);
 
   const estimatedDeliveryRange = React.useMemo(() => {
-    const deliveryRange = getDeliveryDayRange(productDetails.delivery_time);
-    if (!deliveryRange || !latestDeliveryDate) return null;
-
-    return {
-      from: addBusinessDays(latestDeliveryDate, deliveryRange.min),
-      to: addBusinessDays(latestDeliveryDate, deliveryRange.max),
-    };
-  }, [latestDeliveryDate, productDetails.delivery_time]);
+    return calculateProductDeliveryRange(productDetails, {
+      inventoryPo: incomingInventorySource,
+    });
+  }, [productDetails, incomingInventorySource]);
 
   const safeStock = Number(productDetails?.stock ?? 0);
   const brandName =
@@ -179,13 +157,13 @@ const ShippingSection = ({ productDetails }: ShippingSectionProps) => {
           </div>
 
           {brandName.toLowerCase() === "econelo" && (
-              <div className="border px-2.5 py-2 rounded-md border-black/40">
-                <p className="text-sm text-gray-700">
-                  2 Jahre Gewährleistung auf das Fahrzeug. Die Batterie hat eine
-                  Garantie von 6 Monaten ab dem Lieferdatum.
-                </p>
-              </div>
-            )}
+            <div className="border px-2.5 py-2 rounded-md border-black/40">
+              <p className="text-sm text-gray-700">
+                2 Jahre Gewährleistung auf das Fahrzeug. Die Batterie hat eine
+                Garantie von 6 Monaten ab dem Lieferdatum.
+              </p>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

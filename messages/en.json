@@ -246,6 +246,8 @@
   "enterDes": "Enter your description...",
   "chooseAtLeastCart": "You need to choose at least one product to check out",
   "searchProduct": "Search Products",
+  "searchProductHint": "Enter a product name or article number",
+  "closeSearch": "Close search",
   "noResult": "No result found",
   "loading": "Loading",
   "notEnoughStock": "Not enough stock",
@@ -282,6 +284,7 @@
   "choose_payment_method": "You need to choose at least one payment method",
   "must_accept_terms": "You must accept the terms and conditions",
   "estimated_delivery": "Estimated Delivery Time",
+  "estimated_delivery_range": "Estimated Delivery",
   "feedback": "Feedback",
   "business_days": "business days",
   "NotFound": {

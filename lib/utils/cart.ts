@@ -1,5 +1,12 @@
 // utils/cart.ts
 
+export type CartIncomingInventoryItem = {
+  quantity?: number;
+  incoming_stock?: number;
+  list_delivery_date?: string;
+  date_received?: string;
+};
+
 export type CartItemLocal = {
   id?: string;
   product_id: string;
@@ -13,7 +20,45 @@ export type CartItemLocal = {
   carrier: string;
   id_provider?: string;
   delivery_time?: string;
+  result_stock?: number;
+  inventory_pos?: CartIncomingInventoryItem[];
 };
+
+type IncomingInventorySourceItem = {
+  quantity?: unknown;
+  incoming_stock?: unknown;
+  list_delivery_date?: unknown;
+  date_received?: unknown;
+};
+
+export function mapCartIncomingInventory(
+  source:
+    | IncomingInventorySourceItem[]
+    | IncomingInventorySourceItem
+    | null
+    | undefined,
+): CartIncomingInventoryItem[] {
+  const items = Array.isArray(source) ? source : source ? [source] : [];
+
+  return items.flatMap((item) => {
+    const quantity = Number(item.quantity ?? item.incoming_stock ?? 0);
+    const listDeliveryDate =
+      typeof item.list_delivery_date === "string" ? item.list_delivery_date : "";
+    const dateReceived =
+      typeof item.date_received === "string" ? item.date_received : "";
+
+    if (!quantity || (!listDeliveryDate && !dateReceived)) return [];
+
+    return [
+      {
+        quantity,
+        incoming_stock: quantity,
+        list_delivery_date: listDeliveryDate || undefined,
+        date_received: dateReceived || undefined,
+      },
+    ];
+  });
+}
 
 const CART_KEY = "guest_cart";
 

@@ -16,6 +16,7 @@ import {
 } from "@tanstack/react-table";
 import { GetCartLocalColumns } from "./local-columns";
 import { useIsPhone } from "@/hooks/use-is-phone";
+import type { CartIncomingInventoryItem } from "@/lib/utils/cart";
 
 export type CartTableItem = {
   id?: string;
@@ -29,6 +30,8 @@ export type CartTableItem = {
   stock: number;
   id_provider?: string;
   delivery_time?: string;
+  result_stock?: number;
+  inventory_pos?: CartIncomingInventoryItem[];
 };
 
 interface CartLocalTableProps {
@@ -54,7 +57,16 @@ export default function CartLocalTable({
 
   return (
     <div className="col-span-12 lg:col-span-8 flex-1">
-      <Table className="overflow-hidden overflow-x-hidden text-wrap">
+      <Table className={isPhone ? "text-wrap" : "table-fixed text-wrap"}>
+        {!isPhone && (
+          <colgroup>
+            <col className="w-[38%]" />
+            <col className="w-[24%]" />
+            <col className="w-[16%]" />
+            <col className="w-[14%]" />
+            <col className="w-[8%]" />
+          </colgroup>
+        )}
         {isPhone ? (
           ""
         ) : (
@@ -67,7 +79,10 @@ export default function CartLocalTable({
               .map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      className="whitespace-normal px-1 md:px-2"
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -85,7 +100,10 @@ export default function CartLocalTable({
             ? table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      className="whitespace-normal px-1 md:px-2"
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

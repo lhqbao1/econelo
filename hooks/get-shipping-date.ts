@@ -1,16 +1,108 @@
 import { useMemo } from "react";
+import type { ProductItem } from "@/types/products";
 
 /* ---------- helpers ---------- */
 
-export function getLatestInventory(inventory: any[]) {
-  if (!inventory || inventory.length === 0) return null;
+type IncomingInventoryItem = {
+  quantity?: unknown;
+  incoming_stock?: unknown;
+  list_delivery_date?: unknown;
+  date_received?: unknown;
+};
 
-  return inventory.reduce((latest, item) => {
-    if (!latest) return item;
-    return new Date(item.date_received) > new Date(latest.date_received)
-      ? item
-      : latest;
-  }, null);
+type NormalizedIncomingInventoryItem = {
+  quantity: number;
+  date: Date;
+};
+
+type IncomingStockSummary = {
+  incomingStock: number;
+  nearestIncomingDate: Date | null;
+  latestIncomingDate: Date | null;
+};
+
+type CalculateIncomingStockOptions = {
+  inventoryPo?: IncomingInventoryItem[] | IncomingInventoryItem | null;
+  referenceDate?: Date;
+};
+
+const EMPTY_INCOMING_STOCK_SUMMARY: IncomingStockSummary = {
+  incomingStock: 0,
+  nearestIncomingDate: null,
+  latestIncomingDate: null,
+};
+
+const toNumber = (value: unknown): number =>
+  typeof value === "number" ? value : Number(value) || 0;
+
+const toArray = <T>(value: T[] | T | null | undefined): T[] => {
+  if (Array.isArray(value)) return value;
+  if (value === null || value === undefined) return [];
+  return [value];
+};
+
+const getIncomingItemDate = (item: IncomingInventoryItem): Date | null => {
+  const rawDate = item.list_delivery_date ?? item.date_received;
+  if (!rawDate) return null;
+
+  const date = new Date(String(rawDate));
+  return Number.isNaN(date.getTime()) ? null : date;
+};
+
+const normalizeFutureIncomingInventory = (
+  inventory: IncomingInventoryItem[] | IncomingInventoryItem | null | undefined,
+  referenceDate: Date = new Date(),
+): NormalizedIncomingInventoryItem[] => {
+  const today = new Date(referenceDate);
+  today.setHours(0, 0, 0, 0);
+
+  const normalized = toArray(inventory).flatMap((item) => {
+    const quantity = toNumber(item?.quantity ?? item?.incoming_stock);
+    if (quantity <= 0) return [];
+
+    const date = getIncomingItemDate(item);
+    if (!date) return [];
+
+    const compareDate = new Date(date);
+    compareDate.setHours(0, 0, 0, 0);
+    if (compareDate < today) return [];
+
+    return [{ quantity, date }];
+  });
+
+  return normalized.sort((a, b) => a.date.getTime() - b.date.getTime());
+};
+
+export function getLatestInventory(
+  inventory: IncomingInventoryItem[] | IncomingInventoryItem | null | undefined,
+) {
+  const futureItems = normalizeFutureIncomingInventory(inventory);
+  if (futureItems.length === 0) return null;
+
+  return futureItems[0];
+}
+
+export function getIncomingDateForRequiredQuantity(
+  inventory: IncomingInventoryItem[] | IncomingInventoryItem | null | undefined,
+  requiredQuantity: number,
+): Date | null {
+  const futureItems = normalizeFutureIncomingInventory(inventory);
+  if (futureItems.length === 0) return null;
+
+  if (!Number.isFinite(requiredQuantity) || requiredQuantity <= 0) {
+    return futureItems[0]?.date ?? null;
+  }
+
+  let cumulativeQuantity = 0;
+
+  for (const item of futureItems) {
+    cumulativeQuantity += item.quantity;
+    if (cumulativeQuantity >= requiredQuantity) {
+      return item.date;
+    }
+  }
+
+  return futureItems[futureItems.length - 1]?.date ?? null;
 }
 
 export function getDeliveryDayRange(
@@ -53,11 +145,159 @@ export function addBusinessDays(startDate: Date, businessDays: number) {
   return result;
 }
 
+export function addCalendarDays(startDate: Date, days: number) {
+  const result = new Date(startDate);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+const calculateAvailableStock = (
+  product?: Partial<ProductItem> | null,
+): number => {
+  if (!product) return 0;
+
+  return toNumber(product.stock) - Math.abs(toNumber(product.result_stock));
+};
+
+const summarizeIncomingItems = (
+  items: NormalizedIncomingInventoryItem[],
+): IncomingStockSummary => {
+  if (items.length === 0) return EMPTY_INCOMING_STOCK_SUMMARY;
+
+  const incomingStock = items.reduce((sum, item) => sum + item.quantity, 0);
+  const timestamps = items.map((item) => item.date.getTime());
+
+  return {
+    incomingStock,
+    nearestIncomingDate: new Date(Math.min(...timestamps)),
+    latestIncomingDate: new Date(Math.max(...timestamps)),
+  };
+};
+
+const calculateIncomingStockSummary = (
+  product?: Partial<ProductItem> | null,
+  options: CalculateIncomingStockOptions = {},
+): IncomingStockSummary => {
+  if (!product) return EMPTY_INCOMING_STOCK_SUMMARY;
+
+  const referenceDate = options.referenceDate ?? new Date();
+  const bundles = product.bundles ?? [];
+
+  if (bundles.length > 0) {
+    const bundleIncomingStocks: number[] = [];
+    const bundleIncomingDates: Date[] = [];
+
+    for (const bundle of bundles) {
+      const quantityPerBundle = toNumber(bundle?.quantity);
+      if (quantityPerBundle <= 0) continue;
+
+      const bundleIncomingItems = normalizeFutureIncomingInventory(
+        bundle?.bundle_item?.inventory_pos,
+        referenceDate,
+      );
+
+      const bundleIncomingQuantity = bundleIncomingItems.reduce(
+        (sum, item) => sum + item.quantity,
+        0,
+      );
+
+      bundleIncomingStocks.push(
+        Math.floor(bundleIncomingQuantity / quantityPerBundle),
+      );
+
+      if (bundleIncomingItems.length > 0) {
+        const latestDate = new Date(
+          Math.max(...bundleIncomingItems.map((item) => item.date.getTime())),
+        );
+        bundleIncomingDates.push(latestDate);
+      }
+    }
+
+    if (bundleIncomingStocks.length > 0) {
+      const latestIncomingDate =
+        bundleIncomingDates.length > 0
+          ? new Date(
+              Math.max(...bundleIncomingDates.map((date) => date.getTime())),
+            )
+          : null;
+
+      return {
+        incomingStock: Math.max(0, Math.min(...bundleIncomingStocks)),
+        nearestIncomingDate: latestIncomingDate,
+        latestIncomingDate,
+      };
+    }
+  }
+
+  const source = options.inventoryPo ?? product.inventory_pos ?? [];
+  const normalizedItems = normalizeFutureIncomingInventory(
+    source,
+    referenceDate,
+  );
+
+  return summarizeIncomingItems(normalizedItems);
+};
+
+interface CalculateProductDeliveryRangeOptions {
+  inventoryPo?: IncomingInventoryItem[] | IncomingInventoryItem | null;
+  referenceDate?: Date;
+}
+
+export function calculateProductDeliveryRange(
+  product?: Partial<ProductItem> | null,
+  options: CalculateProductDeliveryRangeOptions = {},
+): { from: Date; to: Date } | null {
+  if (!product) return null;
+
+  const deliveryRange = getDeliveryDayRange(product.delivery_time);
+  if (!deliveryRange) return null;
+
+  const currentStock = calculateAvailableStock(product);
+  const incomingSummary = calculateIncomingStockSummary(product, {
+    inventoryPo: options.inventoryPo,
+    referenceDate: options.referenceDate,
+  });
+  const isBundleProduct = (product.bundles?.length ?? 0) > 0;
+
+  const incomingInventorySource =
+    Array.isArray(options.inventoryPo) && options.inventoryPo.length > 0
+      ? options.inventoryPo
+      : (product.inventory_pos ?? []);
+
+  const nextIncomingDate = isBundleProduct
+    ? incomingSummary.latestIncomingDate
+    : (getIncomingDateForRequiredQuantity(
+        incomingInventorySource,
+        Math.abs(currentStock) + 1,
+      ) ?? incomingSummary.nearestIncomingDate);
+
+  if (currentStock > 0) {
+    const today = options.referenceDate ?? new Date();
+    return {
+      from: addCalendarDays(today, deliveryRange.min),
+      to: addCalendarDays(today, deliveryRange.max),
+    };
+  }
+
+  if (!nextIncomingDate) {
+    const today = options.referenceDate ?? new Date();
+    return {
+      from: addCalendarDays(today, deliveryRange.min),
+      to: addCalendarDays(today, deliveryRange.max),
+    };
+  }
+
+  return {
+    from: addBusinessDays(nextIncomingDate, deliveryRange.min),
+    to: addBusinessDays(nextIncomingDate, deliveryRange.max),
+  };
+}
+
 /* ---------- hook ---------- */
 
 interface UseDeliveryEstimateParams {
   stock: number;
-  inventory?: any[];
+  inventory?: IncomingInventoryItem[];
   deliveryTime?: string;
 }
 
@@ -70,22 +310,24 @@ export const useDeliveryEstimate = ({
     const deliveryRange = getDeliveryDayRange(deliveryTime);
     if (!deliveryRange) return null;
 
-    const latestInventory = getLatestInventory(inventory ?? []);
+    let startDate: Date | null = null;
 
-    let startDate: Date;
-
-    // CASE 1: còn hàng → hôm nay
-    if (stock !== 0) {
+    if (stock > 0) {
       startDate = new Date();
     }
-    // CASE 2: hết hàng nhưng có inventory sắp về
-    else if (latestInventory) {
-      startDate = new Date(latestInventory.date_received);
+
+    if (stock <= 0) {
+      const incomingDate = getIncomingDateForRequiredQuantity(
+        inventory ?? [],
+        Math.abs(stock) + 1,
+      );
+
+      if (incomingDate) {
+        startDate = new Date(incomingDate);
+      }
     }
-    // CASE 3: hết hàng & không có inventory → vẫn tính (fallback)
-    else {
-      startDate = new Date();
-    }
+
+    if (!startDate) return null;
 
     return {
       from: addBusinessDays(startDate, deliveryRange.min),
@@ -102,18 +344,21 @@ export function calculateDeliveryEstimate({
   const deliveryRange = getDeliveryDayRange(deliveryTime);
   if (!deliveryRange) return null;
 
-  const latestInventory = getLatestInventory(inventory ?? []);
-
   let startDate: Date | null = null;
 
-  // CASE 1: còn hàng
   if (stock > 0) {
     startDate = new Date();
   }
 
-  // CASE 2: hết hàng nhưng có inventory sắp về
-  if (stock === 0 && latestInventory) {
-    startDate = new Date(latestInventory.date_received);
+  if (stock <= 0) {
+    const incomingDate = getIncomingDateForRequiredQuantity(
+      inventory ?? [],
+      Math.abs(stock) + 1,
+    );
+
+    if (incomingDate) {
+      startDate = new Date(incomingDate);
+    }
   }
 
   if (!startDate) return null;

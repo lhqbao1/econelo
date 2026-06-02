@@ -13,7 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useMemo, useRef } from "react";
 import { Button } from "../ui/button";
-import { CartItemLocal } from "@/lib/utils/cart";
+import { CartItemLocal, mapCartIncomingInventory } from "@/lib/utils/cart";
 import { toast } from "sonner";
 import { HandleApiError } from "@/lib/api-helper";
 import { Eye, ShoppingBasket } from "lucide-react";
@@ -161,6 +161,12 @@ const ShopGridCard = ({ product, idx }: ShopGridCardProps) => {
             carrier: currentProduct.carrier ?? "amm",
             id_provider: currentProduct.id_provider ?? "",
             delivery_time: currentProduct.delivery_time ?? "",
+            result_stock: currentProduct.result_stock ?? 0,
+            inventory_pos: mapCartIncomingInventory(
+              Array.isArray(inventoryPo) && inventoryPo.length > 0
+                ? inventoryPo
+                : currentProduct.inventory_pos,
+            ),
           },
         },
         {

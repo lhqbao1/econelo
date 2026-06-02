@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CartTableItem } from "./cart-local-table";
 import { useCartLocal } from "@/hooks/cart";
+import { getCartDeliveryRangeLabel } from "./delivery-range";
 
 export const GetCartLocalColumns = (): ColumnDef<CartTableItem>[] => {
   const t = useTranslations();
@@ -29,6 +30,8 @@ export const GetCartLocalColumns = (): ColumnDef<CartTableItem>[] => {
         id: "mobile",
         cell: ({ row }) => {
           const item = row.original;
+          const deliveryRangeLabel = getCartDeliveryRangeLabel(item);
+
           return (
             <div className="flex flex-col gap-3.5 p-3 flex-wrap">
               {/* Hàng 1 */}
@@ -48,7 +51,7 @@ export const GetCartLocalColumns = (): ColumnDef<CartTableItem>[] => {
                     </p>
                     <p>#{item.id_provider}</p>
                     <span>
-                      In {item.delivery_time} {t("business_days")}
+                      {t("delivery")}: {deliveryRangeLabel ?? t("updating")}
                     </span>
                   </div>
                 </div>
@@ -107,7 +110,7 @@ export const GetCartLocalColumns = (): ColumnDef<CartTableItem>[] => {
       accessorKey: "product_name",
       header: () => <div className="">{t("product")}</div>,
       cell: ({ row }) => (
-        <div className="flex items-center gap-2 w-80 text-wrap">
+        <div className="flex min-w-0 items-center gap-2 text-wrap">
           {row.original.img_url && (
             <Image
               src={row.original.img_url}
@@ -128,12 +131,20 @@ export const GetCartLocalColumns = (): ColumnDef<CartTableItem>[] => {
     },
     {
       accessorKey: "delivery_time",
-      header: () => <div className="">{t("estimated_delivery")}</div>,
-      cell: ({ row }) => (
-        <div className="text-center">
-          In {row.original.delivery_time} {t("business_days")}
+      header: () => (
+        <div className="text-center whitespace-normal leading-tight">
+          {t("estimated_delivery_range")}
         </div>
       ),
+      cell: ({ row }) => {
+        const deliveryRangeLabel = getCartDeliveryRangeLabel(row.original);
+
+        return (
+          <div className="text-center whitespace-normal font-medium leading-tight">
+            {deliveryRangeLabel ?? t("updating")}
+          </div>
+        );
+      },
     },
     {
       accessorKey: "quantity",
@@ -146,6 +157,7 @@ export const GetCartLocalColumns = (): ColumnDef<CartTableItem>[] => {
               type="button"
               variant="outline"
               size="sm"
+              className="h-9 w-9 p-0"
               onClick={() => onUpdateQuantity(item, item.quantity - 1)}
               disabled={item.quantity <= 1}
             >
@@ -156,6 +168,7 @@ export const GetCartLocalColumns = (): ColumnDef<CartTableItem>[] => {
               type="button"
               variant="outline"
               size="sm"
+              className="h-9 w-9 p-0"
               onClick={() => onUpdateQuantity(item, item.quantity + 1)}
               disabled={item.stock ? item.quantity >= item.stock : false}
             >
@@ -180,7 +193,7 @@ export const GetCartLocalColumns = (): ColumnDef<CartTableItem>[] => {
     },
     {
       id: "actions",
-      header: () => <div className="text-right">{t("actions")}</div>,
+      header: () => <span className="sr-only">{t("actions")}</span>,
       cell: ({ row }) => {
         const item = row.original;
         return (

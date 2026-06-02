@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { HandleApiError } from "@/lib/api-helper";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useDeleteCartItem } from "@/features/cart/hook";
+import { getCartDeliveryRangeLabel } from "./delivery-range";
 
 interface GetCartColumnsProps {
   localQuantities: Record<string, number>;
@@ -65,6 +66,7 @@ export const GetCartColumns = ({
         cell: ({ row }) => {
           const item = row.original;
           const quantity = localQuantities[item.id] ?? item.quantity;
+          const deliveryRangeLabel = getCartDeliveryRangeLabel(item.products);
 
           return (
             <div className="flex flex-col gap-3.5 p-3">
@@ -79,9 +81,14 @@ export const GetCartColumns = ({
                     className="rounded shrink-0"
                     unoptimized
                   />
-                  <p className="font-semibold text-wrap line-clamp-3">
-                    {item.products.name}
-                  </p>
+                  <div className="min-w-0">
+                    <p className="font-semibold text-wrap line-clamp-3">
+                      {item.products.name}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {t("delivery")}: {deliveryRangeLabel ?? t("updating")}
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -146,7 +153,7 @@ export const GetCartColumns = ({
       cell: ({ row }) => {
         const item = row.original;
         return (
-          <div className="flex items-center gap-3 w-60 text-wrap">
+          <div className="flex min-w-0 items-center gap-3 text-wrap">
             <Image
               src={item.image_url || "/placeholder-product.webp"}
               alt={item.products.name}
@@ -161,6 +168,25 @@ export const GetCartColumns = ({
               </p>
               <p>#{item.products.id_provider}</p>
             </div>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "delivery_time",
+      header: () => (
+        <div className="text-center whitespace-normal leading-tight">
+          {t("estimated_delivery_range")}
+        </div>
+      ),
+      cell: ({ row }) => {
+        const deliveryRangeLabel = getCartDeliveryRangeLabel(
+          row.original.products,
+        );
+
+        return (
+          <div className="text-center whitespace-normal font-medium leading-tight">
+            {deliveryRangeLabel ?? t("updating")}
           </div>
         );
       },
@@ -190,6 +216,7 @@ export const GetCartColumns = ({
               type="button"
               variant="outline"
               size="sm"
+              className="h-9 w-9 p-0"
               onClick={() => onUpdateQuantity(item, quantity - 1)}
             >
               -
@@ -199,6 +226,7 @@ export const GetCartColumns = ({
               type="button"
               variant="outline"
               size="sm"
+              className="h-9 w-9 p-0"
               onClick={() => onUpdateQuantity(item, quantity + 1)}
               disabled={quantity >= item.products.stock}
             >
@@ -227,6 +255,7 @@ export const GetCartColumns = ({
     },
     {
       id: "actions",
+      header: () => <span className="sr-only">{t("actions")}</span>,
       cell: ({ row }) => {
         const item = row.original;
         return (
