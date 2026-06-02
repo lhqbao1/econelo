@@ -241,6 +241,8 @@
   "enterDes": "Geben Sie Ihre Beschreibung ein...",
   "chooseAtLeastCart": "Bitte wählen Sie mindestens ein Produkt aus",
   "searchProduct": "Produkte suchen",
+  "searchProductHint": "Produktname oder Artikelnummer eingeben",
+  "closeSearch": "Suche schliessen",
   "noResult": "Keine Ergebnisse gefunden",
   "loading": "Wird geladen",
   "notEnoughStock": "Nicht genug Bestand",
@@ -277,6 +279,7 @@
   "choose_payment_method": "Sie müssen mindestens eine Zahlungsmethode auswählen",
   "must_accept_terms": "Sie müssen die Allgemeinen Geschäftsbedingungen akzeptieren",
   "estimated_delivery": "Voraussichtliche Lieferzeit",
+  "estimated_delivery_range": "Voraussichtliche Lieferung",
   "business_days": "Werktagen",
   "NotFound": {
     "title": "Seite nicht gefunden",

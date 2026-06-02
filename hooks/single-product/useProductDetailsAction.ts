@@ -5,7 +5,7 @@ import { HandleApiError } from "@/lib/api-helper";
 import { useAddToCart } from "@/features/cart/hook";
 import { useAddToWishList } from "@/features/wishlist/hook";
 import { useCartLocal } from "@/hooks/cart";
-import { CartItemLocal } from "@/lib/utils/cart";
+import { CartItemLocal, mapCartIncomingInventory } from "@/lib/utils/cart";
 import { useRouter } from "@/src/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { ProductItem } from "@/types/products";
@@ -79,6 +79,12 @@ export function useBuySectionActions(currentProduct: ProductItem) {
           carrier: currentProduct.carrier ?? "amm",
           id_provider: currentProduct.id_provider ?? "",
           delivery_time: currentProduct.delivery_time ?? "",
+          result_stock: currentProduct.result_stock ?? 0,
+          inventory_pos: mapCartIncomingInventory(
+            Array.isArray(inventoryPo) && inventoryPo.length > 0
+              ? inventoryPo
+              : currentProduct.inventory_pos,
+          ),
         },
       },
       {

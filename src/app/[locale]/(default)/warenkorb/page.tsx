@@ -298,9 +298,9 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen  flex flex-col items-center py-10 px-4 relative md:pt-[140px]">
-      <div className="w-full max-w-6xl bg-white p-8 rounded-lg shadow-sm">
+      <div className="w-full max-w-7xl bg-white p-8 rounded-lg shadow-sm">
         <h1 className="text-3xl font-bold mb-8">{t("shoppingCart")}</h1>
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,2.4fr)_minmax(320px,0.9fr)] gap-10">
           {/* Left: Cart Items */}
           <div>
             {!userId && (

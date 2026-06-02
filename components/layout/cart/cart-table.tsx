@@ -153,7 +153,17 @@ const CartTable = ({
         </p>
       </div>
 
-      <Table className="overflow-x-hidden">
+      <Table className={isPhone ? "" : "table-fixed"}>
+        {!isPhone && (
+          <colgroup>
+            <col className="w-[34%]" />
+            <col className="w-[22%]" />
+            <col className="w-[12%]" />
+            <col className="w-[14%]" />
+            <col className="w-[12%]" />
+            <col className="w-[6%]" />
+          </colgroup>
+        )}
         {isPhone ? (
           ""
         ) : (
@@ -161,7 +171,10 @@ const CartTable = ({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    className="whitespace-normal px-1 md:px-2"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -182,10 +195,13 @@ const CartTable = ({
         ) : (
           <TableBody>
             {table.getRowModel().rows.length
-              ? table.getRowModel().rows.map((row) => (
+                ? table.getRowModel().rows.map((row) => (
                   <TableRow key={row.id}>
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell
+                        key={cell.id}
+                        className="whitespace-normal px-1 md:px-2"
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
