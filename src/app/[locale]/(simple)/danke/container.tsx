@@ -26,6 +26,7 @@ import {
   getOrderLatestDeliveryDate,
 } from "@/hooks/get-estimated-delivery-date";
 import { Loader2 } from "lucide-react";
+import { useCheckoutCompleted } from "@/features/affiliate/hook";
 
 const OrderPlaced = () => {
   const router = useRouter();
@@ -51,6 +52,7 @@ const OrderPlaced = () => {
   const capturePaymentMutation = useCapturePayment();
   const uploadStaticFileMutation = useUploadStaticFile();
   const sendMailMutation = useSendMail();
+  const checkoutCompletedMutation = useCheckoutCompleted();
 
   const t = useTranslations();
 
@@ -130,7 +132,17 @@ const OrderPlaced = () => {
           await retryCaptureUntilSuccess(paymentId);
         }
 
-        return await getMainCheckOutByMainCheckOutId(checkoutId!);
+        const checkoutData = await getMainCheckOutByMainCheckOutId(checkoutId!);
+
+        if (checkoutData?.id) {
+          try {
+            await checkoutCompletedMutation.mutateAsync(checkoutData.id);
+          } catch (checkoutCompletedError) {
+            console.error("checkoutCompleted failed:", checkoutCompletedError);
+          }
+        }
+
+        return checkoutData;
       } catch (err) {
         console.error(err);
         // 🔥 PAYPAL CAPTURE FAIL
