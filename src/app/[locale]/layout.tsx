@@ -6,6 +6,8 @@ import type { Metadata } from "next";
 import IntlClientProviderWithAuth from "./intlProviderWithAuth";
 import { getMessages } from "next-intl/server";
 import { AuthSanity } from "@/hooks/auth/auth-sanity";
+import { AffiliateClickTracker } from "@/components/shared/affiliate-click-tracker";
+import { AffiliatePageViewTracker } from "@/components/shared/affiliate-page-view-tracker";
 
 type Props = {
   children: React.ReactNode;
@@ -33,6 +35,8 @@ export default async function LocaleLayout({ children, params }: Props) {
       timeZone="Europe/Berlin"
     >
       <AuthSanity />
+      <AffiliateClickTracker />
+      <AffiliatePageViewTracker />
       {children}
     </IntlClientProviderWithAuth>
   );

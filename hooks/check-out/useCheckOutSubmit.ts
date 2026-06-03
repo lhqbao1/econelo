@@ -28,6 +28,7 @@ import { CartItemLocal } from "@/lib/utils/cart";
 import { sendOtp } from "@/features/auth/api";
 import { userIdAtom, userIdGuestAtom } from "@/store/auth";
 import { currentVoucherAtom } from "@/store/voucher";
+import { useTrackAffiliateOrder } from "@/features/affiliate/hook";
 
 export function useCheckoutSubmit({
   form,
@@ -76,13 +77,15 @@ export function useCheckoutSubmit({
   const updateInvoice = useUpdateInvoiceAddress();
   const createShipping = useCreateAddress();
   const syncLocalCart = useSyncLocalCartCheckOut();
+  const trackAffiliateOrder = useTrackAffiliateOrder();
 
   const submitting =
     createCheckOut.isPending ||
     createInvoice.isPending ||
     createPayment.isPending ||
     createShipping.isPending ||
-    createUser.isPending;
+    createUser.isPending ||
+    trackAffiliateOrder.isPending;
 
   // =====================================================================================
   // STEP 1 — Submit lần đầu → chỉ check email + mở OTP dialog
@@ -249,6 +252,19 @@ export function useCheckoutSubmit({
         // toast.success(t("orderSuccess"));
         setCheckoutId(checkout.id);
         setVoucherId(null);
+
+        try {
+          await trackAffiliateOrder.mutateAsync({
+            checkout_id: checkout.id,
+            status: "PENDING",
+            user_id: userLoginId ?? currentGuestId ?? finalUserId ?? "",
+            total_discount: Number(checkout.voucher_amount ?? 0),
+            total_amount: Number(checkout.total_amount ?? 0),
+          });
+        } catch (trackOrderError) {
+          console.error("trackAffiliateOrder failed:", trackOrderError);
+        }
+
         // Payment flow
 
         // ===========================
@@ -319,6 +335,8 @@ export function useCheckoutSubmit({
       localCart,
       shippingCost,
       locale,
+      userLoginId,
+      trackAffiliateOrder,
     ],
   );
 
