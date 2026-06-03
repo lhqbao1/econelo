@@ -22,6 +22,7 @@ const TRACKING_PARAMS = [
 export default function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
   const { pathname, searchParams } = url;
+  const hasAffiliateCode = searchParams.has("aff");
 
   let changed = false;
 
@@ -29,6 +30,8 @@ export default function middleware(req: NextRequest) {
   // 1️⃣ REMOVE TRACKING PARAMS
   // =========================
   TRACKING_PARAMS.forEach((param) => {
+    if (hasAffiliateCode && param === "utm_source") return;
+
     if (searchParams.has(param)) {
       searchParams.delete(param);
       changed = true;
@@ -36,7 +39,7 @@ export default function middleware(req: NextRequest) {
   });
 
   if (changed) {
-    return NextResponse.redirect(url, 301);
+    return NextResponse.redirect(url, 302);
   }
 
   // =========================
