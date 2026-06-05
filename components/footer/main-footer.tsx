@@ -126,16 +126,18 @@ const MainFooter = () => {
             <div className="text-primary font-bold text-lg">
               {t("repairService")}
             </div>
+            <p className="text-gray-400 leading-relaxed">service@econelo.de</p>
+            <hr />
             <p className="text-gray-400 leading-relaxed">Herr Frank Rafael</p>
             {/* <p className="text-gray-400">+49 1716 133971</p> */}
             <p className="text-gray-400">frank@frawa-aktiv.de</p>
             <p className="text-gray-400">+49 172 8965573</p>
-            <Link
+            {/* <Link
               href="/servicestellen"
               className="inline-block text-gray-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               » Servicestellen ansehen
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>
