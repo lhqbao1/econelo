@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
+import ProductDescriptionLightbox from "./product-description-lightbox";
 
 interface ProductShortDescriptionProps {
   description: string;
@@ -15,10 +16,7 @@ const ProductShortDescription = ({
         <CardTitle className="text-xl font-bold">{t("description")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <p
-          className="text-gray-600 leading-relaxed text-wrap"
-          dangerouslySetInnerHTML={{ __html: description }}
-        ></p>
+        <ProductDescriptionLightbox description={description} />
       </CardContent>
     </Card>
   );
