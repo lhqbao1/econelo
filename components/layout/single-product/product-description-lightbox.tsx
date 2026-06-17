@@ -121,7 +121,7 @@ export default function ProductDescriptionLightbox({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent
           showCloseButton={false}
-          className="h-[min(92vh,900px)] w-[96vw] max-w-[min(96vw,1280px)] gap-0 overflow-hidden rounded-3xl border border-gray-200 bg-white p-0 shadow-2xl"
+          className="h-[88vh] w-[96vw] max-w-[96vw] gap-0 overflow-hidden rounded-3xl border border-gray-200 bg-white p-0 shadow-2xl md:h-[90vh] md:w-[90vw] md:max-w-[1800px]"
           aria-describedby={undefined}
         >
           <DialogTitle className="sr-only">
@@ -154,7 +154,7 @@ export default function ProductDescriptionLightbox({
               </DialogClose>
             </div>
 
-            <div className="relative flex min-h-0 flex-1 items-center justify-center bg-white p-4 md:p-6">
+            <div className="relative flex min-h-0 flex-1 items-center justify-center bg-white p-2 md:p-4">
               {activeImage && (
                 <img
                   src={activeImage.src}
