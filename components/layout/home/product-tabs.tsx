@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, Fragment, useMemo } from "react";
+import { useState, Fragment, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getCategoryBySlug } from "@/features/category/api";
-import { getAllProducts } from "@/features/products/api";
+import { getAllProducts, getProductsAlgoliaSearch } from "@/features/products/api";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
@@ -14,6 +14,12 @@ import { useTranslations } from "next-intl";
 import { ProductItem } from "@/types/products";
 
 const HOMEPAGE_PINNED_PRODUCT_KEY = "coc";
+const HOMEPAGE_CATEGORY_TAB_SLUGS = [
+  "elektromobile",
+  "elektrorollstuehle",
+  "roller-scooter",
+  "ersatzteile",
+] as const;
 
 const normalizeValue = (value?: string | null) =>
   typeof value === "string" ? value.trim().toLowerCase() : "";
@@ -73,7 +79,19 @@ interface CategoryTab {
   id: string;
   name: string;
   slug: string;
+  children?: CategoryTab[];
 }
+
+const getLeafCategoryNames = (category: CategoryTab | undefined): string[] => {
+  if (!category) return [];
+
+  const children = Array.isArray(category.children) ? category.children : [];
+  if (children.length === 0) return category.name ? [category.name] : [];
+
+  const leafNames = children.flatMap((child) => getLeafCategoryNames(child));
+
+  return [...new Set(leafNames.filter(Boolean))];
+};
 
 interface ProductTabsClientProps {
   categoriesList: CategoryTab[];
@@ -83,7 +101,31 @@ export default function ProductTabsClient({
   categoriesList,
 }: ProductTabsClientProps) {
   const t = useTranslations();
-  const [active, setActive] = useState<string>(categoriesList?.[1]?.slug ?? "");
+  const reordered = useMemo(() => {
+    return HOMEPAGE_CATEGORY_TAB_SLUGS.map((slug) =>
+      categoriesList.find((category) => category.slug === slug),
+    ).filter((category): category is CategoryTab => Boolean(category));
+  }, [categoriesList]);
+
+  const [active, setActive] = useState<string>(reordered[0]?.slug ?? "");
+
+  useEffect(() => {
+    if (active && reordered.some((category) => category.slug === active)) return;
+    setActive(reordered[0]?.slug ?? "");
+  }, [active, reordered]);
+
+  const activeCategory = useMemo(
+    () => reordered.find((category) => category.slug === active),
+    [active, reordered],
+  );
+  const activeCategoryLeafNames = useMemo(
+    () => getLeafCategoryNames(activeCategory),
+    [activeCategory],
+  );
+  const shouldUseCategorySearch =
+    activeCategoryLeafNames.length > 1 ||
+    (activeCategoryLeafNames.length === 1 &&
+      activeCategoryLeafNames[0] !== activeCategory?.name);
 
   const { data, isLoading } = useQuery({
     queryKey: ["categoryProducts", active],
@@ -91,8 +133,28 @@ export default function ProductTabsClient({
       getCategoryBySlug(active, {
         is_econelo: true,
       }),
-    enabled: !!active,
+    enabled: !!active && !shouldUseCategorySearch,
   });
+
+  const { data: categorySearchData, isLoading: isCategorySearchLoading } =
+    useQuery({
+      queryKey: [
+        "homepage-category-search-products",
+        active,
+        activeCategoryLeafNames.join("|"),
+      ],
+      queryFn: () =>
+        getProductsAlgoliaSearch({
+          page: 1,
+          page_size: 8,
+          is_active: true,
+          is_econelo: true,
+          categories: activeCategoryLeafNames,
+          categoriesKey: activeCategoryLeafNames.join("|"),
+        }),
+      enabled:
+        !!active && shouldUseCategorySearch && activeCategoryLeafNames.length > 0,
+    });
 
   const { data: pinnedProductSearchData } = useQuery({
     queryKey: ["homepagePinnedProduct", HOMEPAGE_PINNED_PRODUCT_KEY],
@@ -115,21 +177,24 @@ export default function ProductTabsClient({
       });
 
       return mergeProductsWithPinnedFirst(
-        data?.products ?? [],
+        shouldUseCategorySearch
+          ? (categorySearchData?.items ?? [])
+          : (data?.products ?? []),
         pinnedProduct,
         HOMEPAGE_PINNED_PRODUCT_KEY,
       );
     },
-    [active, data?.products, pinnedProductSearchData?.items],
+    [
+      active,
+      categorySearchData?.items,
+      data?.products,
+      pinnedProductSearchData?.items,
+      shouldUseCategorySearch,
+    ],
   );
-
-  const reordered = [
-    categoriesList[1], // cat thứ 2
-    categoriesList[3], // cat thứ 4
-    ...categoriesList.filter((_, i) => i !== 1 && i !== 3),
-  ]
-    .filter(Boolean)
-    .slice(0, 4);
+  const isProductsLoading = shouldUseCategorySearch
+    ? isCategorySearchLoading
+    : isLoading;
 
   return (
     <>
@@ -182,9 +247,9 @@ export default function ProductTabsClient({
             </p>
           </div>
 
-          {isLoading && <ProductGridSkeleton />}
+          {isProductsLoading && <ProductGridSkeleton />}
 
-          {!isLoading && (
+          {!isProductsLoading && (
             <Tabs
               value={active}
               onValueChange={setActive}
@@ -215,7 +280,7 @@ export default function ProductTabsClient({
               </TabsList>
 
               <TabsContent className="w-full" value={active}>
-                {isLoading ? (
+                {isProductsLoading ? (
                   <ProductGridSkeleton />
                 ) : (
                   <ProductsGridLayout data={products} showCategoryLabel={false} />

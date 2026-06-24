@@ -5,6 +5,7 @@ import { useRouter } from "@/src/i18n/navigation";
 import { ProductGroupDetailResponse } from "@/types/product-group";
 import { ProductItem } from "@/types/products";
 import { VariantOptionsResponse } from "@/types/variant";
+import { Info } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -15,12 +16,26 @@ interface ListVariantProps {
   variant?: VariantOptionsResponse[];
   currentProduct: ProductItem;
   parentProduct?: ProductGroupDetailResponse | null;
+  delayedDeliveryRange?: {
+    from: Date;
+    to: Date;
+  } | null;
+  onDeliveryNoticeClick?: () => void;
 }
+
+const formatDateDE = (date: Date) =>
+  date.toLocaleDateString("de-DE", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 
 const ListVariant = ({
   variant,
   currentProduct,
   parentProduct,
+  delayedDeliveryRange,
+  onDeliveryNoticeClick,
 }: ListVariantProps) => {
   const { control, setValue } = useFormContext<CartFormValues>();
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
@@ -131,6 +146,23 @@ const ListVariant = ({
               </div>
             </div>
           ))}
+
+          {delayedDeliveryRange && (
+            <button
+              type="button"
+              className="flex w-full cursor-pointer items-start gap-2 rounded-md bg-sky-50 px-3 py-2 text-left text-sm text-sky-900 transition-colors hover:bg-sky-100"
+              onClick={onDeliveryNoticeClick}
+            >
+              <Info className="mt-0.5 size-4 shrink-0 text-sky-600" />
+              <span>
+                {t.rich("deliveryDateRange", {
+                  from: formatDateDE(delayedDeliveryRange.from),
+                  to: formatDateDE(delayedDeliveryRange.to),
+                  b: (chunks) => <strong>{chunks}</strong>,
+                })}
+              </span>
+            </button>
+          )}
         </div>
       )}
     />

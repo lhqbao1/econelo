@@ -45,7 +45,7 @@ const ShippingSection = ({ productDetails }: ShippingSectionProps) => {
       : "";
 
   return (
-    <Card className="shadow-lg">
+    <Card id="product-availability-shipping" className="scroll-mt-28 shadow-lg">
       <CardHeader>
         <CardTitle className="text-xl font-bold">
           {t("availabilityAndShipping")}

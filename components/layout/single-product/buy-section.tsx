@@ -32,6 +32,7 @@ import { useAtom } from "jotai";
 import { userIdAtom } from "@/store/auth";
 import { formatEUR } from "@/lib/format-euro";
 import { useInventoryPoByProductId } from "@/features/inventory-incoming/hook";
+import { calculateProductDeliveryRange } from "@/hooks/get-shipping-date";
 
 interface BuySectionProps {
   variant?: VariantOptionsResponse[];
@@ -40,6 +41,8 @@ interface BuySectionProps {
 }
 
 type FormValues = z.infer<typeof cartFormSchema>;
+
+const SHIPPING_SECTION_ID = "product-availability-shipping";
 
 const BuySection = ({
   variant,
@@ -114,6 +117,45 @@ const BuySection = ({
   const totalWithShipping = safeCurrentPrice + shippingCost;
 
   const { data: inventoryPo } = useInventoryPoByProductId(currentProductId);
+
+  const incomingInventorySource = useMemo(() => {
+    if (Array.isArray(inventoryPo) && inventoryPo.length > 0) return inventoryPo;
+    return currentProduct.inventory_pos ?? [];
+  }, [currentProduct.inventory_pos, inventoryPo]);
+
+  const delayedDeliveryRange = useMemo(() => {
+    const deliveryRange = calculateProductDeliveryRange(currentProduct, {
+      inventoryPo: incomingInventorySource,
+    });
+
+    if (!deliveryRange) return null;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const oneWeekFromToday = new Date(today);
+    oneWeekFromToday.setDate(oneWeekFromToday.getDate() + 7);
+
+    const deliveryStartDate = new Date(deliveryRange.from);
+    deliveryStartDate.setHours(0, 0, 0, 0);
+
+    return deliveryStartDate > oneWeekFromToday ? deliveryRange : null;
+  }, [currentProduct, incomingInventorySource]);
+
+  const handleScrollToShippingSection = () => {
+    const shippingSection = document.getElementById(SHIPPING_SECTION_ID);
+
+    if (!shippingSection) return;
+
+    const headerOffset = 110;
+    const top =
+      shippingSection.getBoundingClientRect().top + window.scrollY - headerOffset;
+
+    window.scrollTo({
+      top,
+      behavior: "smooth",
+    });
+  };
 
   const incomingStock = useMemo(() => {
     const items = Array.isArray(inventoryPo)
@@ -235,6 +277,8 @@ const BuySection = ({
               variant={variant}
               currentProduct={currentProduct}
               parentProduct={parentProduct}
+              delayedDeliveryRange={delayedDeliveryRange}
+              onDeliveryNoticeClick={handleScrollToShippingSection}
             />
 
             <Separator className="my-4" />
