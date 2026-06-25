@@ -32,10 +32,10 @@ export function NavBar() {
       href: "/rechtliches",
       label: "Rechtliches",
     },
-    {
-      href: "/servicestellen",
-      label: "Servicestellen",
-    },
+    // {
+    //   href: "/servicestellen",
+    //   label: "Servicestellen",
+    // },
   ];
 
   const { data: categories } = useGetCategoriesWithChildren({
