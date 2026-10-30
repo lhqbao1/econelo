@@ -180,7 +180,7 @@ export default function CheckoutPageNew() {
                 localCart={localCart}
                 hasOtherCarrier={hasOtherCarrier}
                 shippingCost={shippingCost}
-                userLoginId={userLoginId ?? null}
+                isServerCartMode={isServerCartMode}
                 isLoading={isServerCartMode && isLoadingCart}
                 submitting={submitting}
                 open={openOtpDialog}

@@ -5,7 +5,7 @@ import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "@/src/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { checkOutIdAtom, paymentIdAtom } from "@/store/payment";
 import {
   useCreateAddress,
@@ -58,7 +58,7 @@ export function useCheckoutSubmit({
 
   const [paymentId, setPaymentId] = useAtom(paymentIdAtom);
   const [checkoutId, setCheckoutId] = useAtom(checkOutIdAtom);
-  const [voucherId, setVoucherId] = useAtom(currentVoucherAtom);
+  const setCurrentVoucher = useSetAtom(currentVoucherAtom);
 
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [total, setTotal] = useState(0);
@@ -251,7 +251,7 @@ export function useCheckoutSubmit({
 
         // toast.success(t("orderSuccess"));
         setCheckoutId(checkout.id);
-        setVoucherId(null);
+        setCurrentVoucher(null);
 
         try {
           await trackAffiliateOrder.mutateAsync({
@@ -315,11 +315,9 @@ export function useCheckoutSubmit({
         cleanupNeeded = true;
         setUserLoginId(null);
         setUserGuestId(null);
-        setVoucherId(null);
         localStorage.removeItem("access_token");
       } finally {
         const guestId = localStorage.getItem("userIdGuest");
-        setVoucherId(null);
 
         if (cleanupNeeded && guestId !== null) {
           // localStorage.removeItem("userIdGuest");

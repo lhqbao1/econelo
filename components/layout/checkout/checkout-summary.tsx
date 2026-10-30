@@ -1,19 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { useTranslations } from "next-intl";
 import { CartResponse } from "@/types/cart";
 import { cn } from "@/lib/utils";
 import VoucherApply from "./voucher-apply";
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import { currentVoucherAtom } from "@/store/voucher";
 import { useFormContext, UseFormReturn, useWatch } from "react-hook-form";
-import {
-  useGetVoucherById,
-  useGetVoucherProducts,
-} from "@/features/voucher/hook";
 import CheckoutPaymentUI from "../stripe/payment-ui";
 import {
   FormField,
@@ -43,7 +39,7 @@ interface CartSummaryProps {
   total?: number;
   isLoading?: boolean;
   hasOtherCarrier: boolean;
-  userLoginId: string | null;
+  isServerCartMode: boolean;
   submitting: boolean;
 
   open: boolean;
@@ -66,7 +62,7 @@ export function CartSummary({
   total,
   isLoading,
   hasOtherCarrier,
-  userLoginId,
+  isServerCartMode,
   submitting,
 
   open,
@@ -81,47 +77,14 @@ export function CartSummary({
 }: CartSummaryProps) {
   // const form = useFormContext();
 
-  const [currentVoucher, setCurrentVoucher] = useAtom(currentVoucherAtom);
-  const [voucherId, setVoucherId] = useState<string | null>(currentVoucher);
+  const selectedVoucher = useAtomValue(currentVoucherAtom);
 
   const t = useTranslations();
 
-  const isServerCartMode = !!userLoginId;
   const serverCart = Array.isArray(cart) ? cart : [];
-
-  const { data: listValidProducts } = useGetVoucherProducts(voucherId ?? "");
-
-  // Gộp items từ server hoặc local cart
   const items = isServerCartMode
     ? serverCart.flatMap((group) => group.items)
-    : (localCart ?? []);
-
-  const validProductIdSet = React.useMemo<Set<string>>(() => {
-    return new Set(listValidProducts?.map((p) => p.id) ?? []);
-  }, [listValidProducts]);
-
-  const productSubtotalForVoucher = React.useMemo(() => {
-    if (validProductIdSet.size === 0) return 0;
-
-    if (isServerCartMode) {
-      return serverCart
-        .flatMap((g) => g.items)
-        .filter(
-          (i) =>
-            i.is_active &&
-            i.products?.id &&
-            validProductIdSet.has(i.products.id),
-        )
-        .reduce((sum, i) => sum + (i.final_price ?? 0), 0);
-    }
-
-    return (
-      localCart
-        ?.filter((i) => i.is_active && validProductIdSet.has(i.product_id))
-        .reduce((sum, i) => sum + (i.item_price ?? 0) * (i.quantity ?? 1), 0) ??
-      0
-    );
-  }, [validProductIdSet, serverCart, localCart, isServerCartMode]);
+    : localCart;
 
   const voucherAmount = useWatch({
     control: form.control,
@@ -164,45 +127,29 @@ export function CartSummary({
   //   true,
   // );
 
-  const { data: selectedVoucher, isLoading: isLoadingVoucher } =
-    useGetVoucherById(currentVoucher ?? "");
-
   React.useEffect(() => {
-    if (!selectedVoucher) return;
-
-    // ⛔ Product voucher nhưng chưa load products → STOP
-    if (selectedVoucher.type === "product" && !listValidProducts) {
+    if (!selectedVoucher) {
+      if (form.getValues("voucher_amount") !== 0) {
+        form.setValue("voucher_amount", 0);
+      }
       return;
     }
 
     let nextValue = 0;
     const currentValue = form.getValues("voucher_amount");
 
-    /**
-     * 1️⃣ PRODUCT voucher
-     */
-    if (selectedVoucher.type === "product") {
-      if (productSubtotalForVoucher <= 0) {
-        nextValue = 0;
-      } else if (selectedVoucher.discount_type === "percent") {
-        nextValue =
-          (productSubtotalForVoucher * selectedVoucher.discount_value) / 100;
-      } else {
-        nextValue = selectedVoucher.discount_value;
-      }
-    }
-
-    /**
-     * 2️⃣ USER SPECIFIC
-     */
+    // Product vouchers apply to all selected goods in the Econelo order.
     if (
+      selectedVoucher.type === "product" ||
       selectedVoucher.type === "user_specific" ||
       selectedVoucher.type === "order"
     ) {
       nextValue =
-        selectedVoucher.discount_type === "percent"
-          ? (orderValue * selectedVoucher.discount_value) / 100
-          : selectedVoucher.discount_value;
+        orderValue <= 0
+          ? 0
+          : selectedVoucher.discount_type === "percent"
+            ? (orderValue * selectedVoucher.discount_value) / 100
+            : selectedVoucher.discount_value;
     }
 
     /**
@@ -236,26 +183,7 @@ export function CartSummary({
         shouldValidate: false,
       });
     }
-  }, [
-    selectedVoucher,
-    orderValue,
-    shippingCost,
-    productSubtotalForVoucher, // 🔥 BẮT BUỘC
-    listValidProducts, // 🔥 BẮT BUỘC
-  ]);
-
-  React.useEffect(() => {
-    if (!voucherId) {
-      const current = form.getValues("voucher_amount");
-      if (current !== 0) {
-        form.setValue("voucher_amount", 0, {
-          shouldDirty: false,
-          shouldTouch: false,
-          shouldValidate: false,
-        });
-      }
-    }
-  }, [voucherId]);
+  }, [selectedVoucher, orderValue, shippingCost, voucherAmount, form]);
 
   return (
     <div className="w-full space-y-6">
@@ -327,7 +255,7 @@ export function CartSummary({
       <Separator />
 
       <div className="space-y-4 flex justify-end xl:mb-8">
-        <VoucherApply voucherId={voucherId} setVoucherId={setVoucherId} />
+        <VoucherApply />
       </div>
 
       <Separator />
@@ -368,16 +296,16 @@ export function CartSummary({
             })}
           </span>
         </div>
-        <div className="flex justify-between items-center">
-          <span className="text-right">{t("discount")}</span>
-          <span className="text-right">
-            €
-            {voucherAmount
-              ? voucherAmount.toLocaleString("de-DE", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })
-              : "0.00"}
+        <div className="flex justify-between items-center gap-3">
+          <div className="min-w-0">
+            <span>{t("discount")}</span>
+          </div>
+          <span className="shrink-0 text-right">
+            {(voucherAmount ?? 0) > 0 ? "−€" : "€"}
+            {(voucherAmount ?? 0).toLocaleString("de-DE", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </span>
         </div>
       </div>

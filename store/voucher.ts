@@ -1,8 +1,9 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
+import type { VoucherItem } from "@/types/voucher";
 
-export const currentVoucherAtom = atomWithStorage<string | null>(
-  "voucher_id",
+export const currentVoucherAtom = atomWithStorage<VoucherItem | null>(
+  "applied_voucher",
   null,
 );
 

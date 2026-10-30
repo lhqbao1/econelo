@@ -103,6 +103,8 @@ export const CheckoutFormSection = ({
   useEffect(() => {
     if (!userData) return;
     form.reset({
+      voucher_amount: form.getValues("voucher_amount"),
+      coupon_amount: form.getValues("coupon_amount"),
       first_name: userData.first_name ?? "",
       last_name: userData.last_name ?? "",
       email: userData.email ?? "",

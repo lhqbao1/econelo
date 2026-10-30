@@ -509,6 +509,7 @@
   "retryPayment": "Try payment again",
   "checking": "Checking...",
   "voucherApplied": "Voucher applied successfully",
+  "appliedVouchers": "Applied vouchers",
   "invalidVoucher": "This voucher code is not valid",
   "go_to_page": "Go to page",
   "next": "Next",
