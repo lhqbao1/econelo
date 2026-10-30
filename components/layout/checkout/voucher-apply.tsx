@@ -24,6 +24,7 @@ const VoucherApply = () => {
         return;
       }
       setCurrentVoucher(voucher);
+      setCode("");
       toast.success(t("voucherApplied"));
     },
     onError: () => {
@@ -32,8 +33,15 @@ const VoucherApply = () => {
   });
 
   const handleApply = () => {
-    if (!code.trim()) return;
-    applyVoucher(code.trim());
+    const trimmedCode = code.trim();
+    if (!trimmedCode) return;
+    if (
+      currentVoucher?.code.trim().toLowerCase() === trimmedCode.toLowerCase()
+    ) {
+      toast.warning(t("voucherAlreadyApplied"));
+      return;
+    }
+    applyVoucher(trimmedCode);
   };
 
   return (

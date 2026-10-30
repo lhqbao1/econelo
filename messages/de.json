@@ -506,6 +506,7 @@
   "retryPayment": "Zahlung erneut versuchen",
   "checking": "Wird geprüft...",
   "voucherApplied": "Gutschein erfolgreich angewendet",
+  "voucherAlreadyApplied": "Dieser Gutschein wurde bereits angewendet",
   "appliedVouchers": "Angewendete Gutscheine",
   "invalidVoucher": "Dieser Gutscheincode ist ungültig",
   "go_to_page": "Zur Seite gehen",
